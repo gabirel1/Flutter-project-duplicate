@@ -21,6 +21,8 @@ jobs:
           channel: 'stable'
       - name: Go to project directory
         run: cd my_app
+      - name: LS
+        run: ls -la
       - name: Get dependencies
         run: dart pub get
       - name: Run analyzer
