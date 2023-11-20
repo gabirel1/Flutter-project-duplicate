@@ -1,11 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:my_app/Pages/home_page.dart';
-import 'package:my_app/Pages/login_page.dart';
-
-import 'package:my_app/firebase_options.dart';
-
 import 'package:my_app/Tools/color.dart';
+import 'package:my_app/firebase_options.dart';
 
 // import 'Elements/bottom_navigation_bar.dart';
 
