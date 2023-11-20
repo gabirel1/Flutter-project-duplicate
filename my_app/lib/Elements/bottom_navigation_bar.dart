@@ -27,26 +27,32 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
       _selectedIndex = index;
       switch (index) {
         case 0:
-          unawaited(Navigator.of(context).pushReplacement(
-            // ignore: always_specify_types
-            MaterialPageRoute(
-              builder: (BuildContext context) => const HomePage(),
+          unawaited(
+            Navigator.of(context).pushReplacement(
+              // ignore: always_specify_types
+              MaterialPageRoute(
+                builder: (BuildContext context) => const HomePage(),
+              ),
             ),
-          ));
+          );
         case 1:
-          unawaited(Navigator.of(context).pushReplacement(
-            // ignore: always_specify_types
-            MaterialPageRoute(
-              builder: (BuildContext context) => const BasketPage(),
+          unawaited(
+            Navigator.of(context).pushReplacement(
+              // ignore: always_specify_types
+              MaterialPageRoute(
+                builder: (BuildContext context) => const BasketPage(),
+              ),
             ),
-          ));
+          );
         case 2:
-          unawaited(Navigator.of(context).pushReplacement(
-            // ignore: always_specify_types
-            MaterialPageRoute(
-              builder: (BuildContext context) => const ProfilePage(),
+          unawaited(
+            Navigator.of(context).pushReplacement(
+              // ignore: always_specify_types
+              MaterialPageRoute(
+                builder: (BuildContext context) => const ProfilePage(),
+              ),
             ),
-          ));
+          );
       }
     });
   }

@@ -4,7 +4,7 @@ import 'package:my_app/Elements/bottom_navigation_bar.dart';
 import 'package:my_app/Tools/color.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => HomePageState();
