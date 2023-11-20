@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:my_app/Elements/bottom_navigation_bar.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class BasketPage extends StatefulWidget {
+  const BasketPage({super.key});
 
   @override
-  State<LoginPage> createState() => LoginPageState();
+  State<BasketPage> createState() => BasketPageState();
 }
 
-class LoginPageState extends State<LoginPage> {
+class BasketPageState extends State<BasketPage> {
   final GlobalKey<ScaffoldState> drawerScaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -18,10 +18,12 @@ class LoginPageState extends State<LoginPage> {
         return false;
       },
       child: const Scaffold(
-        backgroundColor: Colors.red,
         body: Scaffold(
-          body: Text(
-            'Hello',
+          backgroundColor: Colors.green,
+          body: Center(
+            child: Text(
+              'Hello',
+            ),
           ),
         ),
         bottomNavigationBar: MyBottomNavigationBar(),

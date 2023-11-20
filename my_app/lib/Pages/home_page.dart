@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:my_app/Elements/app_bar.dart';
+import 'package:my_app/Elements/bottom_navigation_bar.dart';
+import 'package:my_app/Tools/color.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -17,10 +20,12 @@ class HomePageState extends State<HomePage> {
         return false;
       },
       child: Scaffold(
-        backgroundColor: Colors.yellow,
+        appBar: const MyAppBar(),
+        backgroundColor: MyColor().myWhite,
         body: Scaffold(
           key: drawerScaffoldKey,
         ),
+        bottomNavigationBar: const MyBottomNavigationBar(),
       ),
     );
   }
