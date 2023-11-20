@@ -21,10 +21,10 @@ jobs:
           channel: 'stable'
       - name: Get dependencies
         working-directory: my_app
-        run: dart pub get
+        run: flutter pub get
       - name: Run analyzer
         working-directory: my_app
-        run: dart analyze
+        run: flutter analyze
       - name: Run tests
         working-directory: my_app
-        run: dart test
+        run: flutter test
