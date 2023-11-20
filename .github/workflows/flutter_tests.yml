@@ -19,11 +19,12 @@ jobs:
         with:
           flutter-version: '3.13.9'
           channel: 'stable'
-      - name: Go to project directory
-        run: cd my_app
       - name: Get dependencies
+        working-directory: my_app
         run: dart pub get
       - name: Run analyzer
+        working-directory: my_app
         run: dart analyze
       - name: Run tests
+        working-directory: my_app
         run: dart test
