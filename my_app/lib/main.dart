@@ -1,6 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:my_app/Pages/home_page.dart';
+import 'package:my_app/Store/app_state.dart';
 import 'package:my_app/Tools/color.dart';
 import 'package:my_app/firebase_options.dart';
 
@@ -19,7 +21,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
+    return StoreProvider<AppState>(store: store, child:
+    WillPopScope(
       onWillPop: () async {
         return false;
       },
@@ -31,6 +34,7 @@ class MyApp extends StatelessWidget {
         home: const HomePage(),
         debugShowCheckedModeBanner: false,
       ),
+    ),
     );
   }
 }
