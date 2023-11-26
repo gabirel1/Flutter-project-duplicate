@@ -1,6 +1,6 @@
 
 
-import 'package:my_app/Models/Item.dart';
+import 'package:my_app/Models/item.dart';
 import 'package:my_app/Store/Actions/basket_actions.dart';
 import 'package:my_app/Store/State/basket_state.dart';
 
@@ -9,10 +9,10 @@ BasketState basketReducer(BasketState state, dynamic action) {
 
   switch (action) {
     case BasketRemoveItemAction:
-      state.items?.remove(action as ItemModel);
+      state.items?.remove(action as Item);
       newState.items = state.items;
       return newState;
     default:
-      return state;
+      return newState;
   }
 }

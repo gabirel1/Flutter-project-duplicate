@@ -1,4 +1,4 @@
-import 'package:my_app/Models/Item.dart';
+import 'package:my_app/Models/item.dart';
 import 'package:my_app/Store/State/app_state.dart';
 import 'package:redux/redux.dart';
 
@@ -15,6 +15,6 @@ class BasketViewModel {
 
   }
 
-  final List<ItemModel>? items;
+  final List<Item>? items;
 
 }

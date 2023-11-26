@@ -7,6 +7,7 @@ import 'package:my_app/Store/State/app_state.dart';
 import 'package:my_app/Tools/color.dart';
 import 'package:my_app/firebase_options.dart';
 import 'package:redux/redux.dart';
+import 'package:redux_logging/redux_logging.dart';
 
 // import 'Elements/bottom_navigation_bar.dart';
 
@@ -15,7 +16,17 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const MyApp());
+
+  final Store<AppState> store = Store<AppState>(
+    appReducer,
+    initialState: AppState.initial(),
+    middleware: <Middleware<AppState>>[LoggingMiddleware.printer().call],
+  );
+
+  runApp(StoreProvider<AppState>(
+      store: store,
+      child: const MyApp(),
+  ),);
 }
 
 class MyApp extends StatelessWidget {
@@ -23,13 +34,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Store<AppState> store = Store<AppState>(
-      appReducer, initialState: AppState.initial(),
-    );
-
-    return StoreProvider<AppState>(
-      store: store,
-      child: WillPopScope(
+    return WillPopScope(
       onWillPop: () async {
         return false;
       },
@@ -38,10 +43,9 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: MyColor().myWhite),
           useMaterial3: true,
         ),
-        home: const HomePage(),
+        home: HomePage(),
         debugShowCheckedModeBanner: false,
       ),
-    ),
     );
   }
 }

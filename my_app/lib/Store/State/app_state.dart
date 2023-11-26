@@ -17,12 +17,12 @@ class AppState {
   final BasketState basket;
 
   AppState copyWith({
-    HomeState? home,
-    BasketState? basket,
+    required HomeState home,
+    required BasketState basket,
   }) {
     return AppState(
-      home: home ?? this.home,
-      basket: basket ?? this.basket,
+      home: home,
+      basket: basket,
     );
   }
 }

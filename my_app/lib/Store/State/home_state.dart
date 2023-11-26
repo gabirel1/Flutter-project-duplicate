@@ -1,14 +1,14 @@
 
 
-import 'package:my_app/Models/Item.dart';
+import 'package:my_app/Models/item.dart';
 
 class HomeState {
 
-  HomeState({this.items});
+  HomeState({required this.items});
 
   factory HomeState.initial() => HomeState(
-      items: <ItemModel>[],
+      items: <Item>[],
   );
 
-  List<ItemModel>? items;
+  List<Item> items;
 }

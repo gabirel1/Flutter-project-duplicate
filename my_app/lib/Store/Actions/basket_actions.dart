@@ -1,9 +1,9 @@
 
 
-import 'package:my_app/Models/Item.dart';
+import 'package:my_app/Models/item.dart';
 
 class BasketRemoveItemAction {
   BasketRemoveItemAction({required this.item});
 
-  ItemModel item;
+  Item item;
 }

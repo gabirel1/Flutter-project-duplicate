@@ -1,9 +1,9 @@
 
 
-import 'package:my_app/Models/Item.dart';
+import 'package:my_app/Models/item.dart';
 
 class HomeItemsListAction {
   HomeItemsListAction({required this.items});
 
-  ItemModel items;
+  ItemList items;
 }

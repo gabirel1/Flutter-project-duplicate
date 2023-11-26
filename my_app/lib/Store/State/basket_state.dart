@@ -1,4 +1,4 @@
-import 'package:my_app/Models/Item.dart';
+import 'package:my_app/Models/item.dart';
 
 class BasketState {
 
@@ -7,8 +7,8 @@ class BasketState {
   });
 
   factory BasketState.initial() => BasketState(
-    items: <ItemModel>[],
+    items: <Item>[],
   );
 
-  List<ItemModel>? items;
+  List<Item>? items;
 }
