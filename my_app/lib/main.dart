@@ -20,7 +20,7 @@ void main() async {
   final Store<AppState> store = Store<AppState>(
     appReducer,
     initialState: AppState.initial(),
-    middleware: <Middleware<AppState>>[LoggingMiddleware.printer().call],
+    middleware: <Middleware<AppState>>[LoggingMiddleware<AppState>.printer().call],
   );
 
   runApp(StoreProvider<AppState>(
@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: MyColor().myWhite),
           useMaterial3: true,
         ),
-        home: HomePage(),
+        home: const HomePage(),
         debugShowCheckedModeBanner: false,
       ),
     );

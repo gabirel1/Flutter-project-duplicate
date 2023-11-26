@@ -11,7 +11,7 @@ class AppState {
 
   factory AppState.initial() => AppState(
       home: HomeState.initial(),
-      basket: BasketState.initial()
+      basket: BasketState.initial(),
   );
   final HomeState home;
   final BasketState basket;

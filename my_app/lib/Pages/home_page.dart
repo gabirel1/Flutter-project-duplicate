@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:my_app/Elements/app_bar.dart';
 import 'package:my_app/Elements/bottom_navigation_bar.dart';
-import 'package:my_app/Repository/FirestoreService.dart';
+import 'package:my_app/Repository/firestore_service.dart';
+import 'package:my_app/Store/State/app_state.dart';
 import 'package:my_app/Store/ViewModels/home_view_model.dart';
 import 'package:my_app/Tools/color.dart';
 import 'package:redux/redux.dart';
-
-import '../Store/State/app_state.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -37,7 +36,7 @@ class HomePageState extends State<HomePage> {
               backgroundColor: MyColor().myWhite,
               body: Scaffold(
                 key: drawerScaffoldKey,
-                body: viewModel.items.isEmpty ? Text("ça charge....") :
+                body: viewModel.items.isEmpty ? const Text('ça charge....') :
                 ListView.builder(
                   itemCount: viewModel.items.length,
                   itemBuilder: (BuildContext context, int index) {

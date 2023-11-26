@@ -1,5 +1,5 @@
 import 'package:my_app/Models/item.dart';
-import 'package:my_app/Repository/FirestoreService.dart';
+import 'package:my_app/Repository/firestore_service.dart';
 import 'package:my_app/Store/Actions/home_actions.dart';
 import 'package:my_app/Store/State/app_state.dart';
 import 'package:redux/redux.dart';
