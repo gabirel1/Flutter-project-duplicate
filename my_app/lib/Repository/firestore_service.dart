@@ -79,11 +79,33 @@ class FirestoreService {
   }
 
   Future<UserInfos> getUserInfos(String uuid) async {
+    if (kDebugMode) {
+      print('getUserInfos: "$uuid"');
+    }
+    if (uuid.isEmpty) {
+      return UserInfos(
+        uuid: ' ',
+        email: '',
+        profilePicture: '',
+        isSeller: false,
+      );
+    }
     return _firestore
         .collection('user')
         .doc(uuid)
         .get()
         .then((DocumentSnapshot<FItem> documentSnapshot) {
+      if (!documentSnapshot.exists) {
+        return UserInfos(
+          uuid: ' ',
+          email: '',
+          profilePicture: '',
+          isSeller: false,
+        );
+      }
+      if (kDebugMode) {
+        print(documentSnapshot.data()!);
+      }
       return UserInfos.fromJson(documentSnapshot.data()!);
     });
   }

@@ -5,21 +5,21 @@ class ProfileState {
   ProfileState({
     this.lastItemsBought,
     this.userInfos,
-    this.uuid,
+    this.uuid = ' ',
+    // this.uuid = 'CI6MG2mmRnfz2uNCCFmNrW8Z1J83',
   });
 
   factory ProfileState.initial() => ProfileState(
         lastItemsBought: <Item>[],
         userInfos: UserInfos(
-          uuid: '',
+          uuid: ' ',
           email: '',
           profilePicture: '',
           isSeller: false,
         ),
-        uuid: '',
       );
 
   List<Item>? lastItemsBought;
   UserInfos? userInfos;
-  String? uuid;
+  String uuid;
 }

@@ -16,16 +16,17 @@ class ProfileViewModel {
     FirestoreService firestore,
   ) {
     return ProfileViewModel(
-      userInfos: store.state.profile.userInfos,
+      uuid: store.state.profile.uuid,
       loadUserInfo: () async {
-        final UserInfos response = await firestore.getUserInfos('uuid');
+        final UserInfos response =
+            await firestore.getUserInfos(store.state.profile.uuid);
         store.dispatch(ProfileUserInfosAction(userInfos: response));
       },
-      uuid: store.state.profile.uuid,
+      userInfos: store.state.profile.userInfos!,
     );
   }
 
   final UserInfos? userInfos;
   final Function loadUserInfo;
-  final String? uuid;
+  final String uuid;
 }
