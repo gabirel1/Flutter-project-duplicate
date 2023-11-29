@@ -21,32 +21,34 @@ class HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, HomeViewModel>(
-        converter: (Store<AppState> store) =>
-            HomeViewModel.factory(store, FirestoreService()),
-        onInitialBuild: (HomeViewModel viewModel) {
-          viewModel.loadItems();
-        },
-        builder: (BuildContext context, HomeViewModel viewModel) {
-          return WillPopScope(
-            onWillPop: () async {
-              return false;
-            },
-            child: Scaffold(
-              appBar: const MyAppBar(),
-              backgroundColor: MyColor().myWhite,
-              body: Scaffold(
-                key: drawerScaffoldKey,
-                body: viewModel.items.isEmpty ? const Text('ça charge....') :
-                ListView.builder(
-                  itemCount: viewModel.items.length,
-                  itemBuilder: (BuildContext context, int index) {
-                  return Text(viewModel.items.elementAt(index).title);
-                },
-              ),
+      converter: (Store<AppState> store) =>
+          HomeViewModel.factory(store, FirestoreService()),
+      onInitialBuild: (HomeViewModel viewModel) {
+        viewModel.loadItems();
+      },
+      builder: (BuildContext context, HomeViewModel viewModel) {
+        return WillPopScope(
+          onWillPop: () async {
+            return false;
+          },
+          child: Scaffold(
+            appBar: const MyAppBar(),
+            backgroundColor: MyColor().myWhite,
+            body: Scaffold(
+              key: drawerScaffoldKey,
+              body: viewModel.items.isEmpty
+                  ? const Text('ça charge....')
+                  : ListView.builder(
+                      itemCount: viewModel.items.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Text(viewModel.items.elementAt(index).title);
+                      },
+                    ),
               bottomNavigationBar: const MyBottomNavigationBar(),
             ),
-          ),);
-        },
+          ),
+        );
+      },
     );
   }
 }
