@@ -24,12 +24,14 @@ class FirestoreService {
   }
 
   Future<bool> checkUserAlreadyExists(String email) async {
+    print('checkUserAlreadyExists: "$email"');
     final QuerySnapshot<FItem> result = await _firestore
         .collection('users')
         .where('email', isEqualTo: email)
         .limit(1)
         .get();
     final List<QueryDocumentSnapshot<FItem>> documents = result.docs;
+    print(documents);
     if (documents.isNotEmpty) {
       return true;
     } else {
@@ -88,6 +90,7 @@ class FirestoreService {
         email: '',
         profilePicture: '',
         isSeller: false,
+        formatedEmail: '',
       );
     }
     return _firestore
@@ -101,12 +104,24 @@ class FirestoreService {
           email: '',
           profilePicture: '',
           isSeller: false,
+          formatedEmail: '',
         );
       }
-      if (kDebugMode) {
-        print(documentSnapshot.data()!);
-      }
-      return UserInfos.fromJson(documentSnapshot.data()!);
+      final dynamic tmp = documentSnapshot.data()!;
+      // add value 'formatedEmail' to the object
+      tmp.addAll(<String, dynamic>{
+        'formatedEmail': '',
+      });
+      final UserInfos temp = UserInfos.fromJson(tmp);
+      final String email = temp.email;
+      final int len = email.indexOf('@');
+      String username = email.substring(0, (len > -1 ? len : email.length));
+      username = username.substring(
+        0,
+        (username.length > 10) ? 10 : username.length,
+      );
+      temp.formatedEmail = username;
+      return temp;
     });
   }
 }

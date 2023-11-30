@@ -16,6 +16,7 @@ class ProfileState {
           email: '',
           profilePicture: '',
           isSeller: false,
+          formatedEmail: '',
         ),
       );
 

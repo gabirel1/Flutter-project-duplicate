@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:my_app/Elements/bottom_navigation_bar.dart';
+import 'package:my_app/Repository/firestore_service.dart';
 import 'package:my_app/Store/State/app_state.dart';
 import 'package:my_app/Store/ViewModels/authentication_view_model.dart';
 import 'package:my_app/Tools/color.dart';
@@ -64,27 +65,45 @@ class AuthenticationPageState extends State<AuthenticationPage>
     super.dispose();
   }
 
-  Future<void> _handleLogin() async {
-    final GoogleSignInAccount? user = await GoogleSignIn().signIn();
+  Future<(bool, String)> _handleGoogleLogin() async {
+    final GoogleSignInAccount? user = await GoogleSignIn(
+      clientId:
+          '495774674643-o54oh2p0eqdf4q8l0sf6rsglppl87u88.apps.googleusercontent.com',
+    ).signIn();
     final GoogleSignInAuthentication? auth = await user?.authentication;
-    print(auth?.accessToken);
     final AuthCredential credential = GoogleAuthProvider.credential(
       accessToken: auth?.accessToken,
       idToken: auth?.idToken,
     );
+
+    final bool userExists =
+        await FirestoreService().checkUserAlreadyExists(user?.email ?? '');
+    print(userExists);
+    if (userExists == false) {
+      return (false, '');
+    }
     final UserCredential userCredential =
         await FirebaseAuth.instance.signInWithCredential(credential);
     print(userCredential);
+    print(userCredential.user?.uid);
+    return (true, userCredential.user?.uid ?? '');
   }
 
-  Future<void> _handleRegister() async {
-    final GoogleSignInAccount? user = await GoogleSignIn().signIn();
+  Future<void> _handleGoogleRegister() async {
+    final GoogleSignInAccount? user = await GoogleSignIn(
+      clientId:
+          '495774674643-o54oh2p0eqdf4q8l0sf6rsglppl87u88.apps.googleusercontent.com',
+    ).signIn();
     final GoogleSignInAuthentication? auth = await user?.authentication;
     print(auth?.accessToken);
     final AuthCredential credential = GoogleAuthProvider.credential(
       accessToken: auth?.accessToken,
       idToken: auth?.idToken,
     );
+    // check if user already exists in firebas edatabase
+    // if not create it
+    // final bool userExists = await FirestoreService().checkUserAlreadyExists(user?.email ?? '');
+
     final UserCredential userCredential =
         await FirebaseAuth.instance.signInWithCredential(credential);
     print(userCredential);
@@ -180,19 +199,32 @@ class AuthenticationPageState extends State<AuthenticationPage>
                 height: 20,
               ),
               GoogleSignInButton(
-                onPressed: () async => <Future<void>>{
-                  _handleLogin(),
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return const AlertDialog(
-                        alignment: Alignment.bottomCenter,
-                        // Retrieve the text that the user has entered by using the
-                        // TextEditingController.
-                        content: Text('sign in with google'),
-                      );
-                    },
-                  ),
+                onPressed: () async {
+                  bool worked = false;
+                  String uid = '';
+                  (worked, uid) = await _handleGoogleLogin();
+                  print('worked: $worked, uid: "$uid"');
+                  if (worked == false && context.mounted) {
+                    await showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        Future<void>.delayed(const Duration(seconds: 2), () {
+                          if (context.mounted) {
+                            Navigator.of(context).pop(true);
+                          }
+                        });
+                        return const AlertDialog(
+                          alignment: Alignment.center,
+                          content: Text(
+                            'You are not registered !\nPlease register first !',
+                            textAlign: TextAlign.center,
+                          ),
+                        );
+                      },
+                    );
+                    return;
+                  }
+                  // store the uuid in the state
                 },
                 myTitle: 'Sign in with google',
               ),
@@ -231,8 +263,20 @@ class AuthenticationPageState extends State<AuthenticationPage>
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
+        const Center(
+          child: Text(
+            "ℹ️ Don't forget the checkbox ℹ️",
+            style: TextStyle(
+              fontSize: 15,
+              // if text is too long it will go to the next line
+              // overflow: TextOverflow.ellipsis,
+              color: Colors.black,
+            ),
+          ),
+        ),
         Padding(
           padding: const EdgeInsets.symmetric(
+            vertical: 20,
             horizontal: 40,
           ),
           child: Column(
@@ -291,7 +335,7 @@ class AuthenticationPageState extends State<AuthenticationPage>
               GoogleSignInButton(
                 myTitle: 'Register with Google',
                 onPressed: () async => <Future<void>>{
-                  _handleRegister(),
+                  _handleGoogleRegister(),
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
@@ -438,8 +482,30 @@ class AuthenticationPageState extends State<AuthenticationPage>
                     child: TabBarView(
                       controller: _tabController,
                       children: <Widget>[
-                        loginSide(),
-                        registerSide(),
+                        Builder(
+                          builder: (BuildContext context) {
+                            return CustomScrollView(
+                              slivers: <Widget>[
+                                SliverFillRemaining(
+                                  hasScrollBody: false,
+                                  child: loginSide(),
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                        Builder(
+                          builder: (BuildContext context) {
+                            return CustomScrollView(
+                              slivers: <Widget>[
+                                SliverFillRemaining(
+                                  hasScrollBody: false,
+                                  child: registerSide(),
+                                ),
+                              ],
+                            );
+                          },
+                        ),
                       ],
                     ),
                   ),

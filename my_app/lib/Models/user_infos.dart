@@ -9,6 +9,7 @@ class UserInfos {
     required this.email,
     required this.profilePicture,
     required this.isSeller,
+    required this.formatedEmail,
   });
 
   factory UserInfos.fromJson(Map<String, dynamic> json) =>
@@ -18,6 +19,7 @@ class UserInfos {
 
   String uuid = '';
   String email = '';
+  String formatedEmail = '';
   String profilePicture = '';
   bool isSeller = false;
 }

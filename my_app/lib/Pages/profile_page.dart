@@ -23,7 +23,6 @@ class ProfilePageState extends State<ProfilePage> {
   final GlobalKey<ScaffoldState> drawerScaffoldKey = GlobalKey<ScaffoldState>();
   final bool isWeb = MyPlatform.isWeb();
   bool isSeller = false;
-  String username = '';
 
   Widget notConnectedScreen() {
     // make a screen with 2 buttons in the middle (Log in, Register)
@@ -40,12 +39,9 @@ class ProfilePageState extends State<ProfilePage> {
       onInitialBuild: (ProfileViewModel viewModel) {
         viewModel.loadUserInfo();
         isSeller = viewModel.userInfos!.isSeller;
-        final String email = viewModel.userInfos!.email;
-        username = email.substring(0, email.indexOf('@'));
-        username = username.substring(
-          0,
-          (username.length > 10) ? 10 : username.length,
-        );
+        if (kDebugMode) {
+          print('isSeller: $isSeller');
+        }
       },
       builder: (BuildContext context, ProfileViewModel viewModel) {
         return WillPopScope(
@@ -160,7 +156,7 @@ class ProfilePageState extends State<ProfilePage> {
                                     child: Align(
                                       child: Text(
                                         // 'USERNAME',
-                                        username,
+                                        viewModel.userInfos!.formatedEmail,
                                         style: const TextStyle(
                                           fontFamily: 'Readex Pro',
                                           fontSize: 25,
