@@ -5,8 +5,8 @@ class ProfileState {
   ProfileState({
     this.lastItemsBought,
     this.userInfos,
-    // this.uuid = ' ',
-    this.uuid = 'CI6MG2mmRnfz2uNCCFmNrW8Z1J83',
+    this.uuid = ' ',
+    // this.uuid = 'CI6MG2mmRnfz2uNCCFmNrW8Z1J83',
   });
 
   factory ProfileState.initial() => ProfileState(

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -40,7 +41,7 @@ class ProfilePageState extends State<ProfilePage> {
         viewModel.loadUserInfo();
         isSeller = viewModel.userInfos!.isSeller;
         if (kDebugMode) {
-          print('isSeller: $isSeller');
+          debugPrint('isSeller: $isSeller');
         }
       },
       builder: (BuildContext context, ProfileViewModel viewModel) {
@@ -119,7 +120,6 @@ class ProfilePageState extends State<ProfilePage> {
                                       ),
                                       child: Image.network(
                                         // 'https://picsum.photos/seed/277/600',
-                                        // '',
                                         viewModel.userInfos!.profilePicture,
                                         errorBuilder: (
                                           BuildContext context,
@@ -127,7 +127,7 @@ class ProfilePageState extends State<ProfilePage> {
                                           StackTrace? stackTrace,
                                         ) {
                                           if (kDebugMode) {
-                                            print(
+                                            debugPrint(
                                               viewModel
                                                   .userInfos!.profilePicture,
                                             );
@@ -242,6 +242,40 @@ class ProfilePageState extends State<ProfilePage> {
                         },
                         child: const Text(
                           'Log in',
+                        ),
+                      ),
+                    ],
+                  ),
+                  ButtonBar(
+                    alignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      ElevatedButton(
+                        style: ButtonStyle(
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(90),
+                            ),
+                          ),
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                            MyColor().myGreen,
+                          ),
+                        ),
+                        onPressed: () async {
+                          await FirebaseAuth.instance.signOut();
+                          if (context.mounted) {
+                            await Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute<void>(
+                                builder: (BuildContext context) {
+                                  return const AuthenticationPage();
+                                },
+                              ),
+                            );
+                          }
+                        },
+                        child: const Text(
+                          'Disconnect',
                         ),
                       ),
                     ],

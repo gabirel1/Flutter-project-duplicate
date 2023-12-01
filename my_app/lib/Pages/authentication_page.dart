@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:my_app/Elements/bottom_navigation_bar.dart';
+import 'package:my_app/Pages/profile_page.dart';
 import 'package:my_app/Repository/firestore_service.dart';
 import 'package:my_app/Store/State/app_state.dart';
 import 'package:my_app/Store/ViewModels/authentication_view_model.dart';
@@ -78,14 +79,14 @@ class AuthenticationPageState extends State<AuthenticationPage>
 
     final bool userExists =
         await FirestoreService().checkUserAlreadyExists(user?.email ?? '');
-    print(userExists);
+    debugPrint(userExists.toString());
     if (userExists == false) {
       return (false, '');
     }
     final UserCredential userCredential =
         await FirebaseAuth.instance.signInWithCredential(credential);
-    print(userCredential);
-    print(userCredential.user?.uid);
+    debugPrint(userCredential.toString());
+    debugPrint(userCredential.user?.uid);
     return (true, userCredential.user?.uid ?? '');
   }
 
@@ -95,7 +96,7 @@ class AuthenticationPageState extends State<AuthenticationPage>
           '495774674643-o54oh2p0eqdf4q8l0sf6rsglppl87u88.apps.googleusercontent.com',
     ).signIn();
     final GoogleSignInAuthentication? auth = await user?.authentication;
-    print(auth?.accessToken);
+    debugPrint(auth?.accessToken);
     final AuthCredential credential = GoogleAuthProvider.credential(
       accessToken: auth?.accessToken,
       idToken: auth?.idToken,
@@ -106,14 +107,14 @@ class AuthenticationPageState extends State<AuthenticationPage>
 
     final UserCredential userCredential =
         await FirebaseAuth.instance.signInWithCredential(credential);
-    print(userCredential);
+    debugPrint(userCredential.toString());
   }
 
   bool _checkFormValidityLogin() {
     final String email = _emailController.text;
     final String password = _passwordController.text;
 
-    print(password);
+    debugPrint(password);
     // hash password
 
     if (email.isEmpty ||
@@ -129,7 +130,7 @@ class AuthenticationPageState extends State<AuthenticationPage>
     final String password = _passwordController.text;
     final String passwordConfirm = _passwordConfirmController.text;
 
-    print(password);
+    debugPrint(password);
     // hash password
 
     if (email.isEmpty ||
@@ -203,7 +204,7 @@ class AuthenticationPageState extends State<AuthenticationPage>
                   bool worked = false;
                   String uid = '';
                   (worked, uid) = await _handleGoogleLogin();
-                  print('worked: $worked, uid: "$uid"');
+                  debugPrint('worked: $worked, uid: "$uid"');
                   if (worked == false && context.mounted) {
                     await showDialog(
                       context: context,
@@ -437,6 +438,7 @@ class AuthenticationPageState extends State<AuthenticationPage>
           },
           child: Scaffold(
             appBar: AppBar(
+              automaticallyImplyLeading: false,
               title: Text(_title),
               flexibleSpace: Container(
                 decoration: BoxDecoration(
@@ -450,6 +452,19 @@ class AuthenticationPageState extends State<AuthenticationPage>
                     end: AlignmentDirectional.bottomStart,
                   ),
                 ),
+              ),
+              // add my own back button
+              leading: IconButton(
+                icon: const Icon(
+                  Icons.arrow_back,
+                ),
+                onPressed: () async {
+                  await Navigator.of(context).pushReplacement(
+                    MaterialPageRoute<void>(
+                      builder: (BuildContext context) => const ProfilePage(),
+                    ),
+                  );
+                },
               ),
             ),
             body: Scaffold(
@@ -549,6 +564,13 @@ class GoogleSignInButton extends StatelessWidget {
               'assets/images/google_logo.png',
               width: 24,
               height: 24,
+              errorBuilder: (
+                BuildContext context,
+                Object exception,
+                StackTrace? stackTrace,
+              ) {
+                return const Text('😢');
+              },
             ),
           ),
           const SizedBox(width: 4),

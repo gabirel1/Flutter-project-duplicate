@@ -15,11 +15,17 @@ class ProfileViewModel {
     Store<AppState> store,
     FirestoreService firestore,
   ) {
+    final String userUUID = firestore.getCurrentUserUUID();
     return ProfileViewModel(
-      uuid: store.state.profile.uuid,
+      uuid: (store.state.profile.uuid == ' ')
+          ? userUUID
+          : store.state.profile.uuid,
       loadUserInfo: () async {
-        final UserInfos response =
-            await firestore.getUserInfos(store.state.profile.uuid);
+        final UserInfos response = await firestore.getUserInfos(
+          (store.state.profile.uuid == ' ')
+              ? userUUID
+              : store.state.profile.uuid,
+        );
         store.dispatch(ProfileUserInfosAction(userInfos: response));
       },
       userInfos: store.state.profile.userInfos!,

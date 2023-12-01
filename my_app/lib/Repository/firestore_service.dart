@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:my_app/Models/item.dart';
@@ -24,14 +25,14 @@ class FirestoreService {
   }
 
   Future<bool> checkUserAlreadyExists(String email) async {
-    print('checkUserAlreadyExists: "$email"');
+    debugPrint('checkUserAlreadyExists: "$email"');
     final QuerySnapshot<FItem> result = await _firestore
         .collection('users')
         .where('email', isEqualTo: email)
         .limit(1)
         .get();
     final List<QueryDocumentSnapshot<FItem>> documents = result.docs;
-    print(documents);
+    debugPrint(documents.toString());
     if (documents.isNotEmpty) {
       return true;
     } else {
@@ -69,7 +70,7 @@ class FirestoreService {
       return true;
     } catch (e) {
       if (kDebugMode) {
-        print(e);
+        debugPrint(e.toString());
       }
       AlertDialog(
         title: const Text('Error'),
@@ -82,7 +83,7 @@ class FirestoreService {
 
   Future<UserInfos> getUserInfos(String uuid) async {
     if (kDebugMode) {
-      print('getUserInfos: "$uuid"');
+      debugPrint('getUserInfos: "$uuid"');
     }
     if (uuid.isEmpty) {
       return UserInfos(
@@ -94,11 +95,12 @@ class FirestoreService {
       );
     }
     return _firestore
-        .collection('user')
+        .collection('users')
         .doc(uuid)
         .get()
         .then((DocumentSnapshot<FItem> documentSnapshot) {
       if (!documentSnapshot.exists) {
+        debugPrint('Document does not exist on the database');
         return UserInfos(
           uuid: ' ',
           email: '',
@@ -109,6 +111,7 @@ class FirestoreService {
       }
       final dynamic tmp = documentSnapshot.data()!;
       // add value 'formatedEmail' to the object
+      debugPrint(tmp.toString());
       tmp.addAll(<String, dynamic>{
         'formatedEmail': '',
       });
@@ -123,5 +126,14 @@ class FirestoreService {
       temp.formatedEmail = username;
       return temp;
     });
+  }
+
+  String getCurrentUserUUID() {
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    final User? user = auth.currentUser;
+    if (user != null) {
+      return user.uid;
+    }
+    return ' ';
   }
 }
