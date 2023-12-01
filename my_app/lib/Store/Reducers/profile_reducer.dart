@@ -13,6 +13,9 @@ ProfileState profileReducer(ProfileState state, dynamic action) {
     case ProfileUUIDAction:
       newState.uuid = action.uuid;
       return newState;
+    case ProfileSetUserUUIDAction:
+      newState.uuid = action.uuid;
+      return newState;
     default:
       return newState;
   }

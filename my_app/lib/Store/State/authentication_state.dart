@@ -1,5 +1,11 @@
 class AuthenticationState {
-  AuthenticationState();
+  AuthenticationState({
+    this.uuid,
+  });
 
-  factory AuthenticationState.initial() => AuthenticationState();
+  factory AuthenticationState.initial() => AuthenticationState(
+        uuid: ' ',
+      );
+
+  String? uuid;
 }

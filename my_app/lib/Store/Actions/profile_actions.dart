@@ -18,3 +18,9 @@ class ProfileUUIDAction {
 
   String uuid;
 }
+
+class ProfileSetUserUUIDAction {
+  ProfileSetUserUUIDAction({required this.uuid});
+
+  String uuid;
+}
