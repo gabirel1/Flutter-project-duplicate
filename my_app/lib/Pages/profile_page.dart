@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:my_app/Elements/bottom_navigation_bar.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -13,20 +12,12 @@ class ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        return false;
-      },
-      child: const Scaffold(
-        body: Scaffold(
-          backgroundColor: Colors.yellow,
-          body: Center(
-            child: Text(
-              'Hello',
-            ),
-          ),
+    return const Scaffold(
+      backgroundColor: Colors.yellow,
+      body: Center(
+        child: Text(
+          'Hello',
         ),
-        bottomNavigationBar: MyBottomNavigationBar(),
       ),
     );
   }
