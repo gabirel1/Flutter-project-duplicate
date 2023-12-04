@@ -9,8 +9,6 @@ import 'package:my_app/firebase_options.dart';
 import 'package:redux/redux.dart';
 import 'package:redux_logging/redux_logging.dart';
 
-// import 'Elements/bottom_navigation_bar.dart';
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(

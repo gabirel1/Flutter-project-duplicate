@@ -5,4 +5,5 @@ class MyColor {
   Color myWhite = const Color(0xffFFFFFF);
   Color myGrey = const Color(0xffE5E4E2);
   Color myBlue = const Color(0xff6CB4EE);
+  Color myGreen = const Color(0xff42BEA5);
 }
