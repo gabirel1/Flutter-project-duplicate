@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:my_app/Elements/bottom_navigation_bar.dart';
 
 class BasketPage extends StatefulWidget {
   const BasketPage({super.key});
@@ -13,21 +12,13 @@ class BasketPageState extends State<BasketPage> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        return false;
-      },
-      child: const Scaffold(
-        body: Scaffold(
+    return const Scaffold(
           backgroundColor: Colors.green,
           body: Center(
             child: Text(
               'Hello',
             ),
           ),
-        ),
-        bottomNavigationBar: MyBottomNavigationBar(),
-      ),
     );
   }
 }
