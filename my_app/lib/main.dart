@@ -4,8 +4,6 @@ import 'package:my_app/Pages/home_page.dart';
 import 'package:my_app/Tools/color.dart';
 import 'package:my_app/firebase_options.dart';
 
-// import 'Elements/bottom_navigation_bar.dart';
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
