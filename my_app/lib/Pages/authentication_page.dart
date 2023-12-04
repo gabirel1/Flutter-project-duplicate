@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -118,8 +120,8 @@ class AuthenticationPageState extends State<AuthenticationPage>
     bool isSeller,
   ) {
     return FirestoreService().addUser(
-      email,
       uuid,
+      email,
       profilePicture,
       isSeller: isSeller,
     );
@@ -133,12 +135,13 @@ class AuthenticationPageState extends State<AuthenticationPage>
     final String password = _passwordController.text;
 
     if (await FirestoreService().checkUserAlreadyExists(email) == false) {
+      debugPrint('No user found for that email.');
       return (false, 'Wrong email/password.');
     }
     try {
       final UserCredential credential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
-      debugPrint(credential.toString());
+      debugPrint('credentials $credential.toString()');
       return (true, 'Logged in successfully.');
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
@@ -315,8 +318,6 @@ class AuthenticationPageState extends State<AuthenticationPage>
                         });
                         return AlertDialog(
                           alignment: Alignment.bottomCenter,
-                          // Retrieve the text that the user has entered by using the
-                          // TextEditingController.
                           content: Text(
                             res.$1 == true
                                 ? 'Successfully logged in !'
@@ -326,24 +327,19 @@ class AuthenticationPageState extends State<AuthenticationPage>
                         );
                       },
                     );
+                    // redirect to profile page
+                    if (res.$1 == true && context.mounted) {
+                      unawaited(
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute<void>(
+                            builder: (BuildContext context) =>
+                                const ProfilePage(),
+                          ),
+                        ),
+                      );
+                    }
                   }
                 },
-                // onPressed: () async => <Future<void>>{
-                //   showDialog(
-                //     context: context,
-                //     builder: (BuildContext context) {
-                //       final bool res = _checkFormValidityLogin();
-                //       return AlertDialog(
-                //         alignment: Alignment.bottomCenter,
-                //         // Retrieve the text that the user has entered by using the
-                //         // TextEditingController.
-                //         content: Text(
-                //           res == true ? 'form is valid' : 'form is not valid',
-                //         ),
-                //       );
-                //     },
-                //   ),
-                // },
                 child: const Text(
                   'Sign in',
                 ),
@@ -401,7 +397,7 @@ class AuthenticationPageState extends State<AuthenticationPage>
                           }
                         });
                         return const AlertDialog(
-                          alignment: Alignment.center,
+                          alignment: Alignment.bottomCenter,
                           content: Text(
                             'You are not registered !\nPlease register first !',
                             textAlign: TextAlign.center,
@@ -411,34 +407,40 @@ class AuthenticationPageState extends State<AuthenticationPage>
                     );
                     return;
                   }
+                  if (worked == true && context.mounted) {
+                    await showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        Future<void>.delayed(const Duration(seconds: 2), () {
+                          if (context.mounted) {
+                            Navigator.of(context).pop(true);
+                          }
+                        });
+                        return const AlertDialog(
+                          alignment: Alignment.bottomCenter,
+                          content: Text(
+                            'Successfully logged in !',
+                            textAlign: TextAlign.center,
+                          ),
+                        );
+                      },
+                    );
+                    // redirect to profile page
+                    if (context.mounted) {
+                      unawaited(
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute<void>(
+                            builder: (BuildContext context) =>
+                                const ProfilePage(),
+                          ),
+                        ),
+                      );
+                    }
+                  }
                   // store the uuid in the state
                 },
                 myTitle: 'Sign in with google',
               ),
-              // const SizedBox(
-              //   height: 50,
-              // ),
-              // ElevatedButton(
-              //   onPressed: () async => <Future<void>>{
-              //     showDialog(
-              //       context: context,
-              //       builder: (BuildContext context) {
-              //         final bool res = _checkFormValidityLogin();
-              //         return AlertDialog(
-              //           alignment: Alignment.bottomCenter,
-              //           // Retrieve the text that the user has entered by using the
-              //           // TextEditingController.
-              //           content: Text(
-              //             res == true ? 'form is valid' : 'form is not valid',
-              //           ),
-              //         );
-              //       },
-              //     ),
-              //   },
-              //   child: const Text(
-              //     'sign in',
-              //   ),
-              // ),
             ],
           ),
         ),

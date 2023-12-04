@@ -223,8 +223,11 @@ class ProfilePageState extends State<ProfilePage> {
                       top: MediaQuery.sizeOf(context).height * 0.04,
                     ),
                   ),
-                  const Text(
-                    'HERE',
+                  Text(
+                    (viewModel.userInfos!.uuid != ' ' &&
+                            viewModel.userInfos!.uuid != '')
+                        ? 'HERE'
+                        : 'NOT HERE',
                   ),
                   ButtonBar(
                     alignment: MainAxisAlignment.center,
