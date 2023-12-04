@@ -9,7 +9,7 @@ import 'package:my_app/Repository/firestore_service.dart';
 import 'package:my_app/Store/State/app_state.dart';
 import 'package:my_app/Store/ViewModels/authentication_view_model.dart';
 import 'package:my_app/Tools/color.dart';
-// import 'package:redux/redux.dart';
+import 'package:my_app/Tools/utils.dart';
 
 class AuthenticationPage extends StatefulWidget {
   const AuthenticationPage({super.key});
@@ -29,6 +29,7 @@ class AuthenticationPageState extends State<AuthenticationPage>
       TextEditingController();
   final List<String> _tabTitles = <String>['Log In', 'Register'];
   late String _title;
+  bool _wantToBeSeller = false;
 
   @override
   void initState() {
@@ -66,7 +67,27 @@ class AuthenticationPageState extends State<AuthenticationPage>
     super.dispose();
   }
 
+  Future<(bool, String)> _handleGoogleLoginWeb() async {
+    final GoogleAuthProvider googleProvider = GoogleAuthProvider();
+
+    debugPrint(googleProvider.toString());
+    final UserCredential userCredential =
+        await FirebaseAuth.instance.signInWithPopup(googleProvider);
+    if (await FirestoreService()
+            .checkUserAlreadyExistsV2(userCredential.user?.uid ?? '') ==
+        false) {
+      // remove the user from firebase
+      await userCredential.user?.delete();
+      return (false, '');
+    }
+    debugPrint(userCredential.toString());
+    return (true, ' ');
+  }
+
   Future<(bool, String)> _handleGoogleLogin() async {
+    if (MyPlatform.isWeb()) {
+      return _handleGoogleLoginWeb();
+    }
     final GoogleSignInAccount? user = await GoogleSignIn(
       clientId:
           '495774674643-o54oh2p0eqdf4q8l0sf6rsglppl87u88.apps.googleusercontent.com',
@@ -90,7 +111,48 @@ class AuthenticationPageState extends State<AuthenticationPage>
     return (true, userCredential.user?.uid ?? '');
   }
 
-  Future<void> _handleGoogleRegister() async {
+  Future<bool> _registerUserInFirebase(
+    String email,
+    String uuid,
+    String profilePicture,
+    bool isSeller,
+  ) {
+    return FirestoreService().addUser(
+      email,
+      uuid,
+      profilePicture,
+      isSeller: isSeller,
+    );
+  }
+
+  Future<bool> _handleGoogleRegisterWeb() async {
+    final GoogleAuthProvider googleProvider = GoogleAuthProvider();
+
+    debugPrint(googleProvider.toString());
+    final UserCredential userCredential =
+        await FirebaseAuth.instance.signInWithPopup(googleProvider);
+
+    if (await FirestoreService()
+                .checkUserAlreadyExistsV2(userCredential.user?.uid ?? '') ==
+            true ||
+        userCredential.user == null ||
+        userCredential.user?.email == null) {
+      return false;
+    }
+    debugPrint(userCredential.toString());
+    final bool res = await _registerUserInFirebase(
+      userCredential.user!.email ?? '',
+      userCredential.user!.uid,
+      userCredential.user!.photoURL ?? '',
+      _wantToBeSeller,
+    );
+    return res;
+  }
+
+  Future<bool> _handleGoogleRegister() async {
+    if (MyPlatform.isWeb()) {
+      return _handleGoogleRegisterWeb();
+    }
     final GoogleSignInAccount? user = await GoogleSignIn(
       clientId:
           '495774674643-o54oh2p0eqdf4q8l0sf6rsglppl87u88.apps.googleusercontent.com',
@@ -108,6 +170,7 @@ class AuthenticationPageState extends State<AuthenticationPage>
     final UserCredential userCredential =
         await FirebaseAuth.instance.signInWithCredential(credential);
     debugPrint(userCredential.toString());
+    return true;
   }
 
   bool _checkFormValidityLogin() {
@@ -275,9 +338,34 @@ class AuthenticationPageState extends State<AuthenticationPage>
             ),
           ),
         ),
+        Center(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              const Text(
+                'I want to be a Seller',
+                style: TextStyle(
+                  fontSize: 15,
+                  // if text is too long it will go to the next line
+                  // overflow: TextOverflow.ellipsis,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Checkbox(
+                value: _wantToBeSeller,
+                onChanged: (bool? value) {
+                  debugPrint(value.toString());
+                  setState(() {
+                    _wantToBeSeller = value ?? false;
+                  });
+                },
+              ),
+            ],
+          ),
+        ),
         Padding(
           padding: const EdgeInsets.symmetric(
-            vertical: 20,
             horizontal: 40,
           ),
           child: Column(
@@ -453,7 +541,6 @@ class AuthenticationPageState extends State<AuthenticationPage>
                   ),
                 ),
               ),
-              // add my own back button
               leading: IconButton(
                 icon: const Icon(
                   Icons.arrow_back,

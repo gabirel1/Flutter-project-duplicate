@@ -118,33 +118,46 @@ class ProfilePageState extends State<ProfilePage> {
                                           ),
                                         ],
                                       ),
-                                      child: Image.network(
-                                        // 'https://picsum.photos/seed/277/600',
-                                        viewModel.userInfos!.profilePicture,
-                                        errorBuilder: (
-                                          BuildContext context,
-                                          Object error,
-                                          StackTrace? stackTrace,
-                                        ) {
-                                          if (kDebugMode) {
-                                            debugPrint(
+                                      child: (viewModel
+                                                  .userInfos!.profilePicture ==
+                                              '')
+                                          ? CircleAvatar(
+                                              backgroundColor: MyColor().myGrey,
+                                              child: Icon(
+                                                Icons.person,
+                                                color: MyColor().myWhite,
+                                                size: 50,
+                                              ),
+                                            )
+                                          : Image.network(
+                                              // 'https://picsum.photos/seed/277/600',
                                               viewModel
                                                   .userInfos!.profilePicture,
-                                            );
-                                          }
-                                          // fill with a gray circle
-                                          // and an icon in the middle 🚫
-                                          return CircleAvatar(
-                                            backgroundColor: MyColor().myGrey,
-                                            child: Icon(
-                                              Icons.sync_problem,
-                                              color: MyColor().myWhite,
-                                              size: 50,
+                                              errorBuilder: (
+                                                BuildContext context,
+                                                Object error,
+                                                StackTrace? stackTrace,
+                                              ) {
+                                                if (kDebugMode) {
+                                                  debugPrint(
+                                                    viewModel.userInfos!
+                                                        .profilePicture,
+                                                  );
+                                                }
+                                                // fill with a gray circle
+                                                // and an icon in the middle 🚫
+                                                return CircleAvatar(
+                                                  backgroundColor:
+                                                      MyColor().myGrey,
+                                                  child: Icon(
+                                                    Icons.sync_problem,
+                                                    color: MyColor().myWhite,
+                                                    size: 50,
+                                                  ),
+                                                );
+                                              },
+                                              fit: BoxFit.cover,
                                             ),
-                                          );
-                                        },
-                                        fit: BoxFit.cover,
-                                      ),
                                     ),
                                   ),
                                   // Flexible(
