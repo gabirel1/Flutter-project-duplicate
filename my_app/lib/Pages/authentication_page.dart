@@ -81,7 +81,7 @@ class AuthenticationPageState extends State<AuthenticationPage>
       return (false, '');
     }
     debugPrint(userCredential.toString());
-    return (true, ' ');
+    return (true, userCredential.user?.uid ?? '');
   }
 
   Future<(bool, String)> _handleGoogleLogin() async {
@@ -125,6 +125,75 @@ class AuthenticationPageState extends State<AuthenticationPage>
     );
   }
 
+  Future<(bool, String)> _handleLogin() async {
+    final bool isValid = _checkFormValidityLogin();
+    if (isValid == false) return (false, 'invalid-form');
+
+    final String email = _emailController.text;
+    final String password = _passwordController.text;
+
+    if (await FirestoreService().checkUserAlreadyExists(email) == false) {
+      return (false, 'Wrong email/password.');
+    }
+    try {
+      final UserCredential credential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: password);
+      debugPrint(credential.toString());
+      return (true, 'Logged in successfully.');
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        debugPrint('No user found for that email.');
+        return (false, 'Wrong email/password.');
+      } else if (e.code == 'wrong-password') {
+        debugPrint('Wrong password provided for that user.');
+        return (false, 'Wrong email/password.');
+      } else if (e.code == 'INVALID_LOGIN_CREDENTIALS') {
+        return (false, 'Wrong email/password.');
+      }
+      debugPrint(e.code);
+      return (false, e.code);
+    } catch (e) {
+      debugPrint(e.toString());
+      return (false, 'An error occured, please try again later.');
+    }
+  }
+
+  Future<(bool, String)> _handleRegister() async {
+    final bool isValid = _checkFormValidity();
+    if (isValid == false) return (false, 'invalid-form');
+
+    final String email = _emailController.text;
+    final String password = _passwordController.text;
+
+    try {
+      final UserCredential credential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      debugPrint(credential.toString());
+      final bool res = await _registerUserInFirebase(
+        email,
+        credential.user!.uid,
+        '',
+        _wantToBeSeller,
+      );
+      return (res, 'Registered successfully.');
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        debugPrint('The password provided is too weak.');
+        return (false, 'The password provided is too weak.');
+      } else if (e.code == 'email-already-in-use') {
+        debugPrint('The account already exists for that email.');
+        return (false, 'The account already exists for that email.');
+      }
+      return (false, e.code);
+    } catch (e) {
+      debugPrint(e.toString());
+      return (false, 'An error occured, please try again later.');
+    }
+  }
+
   Future<bool> _handleGoogleRegisterWeb() async {
     final GoogleAuthProvider googleProvider = GoogleAuthProvider();
 
@@ -165,20 +234,27 @@ class AuthenticationPageState extends State<AuthenticationPage>
     );
     // check if user already exists in firebas edatabase
     // if not create it
-    // final bool userExists = await FirestoreService().checkUserAlreadyExists(user?.email ?? '');
-
+    final bool userExists =
+        await FirestoreService().checkUserAlreadyExists(user?.email ?? '');
+    if (userExists == true) {
+      return false;
+    }
     final UserCredential userCredential =
         await FirebaseAuth.instance.signInWithCredential(credential);
     debugPrint(userCredential.toString());
-    return true;
+    debugPrint(userCredential.user?.uid);
+    final bool res = await _registerUserInFirebase(
+      userCredential.user!.email ?? '',
+      userCredential.user!.uid,
+      userCredential.user!.photoURL ?? '',
+      _wantToBeSeller,
+    );
+    return res;
   }
 
   bool _checkFormValidityLogin() {
     final String email = _emailController.text;
     final String password = _passwordController.text;
-
-    debugPrint(password);
-    // hash password
 
     if (email.isEmpty ||
         password.isEmpty ||
@@ -192,9 +268,6 @@ class AuthenticationPageState extends State<AuthenticationPage>
     final String email = _emailController.text;
     final String password = _passwordController.text;
     final String passwordConfirm = _passwordConfirmController.text;
-
-    debugPrint(password);
-    // hash password
 
     if (email.isEmpty ||
         password.isEmpty ||
@@ -224,6 +297,56 @@ class AuthenticationPageState extends State<AuthenticationPage>
                 label: 'Password',
                 myController: _passwordController,
                 obsureText: true,
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  final (bool, String) res = await _handleLogin();
+                  if (context.mounted) {
+                    await showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        Future<void>.delayed(const Duration(seconds: 2), () {
+                          if (context.mounted) {
+                            Navigator.of(context).pop(true);
+                          }
+                        });
+                        return AlertDialog(
+                          alignment: Alignment.bottomCenter,
+                          // Retrieve the text that the user has entered by using the
+                          // TextEditingController.
+                          content: Text(
+                            res.$1 == true
+                                ? 'Successfully logged in !'
+                                : res.$2,
+                            textAlign: TextAlign.center,
+                          ),
+                        );
+                      },
+                    );
+                  }
+                },
+                // onPressed: () async => <Future<void>>{
+                //   showDialog(
+                //     context: context,
+                //     builder: (BuildContext context) {
+                //       final bool res = _checkFormValidityLogin();
+                //       return AlertDialog(
+                //         alignment: Alignment.bottomCenter,
+                //         // Retrieve the text that the user has entered by using the
+                //         // TextEditingController.
+                //         content: Text(
+                //           res == true ? 'form is valid' : 'form is not valid',
+                //         ),
+                //       );
+                //     },
+                //   ),
+                // },
+                child: const Text(
+                  'Sign in',
+                ),
               ),
               const SizedBox(
                 height: 20,
@@ -292,30 +415,30 @@ class AuthenticationPageState extends State<AuthenticationPage>
                 },
                 myTitle: 'Sign in with google',
               ),
-              const SizedBox(
-                height: 50,
-              ),
-              ElevatedButton(
-                onPressed: () async => <Future<void>>{
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      final bool res = _checkFormValidityLogin();
-                      return AlertDialog(
-                        alignment: Alignment.bottomCenter,
-                        // Retrieve the text that the user has entered by using the
-                        // TextEditingController.
-                        content: Text(
-                          res == true ? 'form is valid' : 'form is not valid',
-                        ),
-                      );
-                    },
-                  ),
-                },
-                child: const Text(
-                  'sign in',
-                ),
-              ),
+              // const SizedBox(
+              //   height: 50,
+              // ),
+              // ElevatedButton(
+              //   onPressed: () async => <Future<void>>{
+              //     showDialog(
+              //       context: context,
+              //       builder: (BuildContext context) {
+              //         final bool res = _checkFormValidityLogin();
+              //         return AlertDialog(
+              //           alignment: Alignment.bottomCenter,
+              //           // Retrieve the text that the user has entered by using the
+              //           // TextEditingController.
+              //           content: Text(
+              //             res == true ? 'form is valid' : 'form is not valid',
+              //           ),
+              //         );
+              //       },
+              //     ),
+              //   },
+              //   child: const Text(
+              //     'sign in',
+              //   ),
+              // ),
             ],
           ),
         ),
@@ -385,7 +508,41 @@ class AuthenticationPageState extends State<AuthenticationPage>
                 obsureText: true,
               ),
               const SizedBox(
-                height: 20,
+                height: 10,
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  final (bool, String) res = await _handleRegister();
+                  if (context.mounted) {
+                    await showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        Future<void>.delayed(const Duration(seconds: 2), () {
+                          if (context.mounted) {
+                            Navigator.of(context).pop(true);
+                          }
+                        });
+                        return AlertDialog(
+                          alignment: Alignment.bottomCenter,
+                          // Retrieve the text that the user has entered by using the
+                          // TextEditingController.
+                          content: Text(
+                            res.$1 == true
+                                ? 'Successfully registered !\nPlease log in !'
+                                : res.$2,
+                            textAlign: TextAlign.center,
+                          ),
+                        );
+                      },
+                    );
+                  }
+                },
+                child: const Text(
+                  'Register',
+                ),
+              ),
+              const SizedBox(
+                height: 10,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -423,44 +580,30 @@ class AuthenticationPageState extends State<AuthenticationPage>
               ),
               GoogleSignInButton(
                 myTitle: 'Register with Google',
-                onPressed: () async => <Future<void>>{
-                  _handleGoogleRegister(),
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return const AlertDialog(
-                        alignment: Alignment.bottomCenter,
-                        // Retrieve the text that the user has entered by using the
-                        // TextEditingController.
-                        content: Text('Register with google'),
-                      );
-                    },
-                  ),
+                onPressed: () async {
+                  final bool res = await _handleGoogleRegister();
+                  if (context.mounted) {
+                    await showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        Future<void>.delayed(const Duration(seconds: 2), () {
+                          if (context.mounted) {
+                            Navigator.of(context).pop(true);
+                          }
+                        });
+                        return AlertDialog(
+                          alignment: Alignment.bottomCenter,
+                          content: Text(
+                            (res == false)
+                                ? 'You are already registered !\nPlease log in !'
+                                : 'Successfully registered !\nPlease log in !',
+                            textAlign: TextAlign.center,
+                          ),
+                        );
+                      },
+                    );
+                  }
                 },
-              ),
-              const SizedBox(
-                height: 50,
-              ),
-              ElevatedButton(
-                onPressed: () async => <Future<void>>{
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      final bool res = _checkFormValidity();
-                      return AlertDialog(
-                        alignment: Alignment.bottomCenter,
-                        // Retrieve the text that the user has entered by using the
-                        // TextEditingController.
-                        content: Text(
-                          res == true ? 'form is valid' : 'form is not valid',
-                        ),
-                      );
-                    },
-                  ),
-                },
-                child: const Text(
-                  'sign in',
-                ),
               ),
             ],
           ),
