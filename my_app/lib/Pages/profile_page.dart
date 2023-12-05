@@ -29,7 +29,60 @@ class ProfilePageState extends State<ProfilePage> {
     // make a screen with 2 buttons in the middle (Log in, Register)
     // it should put Login first and then a text: "No account yet ?" and then display the second button
     // the second button should be Register
-    return Container();
+    return Center(
+      child: Column(
+        children: <Widget>[
+          // Padding(
+          //   padding:
+          //       EdgeInsets.only(top: MediaQuery.sizeOf(context).height * 0.1),
+          // ),
+          const Text(
+            'You are not connected',
+            style: TextStyle(
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(
+              top: MediaQuery.sizeOf(context).height * 0.04,
+            ),
+          ),
+          ButtonBar(
+            alignment: MainAxisAlignment.center,
+            children: <Widget>[
+              ElevatedButton(
+                style: ButtonStyle(
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(90),
+                    ),
+                  ),
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                    MyColor().myGreen,
+                  ),
+                ),
+                onPressed: () {
+                  unawaited(
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute<void>(
+                        builder: (BuildContext context) {
+                          return const AuthenticationPage();
+                        },
+                      ),
+                    ),
+                  );
+                },
+                child: const Text(
+                  'Log In / Register',
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -71,166 +124,180 @@ class ProfilePageState extends State<ProfilePage> {
             ),
             body: SafeArea(
               child: Column(
-                children: <Widget>[
-                  Stack(
-                    children: <Widget>[
-                      Container(
-                        width: MediaQuery.sizeOf(context).width,
-                        height: MediaQuery.sizeOf(context).height * 0.08,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: <Color>[
-                              MyColor().myGreen,
-                              MyColor().myBlue,
-                            ],
-                            stops: const <double>[0, 1],
-                            begin: AlignmentDirectional.centerEnd,
-                            end: AlignmentDirectional.bottomStart,
-                          ),
-                        ),
-                        child: Padding(
+                children: (viewModel.userInfos!.uuid == ' ' ||
+                        viewModel.userInfos!.uuid == '')
+                    ? <Widget>[
+                        Padding(
                           padding: EdgeInsets.only(
-                            top: MediaQuery.sizeOf(context).height * 0.02,
-                            left: MediaQuery.sizeOf(context).width * 0.45,
+                            top: MediaQuery.sizeOf(context).height * 0.20,
                           ),
-                          child: Text(
-                            viewModel.userInfos!.formatedEmail,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 25,
-                              overflow: TextOverflow.ellipsis,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                          child: notConnectedScreen(),
                         ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                          left: MediaQuery.sizeOf(context).width * 0.04,
-                        ),
-                        child: Stack(
+                      ]
+                    : <Widget>[
+                        Stack(
                           children: <Widget>[
-                            DecoratedBox(
+                            Container(
+                              width: MediaQuery.sizeOf(context).width,
+                              height: MediaQuery.sizeOf(context).height * 0.08,
                               decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: MyColor().myGrey,
-                                  width: 4,
+                                gradient: LinearGradient(
+                                  colors: <Color>[
+                                    MyColor().myGreen,
+                                    MyColor().myBlue,
+                                  ],
+                                  stops: const <double>[0, 1],
+                                  begin: AlignmentDirectional.centerEnd,
+                                  end: AlignmentDirectional.bottomStart,
                                 ),
-                                borderRadius: BorderRadius.circular(100),
                               ),
-                              child: SizedBox(
-                                width: 120,
-                                height: 120,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(100),
-                                  child: Image.network(
-                                    viewModel.userInfos!.profilePicture,
-                                    fit: BoxFit.cover,
+                              child: Padding(
+                                padding: EdgeInsets.only(
+                                  top: MediaQuery.sizeOf(context).height * 0.02,
+                                  left: MediaQuery.sizeOf(context).width * 0.45,
+                                ),
+                                child: Text(
+                                  viewModel.userInfos!.formatedEmail,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 25,
+                                    overflow: TextOverflow.ellipsis,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
                               ),
                             ),
-                            Positioned(
-                              bottom: 0,
-                              right: 0,
-                              child: Container(
-                                width: 35,
-                                height: 35,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(100),
-                                  color: MyColor().myGreen,
-                                ),
-                                child: const Icon(
-                                  Icons.edit,
-                                  color: Colors.black,
-                                  size: 20,
-                                ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                left: MediaQuery.sizeOf(context).width * 0.04,
+                              ),
+                              child: Stack(
+                                children: <Widget>[
+                                  DecoratedBox(
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: MyColor().myGrey,
+                                        width: 4,
+                                      ),
+                                      borderRadius: BorderRadius.circular(100),
+                                    ),
+                                    child: SizedBox(
+                                      width: 120,
+                                      height: 120,
+                                      child: ClipRRect(
+                                        borderRadius:
+                                            BorderRadius.circular(100),
+                                        child: Image.network(
+                                          viewModel.userInfos!.profilePicture,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    bottom: 0,
+                                    right: 0,
+                                    child: Container(
+                                      width: 35,
+                                      height: 35,
+                                      decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(100),
+                                        color: MyColor().myGreen,
+                                      ),
+                                      child: const Icon(
+                                        Icons.edit,
+                                        color: Colors.black,
+                                        size: 20,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ],
                         ),
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                      top: MediaQuery.sizeOf(context).height * 0.04,
-                    ),
-                  ),
-                  Text(
-                    (viewModel.userInfos!.uuid != ' ' &&
-                            viewModel.userInfos!.uuid != '')
-                        ? 'HERE'
-                        : 'NOT HERE',
-                  ),
-                  ButtonBar(
-                    alignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      ElevatedButton(
-                        style: ButtonStyle(
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(90),
-                            ),
-                          ),
-                          backgroundColor: MaterialStateProperty.all<Color>(
-                            MyColor().myGreen,
+                        Padding(
+                          padding: EdgeInsets.only(
+                            top: MediaQuery.sizeOf(context).height * 0.04,
                           ),
                         ),
-                        onPressed: () {
-                          unawaited(
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute<void>(
-                                builder: (BuildContext context) {
-                                  return const AuthenticationPage();
-                                },
+                        Text(
+                          (viewModel.userInfos!.uuid != ' ' &&
+                                  viewModel.userInfos!.uuid != '')
+                              ? 'HERE'
+                              : 'NOT HERE',
+                        ),
+                        ButtonBar(
+                          alignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            ElevatedButton(
+                              style: ButtonStyle(
+                                shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(90),
+                                  ),
+                                ),
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                  MyColor().myGreen,
+                                ),
+                              ),
+                              onPressed: () {
+                                unawaited(
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute<void>(
+                                      builder: (BuildContext context) {
+                                        return const AuthenticationPage();
+                                      },
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: const Text(
+                                'Log in',
                               ),
                             ),
-                          );
-                        },
-                        child: const Text(
-                          'Log in',
+                          ],
                         ),
-                      ),
-                    ],
-                  ),
-                  ButtonBar(
-                    alignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      ElevatedButton(
-                        style: ButtonStyle(
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(90),
-                            ),
-                          ),
-                          backgroundColor: MaterialStateProperty.all<Color>(
-                            MyColor().myGreen,
-                          ),
-                        ),
-                        onPressed: () async {
-                          await FirebaseAuth.instance.signOut();
-                          if (context.mounted) {
-                            await Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute<void>(
-                                builder: (BuildContext context) {
-                                  return const AuthenticationPage();
-                                },
+                        ButtonBar(
+                          alignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            ElevatedButton(
+                              style: ButtonStyle(
+                                shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(90),
+                                  ),
+                                ),
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                  MyColor().myGreen,
+                                ),
                               ),
-                            );
-                          }
-                        },
-                        child: const Text(
-                          'Disconnect',
+                              onPressed: () async {
+                                await FirebaseAuth.instance.signOut();
+                                if (context.mounted) {
+                                  await Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute<void>(
+                                      builder: (BuildContext context) {
+                                        return const AuthenticationPage();
+                                      },
+                                    ),
+                                  );
+                                }
+                              },
+                              child: const Text(
+                                'Disconnect',
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                      ],
               ),
             ),
             bottomNavigationBar: const MyBottomNavigationBar(),
