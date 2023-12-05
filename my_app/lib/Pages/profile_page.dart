@@ -72,151 +72,85 @@ class ProfilePageState extends State<ProfilePage> {
             body: SafeArea(
               child: Column(
                 children: <Widget>[
-                  SizedBox(
-                    height: MediaQuery.sizeOf(context).height * 0.24,
-                    child: Stack(
-                      children: <Widget>[
-                        Container(
-                          width: MediaQuery.sizeOf(context).width,
-                          height: MediaQuery.sizeOf(context).height * 0.2,
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: <Color>[
-                                MyColor().myGreen,
-                                MyColor().myBlue,
-                              ],
-                              stops: const <double>[0, 1],
-                              begin: AlignmentDirectional.centerEnd,
-                              end: AlignmentDirectional.bottomStart,
+                  Stack(
+                    children: <Widget>[
+                      Container(
+                        width: MediaQuery.sizeOf(context).width,
+                        height: MediaQuery.sizeOf(context).height * 0.08,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: <Color>[
+                              MyColor().myGreen,
+                              MyColor().myBlue,
+                            ],
+                            stops: const <double>[0, 1],
+                            begin: AlignmentDirectional.centerEnd,
+                            end: AlignmentDirectional.bottomStart,
+                          ),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                            top: MediaQuery.sizeOf(context).height * 0.02,
+                            left: MediaQuery.sizeOf(context).width * 0.45,
+                          ),
+                          child: Text(
+                            viewModel.userInfos!.formatedEmail,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 25,
+                              overflow: TextOverflow.ellipsis,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
-                        Padding(
-                          padding: EdgeInsets.only(
-                            left: MediaQuery.sizeOf(context).width * 0.05,
-                          ),
-                          child: Align(
-                            alignment: AlignmentDirectional.bottomCenter,
-                            child: SizedBox(
-                              height: MediaQuery.sizeOf(context).height * 0.15,
-                              child: Stack(
-                                alignment: AlignmentDirectional.centerEnd,
-                                children: <Widget>[
-                                  Align(
-                                    alignment: AlignmentDirectional.centerStart,
-                                    child: Container(
-                                      width: 120,
-                                      height: 120,
-                                      clipBehavior: Clip.antiAlias,
-                                      decoration: const BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        boxShadow: <BoxShadow>[
-                                          BoxShadow(
-                                            blurRadius: 4,
-                                            color: Color(0x3F000000),
-                                            offset: Offset(0, 4),
-                                          ),
-                                        ],
-                                      ),
-                                      child: (viewModel
-                                                  .userInfos!.profilePicture ==
-                                              '')
-                                          ? CircleAvatar(
-                                              backgroundColor: MyColor().myGrey,
-                                              child: Icon(
-                                                Icons.person,
-                                                color: MyColor().myWhite,
-                                                size: 50,
-                                              ),
-                                            )
-                                          : Image.network(
-                                              // 'https://picsum.photos/seed/277/600',
-                                              viewModel
-                                                  .userInfos!.profilePicture,
-                                              errorBuilder: (
-                                                BuildContext context,
-                                                Object error,
-                                                StackTrace? stackTrace,
-                                              ) {
-                                                if (kDebugMode) {
-                                                  debugPrint(
-                                                    viewModel.userInfos!
-                                                        .profilePicture,
-                                                  );
-                                                }
-                                                // fill with a gray circle
-                                                // and an icon in the middle 🚫
-                                                return CircleAvatar(
-                                                  backgroundColor:
-                                                      MyColor().myGrey,
-                                                  child: Icon(
-                                                    Icons.sync_problem,
-                                                    color: MyColor().myWhite,
-                                                    size: 50,
-                                                  ),
-                                                );
-                                              },
-                                              fit: BoxFit.cover,
-                                            ),
-                                    ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                          left: MediaQuery.sizeOf(context).width * 0.04,
+                        ),
+                        child: Stack(
+                          children: <Widget>[
+                            DecoratedBox(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: MyColor().myGrey,
+                                  width: 4,
+                                ),
+                                borderRadius: BorderRadius.circular(100),
+                              ),
+                              child: SizedBox(
+                                width: 120,
+                                height: 120,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(100),
+                                  child: Image.network(
+                                    viewModel.userInfos!.profilePicture,
+                                    fit: BoxFit.cover,
                                   ),
-                                  // Flexible(
-                                  Padding(
-                                    padding: EdgeInsets.only(
-                                      left: MediaQuery.sizeOf(context).width *
-                                          (isWeb ? 0.05 : 0.1),
-                                    ),
-                                    child: Align(
-                                      child: Text(
-                                        // 'USERNAME',
-                                        viewModel.userInfos!.formatedEmail,
-                                        style: const TextStyle(
-                                          fontFamily: 'Readex Pro',
-                                          fontSize: 25,
-                                          fontWeight: FontWeight.bold,
-                                          // overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  // ),
-                                  if (!isWeb)
-                                    Align(
-                                      alignment: const AlignmentDirectional(
-                                        -0.51,
-                                        0.98,
-                                      ),
-                                      // add border color
-
-                                      child: IconButton(
-                                        style: ButtonStyle(
-                                          shape: MaterialStateProperty.all<
-                                              RoundedRectangleBorder>(
-                                            RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(90),
-                                            ),
-                                          ),
-                                          backgroundColor:
-                                              MaterialStateProperty.all<Color>(
-                                            MyColor().myGreen,
-                                          ),
-                                        ),
-                                        onPressed: () {},
-                                        icon: Icon(
-                                          Icons.edit,
-                                          color: MyColor().myBlack,
-                                          size: 30,
-                                        ),
-                                      ),
-                                    ),
-                                ],
+                                ),
                               ),
                             ),
-                          ),
+                            Positioned(
+                              bottom: 0,
+                              right: 0,
+                              child: Container(
+                                width: 35,
+                                height: 35,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color: MyColor().myGreen,
+                                ),
+                                child: const Icon(
+                                  Icons.edit,
+                                  color: Colors.black,
+                                  size: 20,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                   Padding(
                     padding: EdgeInsets.only(
