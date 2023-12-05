@@ -31,10 +31,17 @@ class MarketPageState extends State<MarketPage> {
               MarketViewModel.factory(store, FirestoreService()),
           builder: (BuildContext context, MarketViewModel viewModel) {
             return Scaffold(
+              key: drawerScaffoldKey,
+              body: viewModel.items.isEmpty
+                  ? const Text('ça charge....')
+                  : ListView.builder(
+                      itemCount: viewModel.items.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Text(viewModel.items.elementAt(index).title);
+                      },
+                    ),
               appBar: const MyAppBar(),
               backgroundColor: MyColor().myWhite,
-              key: drawerScaffoldKey,
-              body: const Text('hello'),
             );
           },
         );
@@ -42,24 +49,3 @@ class MarketPageState extends State<MarketPage> {
     );
   }
 }
-
-/// Widget item scroll View SingleChildScrollView
-///
-/// @param [viewModel] is the list of items
-Widget buildItemScrollView(MarketViewModel viewModel) =>
-    const SingleChildScrollView(
-      child: Column(
-        children: <Widget>[
-          Text('hello'),
-        ],
-      ),
-    );
-
-// viewModel.items.isEmpty
-//   ? const Text('ça charge....')
-//   : ListView.builder(
-//       itemCount: viewModel.items.length,
-//       itemBuilder: (BuildContext context, int index) {
-//         return Text(viewModel.items.elementAt(index).title);
-//       },
-//     ),

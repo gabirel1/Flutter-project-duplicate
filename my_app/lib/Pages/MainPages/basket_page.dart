@@ -20,7 +20,6 @@ class BasketPageState extends State<BasketPage> {
           'Hello',
         ),
       ),
-      bottomNavigationBar: MyBottomNavigationBar(),
     );
   }
 }

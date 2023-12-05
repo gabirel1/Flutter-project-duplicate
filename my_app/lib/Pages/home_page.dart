@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:my_app/Pages/basket_page.dart';
-import 'package:my_app/Pages/market_page.dart';
-import 'package:my_app/Pages/profile_page.dart';
+import 'package:my_app/Pages/MainPages/basket_page.dart';
+import 'package:my_app/Pages/MainPages/market_page.dart';
+import 'package:my_app/Pages/MainPages/profile_page.dart';
 import 'package:my_app/Store/State/app_state.dart';
 import 'package:my_app/Store/ViewModels/home_view_model.dart';
 import 'package:my_app/Tools/color.dart';

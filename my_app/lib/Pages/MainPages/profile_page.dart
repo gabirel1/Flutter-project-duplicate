@@ -20,7 +20,6 @@ class ProfilePageState extends State<ProfilePage> {
           'Hello',
         ),
       ),
-      bottomNavigationBar: MyBottomNavigationBar(),
     );
   }
 }
