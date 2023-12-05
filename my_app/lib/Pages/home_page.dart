@@ -41,6 +41,7 @@ class HomePageState extends State<HomePage> {
         return Scaffold(
           body: PageView(
             controller: viewModel.pageController,
+            onPageChanged: viewModel.changePage,
             children: const <Widget>[
               MarketPage(),
               BasketPage(),
@@ -72,7 +73,7 @@ class HomePageState extends State<HomePage> {
       ],
       currentIndex: viewModel.page.index,
       selectedItemColor: MyColor().myBlue,
-      onTap: viewModel.changePage,
+      onTap: viewModel.bottomTap,
     );
   }
 }
