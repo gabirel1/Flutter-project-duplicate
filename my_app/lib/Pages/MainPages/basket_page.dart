@@ -13,20 +13,12 @@ class BasketPageState extends State<BasketPage> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        return false;
-      },
-      child: const Scaffold(
-        body: Scaffold(
-          backgroundColor: Colors.green,
-          body: Center(
-            child: Text(
-              'Hello',
-            ),
-          ),
+    return const Scaffold(
+      backgroundColor: Colors.green,
+      body: Center(
+        child: Text(
+          'Hello',
         ),
-        bottomNavigationBar: MyBottomNavigationBar(),
       ),
     );
   }

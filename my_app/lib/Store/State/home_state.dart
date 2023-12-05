@@ -1,14 +1,16 @@
 
 
-import 'package:my_app/Models/item.dart';
+enum Pages {
+  market, basket, profile
+}
 
 class HomeState {
 
-  HomeState({required this.items});
+  HomeState({required this.page});
 
   factory HomeState.initial() => HomeState(
-      items: <Item>[],
+    page: Pages.market,
   );
 
-  List<Item> items;
+  Pages page ;
 }

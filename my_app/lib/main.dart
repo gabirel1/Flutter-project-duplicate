@@ -9,8 +9,6 @@ import 'package:my_app/firebase_options.dart';
 import 'package:redux/redux.dart';
 import 'package:redux_logging/redux_logging.dart';
 
-// import 'Elements/bottom_navigation_bar.dart';
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -20,13 +18,17 @@ void main() async {
   final Store<AppState> store = Store<AppState>(
     appReducer,
     initialState: AppState.initial(),
-    middleware: <Middleware<AppState>>[LoggingMiddleware<AppState>.printer().call],
+    middleware: <Middleware<AppState>>[
+      LoggingMiddleware<AppState>.printer().call
+    ],
   );
 
-  runApp(StoreProvider<AppState>(
+  runApp(
+    StoreProvider<AppState>(
       store: store,
       child: const MyApp(),
-  ),);
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -34,18 +36,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        return false;
-      },
-      child: MaterialApp(
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: MyColor().myWhite),
-          useMaterial3: true,
-        ),
-        home: const HomePage(),
-        debugShowCheckedModeBanner: false,
+    return MaterialApp(
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: MyColor().myWhite),
+        useMaterial3: true,
       ),
+      home: const HomePage(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }

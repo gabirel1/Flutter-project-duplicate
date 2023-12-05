@@ -1,9 +1,9 @@
 
 
-import 'package:my_app/Models/item.dart';
+import 'package:my_app/Store/State/home_state.dart';
 
-class HomeItemsListAction {
-  HomeItemsListAction({required this.items});
+class HomeChangePageAction {
+  HomeChangePageAction({required this.page});
 
-  ItemList items;
+  final Pages page;
 }
