@@ -23,8 +23,6 @@ class AuthenticationPage extends StatefulWidget {
 class AuthenticationPageState extends State<AuthenticationPage>
     with TickerProviderStateMixin {
   late TabController _tabController;
-  late final GlobalKey<ScaffoldState> drawerScaffoldKey =
-      GlobalKey<ScaffoldState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _passwordConfirmController =
@@ -665,11 +663,7 @@ class AuthenticationPageState extends State<AuthenticationPage>
       converter: AuthenticationViewModel.factory,
       onInitialBuild: (AuthenticationViewModel viewModel) {},
       builder: (BuildContext context, AuthenticationViewModel viewModel) {
-        return WillPopScope(
-          onWillPop: () async {
-            return true;
-          },
-          child: Scaffold(
+        return Scaffold(
             appBar: AppBar(
               automaticallyImplyLeading: false,
               title: Text(_title),
@@ -691,11 +685,7 @@ class AuthenticationPageState extends State<AuthenticationPage>
                   Icons.arrow_back,
                 ),
                 onPressed: () async {
-                  await Navigator.of(context).pushReplacement(
-                    MaterialPageRoute<void>(
-                      builder: (BuildContext context) => const ProfilePage(),
-                    ),
-                  );
+                  Navigator.of(context).pop();
                 },
               ),
             ),
@@ -759,9 +749,7 @@ class AuthenticationPageState extends State<AuthenticationPage>
                 ],
               ),
             ),
-            bottomNavigationBar: const MyBottomNavigationBar(),
-          ),
-        );
+          );
       },
     );
   }

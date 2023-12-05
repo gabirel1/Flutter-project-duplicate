@@ -98,11 +98,7 @@ class ProfilePageState extends State<ProfilePage> {
         }
       },
       builder: (BuildContext context, ProfileViewModel viewModel) {
-        return WillPopScope(
-          onWillPop: () async {
-            return false;
-          },
-          child: Scaffold(
+        return Scaffold(
             key: drawerScaffoldKey,
             extendBodyBehindAppBar: true,
             appBar: AppBar(
@@ -300,8 +296,6 @@ class ProfilePageState extends State<ProfilePage> {
                       ],
               ),
             ),
-            bottomNavigationBar: const MyBottomNavigationBar(),
-          ),
         );
       },
     );
