@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:my_app/Models/user_infos.dart';
 import 'package:my_app/Repository/firestore_service.dart';
 import 'package:my_app/Store/Actions/profile_actions.dart';
@@ -9,6 +10,7 @@ class ProfileViewModel {
     required this.userInfos,
     required this.loadUserInfo,
     required this.uuid,
+    required this.signOut,
   });
 
   factory ProfileViewModel.factory(
@@ -32,6 +34,10 @@ class ProfileViewModel {
         // }
         store.dispatch(ProfileUserInfosAction(userInfos: response));
       },
+      signOut: () async {
+        await FirebaseAuth.instance.signOut();
+        store.dispatch(ProfileSetUserUUIDAction(uuid: ' '));
+      },
       userInfos: store.state.profile.userInfos!,
     );
   }
@@ -39,5 +45,6 @@ class ProfileViewModel {
   final UserInfos? userInfos;
   // final List<String> foo;
   final Function loadUserInfo;
+  final Function signOut;
   final String uuid;
 }

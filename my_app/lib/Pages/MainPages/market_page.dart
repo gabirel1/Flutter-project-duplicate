@@ -60,7 +60,7 @@ class MarketPageState extends State<MarketPage> {
         padding: const EdgeInsetsDirectional.fromSTEB(20, 5, 20, 5),
         child: GestureDetector(
           onTap: () {
-            // TODO : Navigator to the item Page
+            // to-do : Navigator to the item Page
             debugPrint('index : $index');
           },
           child: Container(

@@ -13,7 +13,9 @@ class MarketViewModel {
   });
 
   factory MarketViewModel.factory(
-      Store<AppState> store, FirestoreService firestore) {
+    Store<AppState> store,
+    FirestoreService firestore,
+  ) {
     return MarketViewModel(
       items: store.state.market.items,
       loadItems: () async {
