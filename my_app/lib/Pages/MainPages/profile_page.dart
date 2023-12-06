@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:my_app/Elements/bottom_navigation_bar.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
