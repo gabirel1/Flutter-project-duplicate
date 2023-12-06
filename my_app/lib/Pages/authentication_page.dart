@@ -5,8 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:my_app/Elements/bottom_navigation_bar.dart';
-import 'package:my_app/Pages/MainPages/profile_page.dart';
+// import 'package:my_app/Elements/bottom_navigation_bar.dart';
+// import 'package:my_app/Pages/MainPages/profile_page.dart';
 import 'package:my_app/Repository/firestore_service.dart';
 import 'package:my_app/Store/State/app_state.dart';
 import 'package:my_app/Store/ViewModels/authentication_view_model.dart';
@@ -67,49 +67,49 @@ class AuthenticationPageState extends State<AuthenticationPage>
     super.dispose();
   }
 
-  Future<(bool, String)> _handleGoogleLoginWeb() async {
-    final GoogleAuthProvider googleProvider = GoogleAuthProvider();
+  // Future<(bool, String)> _handleGoogleLoginWeb() async {
+  //   final GoogleAuthProvider googleProvider = GoogleAuthProvider();
 
-    debugPrint(googleProvider.toString());
-    final UserCredential userCredential =
-        await FirebaseAuth.instance.signInWithPopup(googleProvider);
-    if (await FirestoreService()
-            .checkUserAlreadyExistsV2(userCredential.user?.uid ?? '') ==
-        false) {
-      // remove the user from firebase
-      await userCredential.user?.delete();
-      return (false, '');
-    }
-    debugPrint(userCredential.toString());
-    return (true, userCredential.user?.uid ?? '');
-  }
+  //   debugPrint(googleProvider.toString());
+  //   final UserCredential userCredential =
+  //       await FirebaseAuth.instance.signInWithPopup(googleProvider);
+  //   if (await FirestoreService()
+  //           .checkUserAlreadyExistsV2(userCredential.user?.uid ?? '') ==
+  //       false) {
+  //     // remove the user from firebase
+  //     await userCredential.user?.delete();
+  //     return (false, '');
+  //   }
+  //   debugPrint(userCredential.toString());
+  //   return (true, userCredential.user?.uid ?? '');
+  // }
 
-  Future<(bool, String)> _handleGoogleLogin() async {
-    if (MyPlatform.isWeb()) {
-      return _handleGoogleLoginWeb();
-    }
-    final GoogleSignInAccount? user = await GoogleSignIn(
-      clientId:
-          '495774674643-o54oh2p0eqdf4q8l0sf6rsglppl87u88.apps.googleusercontent.com',
-    ).signIn();
-    final GoogleSignInAuthentication? auth = await user?.authentication;
-    final AuthCredential credential = GoogleAuthProvider.credential(
-      accessToken: auth?.accessToken,
-      idToken: auth?.idToken,
-    );
+  // Future<(bool, String)> _handleGoogleLogin() async {
+  //   if (MyPlatform.isWeb()) {
+  //     return _handleGoogleLoginWeb();
+  //   }
+  //   final GoogleSignInAccount? user = await GoogleSignIn(
+  //     clientId:
+  //         '495774674643-o54oh2p0eqdf4q8l0sf6rsglppl87u88.apps.googleusercontent.com',
+  //   ).signIn();
+  //   final GoogleSignInAuthentication? auth = await user?.authentication;
+  //   final AuthCredential credential = GoogleAuthProvider.credential(
+  //     accessToken: auth?.accessToken,
+  //     idToken: auth?.idToken,
+  //   );
 
-    final bool userExists =
-        await FirestoreService().checkUserAlreadyExists(user?.email ?? '');
-    debugPrint(userExists.toString());
-    if (userExists == false) {
-      return (false, '');
-    }
-    final UserCredential userCredential =
-        await FirebaseAuth.instance.signInWithCredential(credential);
-    debugPrint(userCredential.toString());
-    debugPrint(userCredential.user?.uid);
-    return (true, userCredential.user?.uid ?? '');
-  }
+  //   final bool userExists =
+  //       await FirestoreService().checkUserAlreadyExists(user?.email ?? '');
+  //   debugPrint(userExists.toString());
+  //   if (userExists == false) {
+  //     return (false, '');
+  //   }
+  //   final UserCredential userCredential =
+  //       await FirebaseAuth.instance.signInWithCredential(credential);
+  //   debugPrint(userCredential.toString());
+  //   debugPrint(userCredential.user?.uid);
+  //   return (true, userCredential.user?.uid ?? '');
+  // }
 
   Future<bool> _registerUserInFirebase(
     String email,

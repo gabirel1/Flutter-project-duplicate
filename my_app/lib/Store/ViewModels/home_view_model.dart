@@ -1,4 +1,4 @@
-import 'dart:developer';
+// import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:my_app/Store/Actions/home_actions.dart';
@@ -7,10 +7,17 @@ import 'package:my_app/Store/State/home_state.dart';
 import 'package:redux/redux.dart';
 
 class HomeViewModel {
+  HomeViewModel({
+    required this.page,
+    required this.changePage,
+    required this.bottomTap,
+    required this.pageController,
+  });
 
-  HomeViewModel({required this.page, required this.changePage, required this.bottomTap, required this.pageController});
-
-  factory HomeViewModel.factory(Store<AppState> store, PageController pageController) {
+  factory HomeViewModel.factory(
+    Store<AppState> store,
+    PageController pageController,
+  ) {
     return HomeViewModel(
       page: store.state.home.page,
       changePage: (int index) async {
