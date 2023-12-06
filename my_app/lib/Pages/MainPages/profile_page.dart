@@ -277,7 +277,7 @@ class ProfilePageState extends State<ProfilePage> {
                               ),
                             ),
                             onPressed: () async {
-                              await FirebaseAuth.instance.signOut();
+                              viewModel.signOut();
                               if (context.mounted) {
                                 await Navigator.push(
                                   context,

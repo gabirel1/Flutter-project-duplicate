@@ -10,6 +10,9 @@ AuthenticationState authenticationReducer(
     case AuthenticationSetUserUUIDAction:
       newState.uuid = action.uuid;
       return newState;
+    case AuthenticationSetErrorAction:
+      newState.error = action.error;
+      return newState;
     default:
       return newState;
   }

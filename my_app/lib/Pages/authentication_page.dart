@@ -307,6 +307,7 @@ class AuthenticationPageState extends State<AuthenticationPage>
               ElevatedButton(
                 onPressed: () async {
                   final (bool, String, String) res = await _handleLogin();
+                  // final (bool, String, String) res = await FirestoreService().handleGoogleLogin();
                   if (context.mounted) {
                     await showDialog(
                       context: context,
@@ -385,64 +386,72 @@ class AuthenticationPageState extends State<AuthenticationPage>
                 height: 20,
               ),
               GoogleSignInButton(
+                // onPressed: () async {
+                //   bool worked = false;
+                //   String uid = '';
+                //   // (worked, uid) = await _handleGoogleLogin();
+                //   (worked, uid) = await FirestoreService().handleGoogleLogin();
+                //   debugPrint('worked: $worked, uid: "$uid"');
+                //   if (worked == false && context.mounted) {
+                //     await showDialog(
+                //       context: context,
+                //       builder: (BuildContext context) {
+                //         Future<void>.delayed(const Duration(seconds: 2), () {
+                //           if (context.mounted) {
+                //             Navigator.of(context).pop(true);
+                //           }
+                //         });
+                //         return const AlertDialog(
+                //           alignment: Alignment.bottomCenter,
+                //           content: Text(
+                //             'You are not registered !\nPlease register first !',
+                //             textAlign: TextAlign.center,
+                //           ),
+                //         );
+                //       },
+                //     );
+                //     return;
+                //   }
+                //   if (worked == true && context.mounted) {
+                //     viewModel.login(uid);
+                //     await showDialog(
+                //       context: context,
+                //       builder: (BuildContext context) {
+                //         Future<void>.delayed(const Duration(seconds: 2), () {
+                //           if (context.mounted) {
+                //             Navigator.of(context).pop(true);
+                //           }
+                //         });
+                //         return const AlertDialog(
+                //           alignment: Alignment.bottomCenter,
+                //           content: Text(
+                //             'Successfully logged in !',
+                //             textAlign: TextAlign.center,
+                //           ),
+                //         );
+                //       },
+                //     );
+                //     // redirect to profile page
+                //     if (context.mounted) {
+                //       Navigator.pop(context);
+                //       // unawaited(
+                //       //   Navigator.of(context).pushReplacement(
+                //       //     MaterialPageRoute<void>(
+                //       //       builder: (BuildContext context) =>
+                //       //           const ProfilePage(),
+                //       //     ),
+                //       //   ),
+                //       // );
+                //     }
+                //   }
+                //   // store the uuid in the state
+                // },
                 onPressed: () async {
-                  bool worked = false;
-                  String uid = '';
-                  (worked, uid) = await _handleGoogleLogin();
-                  debugPrint('worked: $worked, uid: "$uid"');
-                  if (worked == false && context.mounted) {
-                    await showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        Future<void>.delayed(const Duration(seconds: 2), () {
-                          if (context.mounted) {
-                            Navigator.of(context).pop(true);
-                          }
-                        });
-                        return const AlertDialog(
-                          alignment: Alignment.bottomCenter,
-                          content: Text(
-                            'You are not registered !\nPlease register first !',
-                            textAlign: TextAlign.center,
-                          ),
-                        );
-                      },
-                    );
-                    return;
+                  final bool res = await viewModel.loginWithGoogle();
+                  debugPrint('resOnpressed: $res');
+                  if (res == true && context.mounted) {
+                    Navigator.pop(context);
                   }
-                  if (worked == true && context.mounted) {
-                    viewModel.login(uid);
-                    await showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        Future<void>.delayed(const Duration(seconds: 2), () {
-                          if (context.mounted) {
-                            Navigator.of(context).pop(true);
-                          }
-                        });
-                        return const AlertDialog(
-                          alignment: Alignment.bottomCenter,
-                          content: Text(
-                            'Successfully logged in !',
-                            textAlign: TextAlign.center,
-                          ),
-                        );
-                      },
-                    );
-                    // redirect to profile page
-                    if (context.mounted) {
-                      Navigator.pop(context);
-                      // unawaited(
-                      //   Navigator.of(context).pushReplacement(
-                      //     MaterialPageRoute<void>(
-                      //       builder: (BuildContext context) =>
-                      //           const ProfilePage(),
-                      //     ),
-                      //   ),
-                      // );
-                    }
-                  }
-                  // store the uuid in the state
                 },
                 myTitle: 'Sign in with google',
               ),
@@ -669,7 +678,34 @@ class AuthenticationPageState extends State<AuthenticationPage>
     return StoreConnector<AppState, AuthenticationViewModel>(
       converter: AuthenticationViewModel.factory,
       onInitialBuild: (AuthenticationViewModel viewModel) {},
-      // onDidChange: (AuthenticationViewModel? previousViewModel, AuthenticationViewModel viewModel) {},
+      onDidChange: (
+        AuthenticationViewModel? previousViewModel,
+        AuthenticationViewModel viewModel,
+      ) {
+        if (viewModel.error != null &&
+            viewModel.error != previousViewModel?.error) {
+          debugPrint('TJFRJKHE ${viewModel.error.toString()}');
+          unawaited(
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                Future<void>.delayed(const Duration(seconds: 2), () {
+                  if (context.mounted) {
+                    Navigator.of(context).pop(true);
+                  }
+                });
+                return AlertDialog(
+                  alignment: Alignment.bottomCenter,
+                  content: Text(
+                    viewModel.error?.message ?? 'An error occured.',
+                    textAlign: TextAlign.center,
+                  ),
+                );
+              },
+            ),
+          );
+        }
+      },
       builder: (BuildContext context, AuthenticationViewModel viewModel) {
         return Scaffold(
           appBar: AppBar(
