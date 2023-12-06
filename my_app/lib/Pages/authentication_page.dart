@@ -125,37 +125,37 @@ class AuthenticationPageState extends State<AuthenticationPage>
     );
   }
 
-  Future<(bool, String)> _handleLogin() async {
+  Future<(bool, String, String)> _handleLogin() async {
     final bool isValid = _checkFormValidityLogin();
-    if (isValid == false) return (false, 'invalid-form');
+    if (isValid == false) return (false, 'invalid-form', ' ');
 
     final String email = _emailController.text;
     final String password = _passwordController.text;
 
     if (await FirestoreService().checkUserAlreadyExists(email) == false) {
       debugPrint('No user found for that email.');
-      return (false, 'Wrong email/password.');
+      return (false, 'Wrong email/password.', ' ');
     }
     try {
       final UserCredential credential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
       debugPrint('credentials $credential.toString()');
-      return (true, 'Logged in successfully.');
+      return (true, 'Logged in successfully.', credential.user?.uid ?? ' ');
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         debugPrint('No user found for that email.');
-        return (false, 'Wrong email/password.');
+        return (false, 'Wrong email/password.', ' ');
       } else if (e.code == 'wrong-password') {
         debugPrint('Wrong password provided for that user.');
-        return (false, 'Wrong email/password.');
+        return (false, 'Wrong email/password.', ' ');
       } else if (e.code == 'INVALID_LOGIN_CREDENTIALS') {
-        return (false, 'Wrong email/password.');
+        return (false, 'Wrong email/password.', ' ');
       }
       debugPrint(e.code);
-      return (false, e.code);
+      return (false, e.code, ' ');
     } catch (e) {
       debugPrint(e.toString());
-      return (false, 'An error occured, please try again later.');
+      return (false, 'An error occured, please try again later.', ' ');
     }
   }
 
@@ -280,7 +280,9 @@ class AuthenticationPageState extends State<AuthenticationPage>
     return true;
   }
 
-  Widget loginSide() {
+  Widget loginSide(
+    AuthenticationViewModel viewModel,
+  ) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
@@ -304,7 +306,7 @@ class AuthenticationPageState extends State<AuthenticationPage>
               ),
               ElevatedButton(
                 onPressed: () async {
-                  final (bool, String) res = await _handleLogin();
+                  final (bool, String, String) res = await _handleLogin();
                   if (context.mounted) {
                     await showDialog(
                       context: context,
@@ -327,14 +329,17 @@ class AuthenticationPageState extends State<AuthenticationPage>
                     );
                     // redirect to profile page
                     if (res.$1 == true && context.mounted) {
-                      unawaited(
-                        Navigator.of(context).pushReplacement(
-                          MaterialPageRoute<void>(
-                            builder: (BuildContext context) =>
-                                const ProfilePage(),
-                          ),
-                        ),
-                      );
+                      debugPrint('login123: ${res.$3}');
+                      viewModel.login(res.$3);
+                      Navigator.pop(context);
+                      // unawaited(
+                      //   Navigator.of(context).pushReplacement(
+                      //     MaterialPageRoute<void>(
+                      //       builder: (BuildContext context) =>
+                      //           const ProfilePage(),
+                      //     ),
+                      //   ),
+                      // );
                     }
                   }
                 },
@@ -406,6 +411,7 @@ class AuthenticationPageState extends State<AuthenticationPage>
                     return;
                   }
                   if (worked == true && context.mounted) {
+                    viewModel.login(uid);
                     await showDialog(
                       context: context,
                       builder: (BuildContext context) {
@@ -425,14 +431,15 @@ class AuthenticationPageState extends State<AuthenticationPage>
                     );
                     // redirect to profile page
                     if (context.mounted) {
-                      unawaited(
-                        Navigator.of(context).pushReplacement(
-                          MaterialPageRoute<void>(
-                            builder: (BuildContext context) =>
-                                const ProfilePage(),
-                          ),
-                        ),
-                      );
+                      Navigator.pop(context);
+                      // unawaited(
+                      //   Navigator.of(context).pushReplacement(
+                      //     MaterialPageRoute<void>(
+                      //       builder: (BuildContext context) =>
+                      //           const ProfilePage(),
+                      //     ),
+                      //   ),
+                      // );
                     }
                   }
                   // store the uuid in the state
@@ -662,94 +669,95 @@ class AuthenticationPageState extends State<AuthenticationPage>
     return StoreConnector<AppState, AuthenticationViewModel>(
       converter: AuthenticationViewModel.factory,
       onInitialBuild: (AuthenticationViewModel viewModel) {},
+      // onDidChange: (AuthenticationViewModel? previousViewModel, AuthenticationViewModel viewModel) {},
       builder: (BuildContext context, AuthenticationViewModel viewModel) {
         return Scaffold(
-            appBar: AppBar(
-              automaticallyImplyLeading: false,
-              title: Text(_title),
-              flexibleSpace: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: <Color>[
-                      MyColor().myGreen,
-                      MyColor().myBlue,
-                    ],
-                    stops: const <double>[0, 1],
-                    begin: AlignmentDirectional.centerEnd,
-                    end: AlignmentDirectional.bottomStart,
-                  ),
+          appBar: AppBar(
+            automaticallyImplyLeading: false,
+            title: Text(_title),
+            flexibleSpace: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: <Color>[
+                    MyColor().myGreen,
+                    MyColor().myBlue,
+                  ],
+                  stops: const <double>[0, 1],
+                  begin: AlignmentDirectional.centerEnd,
+                  end: AlignmentDirectional.bottomStart,
                 ),
-              ),
-              leading: IconButton(
-                icon: const Icon(
-                  Icons.arrow_back,
-                ),
-                onPressed: () async {
-                  Navigator.of(context).pop();
-                },
               ),
             ),
-            body: Scaffold(
-              body: Column(
-                children: <Widget>[
-                  Align(
-                    child: TabBar(
-                      labelColor: MyColor().myGreen,
-                      unselectedLabelColor: MyColor().myBlack,
-                      labelStyle: const TextStyle(
-                        fontFamily: 'Urbanist',
-                        fontWeight: FontWeight.w500,
+            leading: IconButton(
+              icon: const Icon(
+                Icons.arrow_back,
+              ),
+              onPressed: () async {
+                Navigator.of(context).pop();
+              },
+            ),
+          ),
+          body: Scaffold(
+            body: Column(
+              children: <Widget>[
+                Align(
+                  child: TabBar(
+                    labelColor: MyColor().myGreen,
+                    unselectedLabelColor: MyColor().myBlack,
+                    labelStyle: const TextStyle(
+                      fontFamily: 'Urbanist',
+                      fontWeight: FontWeight.w500,
+                    ),
+                    unselectedLabelStyle: const TextStyle(),
+                    indicatorColor: MyColor().myGreen,
+                    indicatorWeight: 4,
+                    indicatorSize: TabBarIndicatorSize.tab,
+                    tabs: const <Widget>[
+                      Tab(
+                        text: 'Log In',
                       ),
-                      unselectedLabelStyle: const TextStyle(),
-                      indicatorColor: MyColor().myGreen,
-                      indicatorWeight: 4,
-                      indicatorSize: TabBarIndicatorSize.tab,
-                      tabs: const <Widget>[
-                        Tab(
-                          text: 'Log In',
-                        ),
-                        Tab(
-                          text: 'Register',
-                        ),
-                      ],
-                      controller: _tabController,
-                    ),
+                      Tab(
+                        text: 'Register',
+                      ),
+                    ],
+                    controller: _tabController,
                   ),
-                  Expanded(
-                    child: TabBarView(
-                      controller: _tabController,
-                      children: <Widget>[
-                        Builder(
-                          builder: (BuildContext context) {
-                            return CustomScrollView(
-                              slivers: <Widget>[
-                                SliverFillRemaining(
-                                  hasScrollBody: false,
-                                  child: loginSide(),
-                                ),
-                              ],
-                            );
-                          },
-                        ),
-                        Builder(
-                          builder: (BuildContext context) {
-                            return CustomScrollView(
-                              slivers: <Widget>[
-                                SliverFillRemaining(
-                                  hasScrollBody: false,
-                                  child: registerSide(),
-                                ),
-                              ],
-                            );
-                          },
-                        ),
-                      ],
-                    ),
+                ),
+                Expanded(
+                  child: TabBarView(
+                    controller: _tabController,
+                    children: <Widget>[
+                      Builder(
+                        builder: (BuildContext context) {
+                          return CustomScrollView(
+                            slivers: <Widget>[
+                              SliverFillRemaining(
+                                hasScrollBody: false,
+                                child: loginSide(viewModel),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                      Builder(
+                        builder: (BuildContext context) {
+                          return CustomScrollView(
+                            slivers: <Widget>[
+                              SliverFillRemaining(
+                                hasScrollBody: false,
+                                child: registerSide(),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          );
+          ),
+        );
       },
     );
   }

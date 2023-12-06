@@ -1,5 +1,3 @@
-
-
 import 'package:my_app/Models/item.dart';
 
 class MarketItemsListAction {
@@ -7,3 +5,9 @@ class MarketItemsListAction {
 
   ItemList items;
 }
+
+// class MarketAddItemAction {
+//   MarketAddItemAction({required this.item});
+
+//   Item item;
+// }

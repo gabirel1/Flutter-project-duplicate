@@ -96,6 +96,13 @@ class ProfilePageState extends State<ProfilePage> {
           debugPrint('isSeller: $isSeller');
         }
       },
+      onDidChange:
+          (ProfileViewModel? previousViewModel, ProfileViewModel viewModel) {
+        if (previousViewModel!.uuid != viewModel.uuid) {
+          viewModel.loadUserInfo();
+          isSeller = viewModel.userInfos!.isSeller;
+        }
+      },
       builder: (BuildContext context, ProfileViewModel viewModel) {
         return Scaffold(
           key: drawerScaffoldKey,
@@ -272,7 +279,7 @@ class ProfilePageState extends State<ProfilePage> {
                             onPressed: () async {
                               await FirebaseAuth.instance.signOut();
                               if (context.mounted) {
-                                await Navigator.pushReplacement(
+                                await Navigator.push(
                                   context,
                                   MaterialPageRoute<void>(
                                     builder: (BuildContext context) {
