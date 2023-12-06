@@ -19,7 +19,7 @@ void main() async {
     appReducer,
     initialState: AppState.initial(),
     middleware: <Middleware<AppState>>[
-      LoggingMiddleware<AppState>.printer().call
+      LoggingMiddleware<AppState>.printer().call,
     ],
   );
 

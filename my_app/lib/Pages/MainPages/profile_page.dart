@@ -1,8 +1,4 @@
-import 'dart:async';
 
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:my_app/Elements/bottom_navigation_bar.dart';
 import 'package:my_app/Pages/authentication_page.dart';
