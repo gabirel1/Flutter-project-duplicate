@@ -16,6 +16,7 @@ class ProfileViewModel {
     FirestoreService firestore,
   ) {
     final String userUUID = firestore.getCurrentUserUUID();
+
     return ProfileViewModel(
       uuid: (store.state.profile.uuid == ' ')
           ? userUUID
@@ -26,6 +27,9 @@ class ProfileViewModel {
               ? userUUID
               : store.state.profile.uuid,
         );
+        // if (response.isSeller) {
+        //   final List<String> foo = await firestore.getFoo();
+        // }
         store.dispatch(ProfileUserInfosAction(userInfos: response));
       },
       userInfos: store.state.profile.userInfos!,
@@ -33,6 +37,7 @@ class ProfileViewModel {
   }
 
   final UserInfos? userInfos;
+  // final List<String> foo;
   final Function loadUserInfo;
   final String uuid;
 }
