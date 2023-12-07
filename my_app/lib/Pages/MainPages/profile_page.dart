@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -94,6 +94,13 @@ class ProfilePageState extends State<ProfilePage> {
         isSeller = viewModel.userInfos!.isSeller;
         if (kDebugMode) {
           debugPrint('isSeller: $isSeller');
+        }
+      },
+      onDidChange:
+          (ProfileViewModel? previousViewModel, ProfileViewModel viewModel) {
+        if (previousViewModel!.uuid != viewModel.uuid) {
+          viewModel.loadUserInfo();
+          isSeller = viewModel.userInfos!.isSeller;
         }
       },
       builder: (BuildContext context, ProfileViewModel viewModel) {
@@ -270,9 +277,9 @@ class ProfilePageState extends State<ProfilePage> {
                               ),
                             ),
                             onPressed: () async {
-                              await FirebaseAuth.instance.signOut();
+                              viewModel.signOut();
                               if (context.mounted) {
-                                await Navigator.pushReplacement(
+                                await Navigator.push(
                                   context,
                                   MaterialPageRoute<void>(
                                     builder: (BuildContext context) {
