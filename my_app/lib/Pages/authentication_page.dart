@@ -4,14 +4,10 @@ import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-// import 'package:my_app/Elements/bottom_navigation_bar.dart';
-// import 'package:my_app/Pages/MainPages/profile_page.dart';
 import 'package:my_app/Repository/firestore_service.dart';
 import 'package:my_app/Store/State/app_state.dart';
 import 'package:my_app/Store/ViewModels/authentication_view_model.dart';
 import 'package:my_app/Tools/color.dart';
-import 'package:my_app/Tools/utils.dart';
 
 class AuthenticationPage extends StatefulWidget {
   const AuthenticationPage({super.key});
@@ -66,50 +62,6 @@ class AuthenticationPageState extends State<AuthenticationPage>
 
     super.dispose();
   }
-
-  // Future<(bool, String)> _handleGoogleLoginWeb() async {
-  //   final GoogleAuthProvider googleProvider = GoogleAuthProvider();
-
-  //   debugPrint(googleProvider.toString());
-  //   final UserCredential userCredential =
-  //       await FirebaseAuth.instance.signInWithPopup(googleProvider);
-  //   if (await FirestoreService()
-  //           .checkUserAlreadyExistsV2(userCredential.user?.uid ?? '') ==
-  //       false) {
-  //     // remove the user from firebase
-  //     await userCredential.user?.delete();
-  //     return (false, '');
-  //   }
-  //   debugPrint(userCredential.toString());
-  //   return (true, userCredential.user?.uid ?? '');
-  // }
-
-  // Future<(bool, String)> _handleGoogleLogin() async {
-  //   if (MyPlatform.isWeb()) {
-  //     return _handleGoogleLoginWeb();
-  //   }
-  //   final GoogleSignInAccount? user = await GoogleSignIn(
-  //     clientId:
-  //         '495774674643-o54oh2p0eqdf4q8l0sf6rsglppl87u88.apps.googleusercontent.com',
-  //   ).signIn();
-  //   final GoogleSignInAuthentication? auth = await user?.authentication;
-  //   final AuthCredential credential = GoogleAuthProvider.credential(
-  //     accessToken: auth?.accessToken,
-  //     idToken: auth?.idToken,
-  //   );
-
-  //   final bool userExists =
-  //       await FirestoreService().checkUserAlreadyExists(user?.email ?? '');
-  //   debugPrint(userExists.toString());
-  //   if (userExists == false) {
-  //     return (false, '');
-  //   }
-  //   final UserCredential userCredential =
-  //       await FirebaseAuth.instance.signInWithCredential(credential);
-  //   debugPrint(userCredential.toString());
-  //   debugPrint(userCredential.user?.uid);
-  //   return (true, userCredential.user?.uid ?? '');
-  // }
 
   Future<bool> _registerUserInFirebase(
     String email,
@@ -195,64 +147,6 @@ class AuthenticationPageState extends State<AuthenticationPage>
     }
   }
 
-  Future<bool> _handleGoogleRegisterWeb() async {
-    final GoogleAuthProvider googleProvider = GoogleAuthProvider();
-
-    debugPrint(googleProvider.toString());
-    final UserCredential userCredential =
-        await FirebaseAuth.instance.signInWithPopup(googleProvider);
-
-    if (await FirestoreService()
-                .checkUserAlreadyExistsV2(userCredential.user?.uid ?? '') ==
-            true ||
-        userCredential.user == null ||
-        userCredential.user?.email == null) {
-      return false;
-    }
-    debugPrint(userCredential.toString());
-    final bool res = await _registerUserInFirebase(
-      userCredential.user!.email ?? '',
-      userCredential.user!.uid,
-      userCredential.user!.photoURL ?? '',
-      _wantToBeSeller,
-    );
-    return res;
-  }
-
-  Future<bool> _handleGoogleRegister() async {
-    if (MyPlatform.isWeb()) {
-      return _handleGoogleRegisterWeb();
-    }
-    final GoogleSignInAccount? user = await GoogleSignIn(
-      clientId:
-          '495774674643-o54oh2p0eqdf4q8l0sf6rsglppl87u88.apps.googleusercontent.com',
-    ).signIn();
-    final GoogleSignInAuthentication? auth = await user?.authentication;
-    debugPrint(auth?.accessToken);
-    final AuthCredential credential = GoogleAuthProvider.credential(
-      accessToken: auth?.accessToken,
-      idToken: auth?.idToken,
-    );
-    // check if user already exists in firebas edatabase
-    // if not create it
-    final bool userExists =
-        await FirestoreService().checkUserAlreadyExists(user?.email ?? '');
-    if (userExists == true) {
-      return false;
-    }
-    final UserCredential userCredential =
-        await FirebaseAuth.instance.signInWithCredential(credential);
-    debugPrint(userCredential.toString());
-    debugPrint(userCredential.user?.uid);
-    final bool res = await _registerUserInFirebase(
-      userCredential.user!.email ?? '',
-      userCredential.user!.uid,
-      userCredential.user!.photoURL ?? '',
-      _wantToBeSeller,
-    );
-    return res;
-  }
-
   bool _checkFormValidityLogin() {
     final String email = _emailController.text;
     final String password = _passwordController.text;
@@ -307,7 +201,6 @@ class AuthenticationPageState extends State<AuthenticationPage>
               ElevatedButton(
                 onPressed: () async {
                   final (bool, String, String) res = await _handleLogin();
-                  // final (bool, String, String) res = await FirestoreService().handleGoogleLogin();
                   if (context.mounted) {
                     await showDialog(
                       context: context,
@@ -333,14 +226,6 @@ class AuthenticationPageState extends State<AuthenticationPage>
                       debugPrint('login123: ${res.$3}');
                       viewModel.login(res.$3);
                       Navigator.pop(context);
-                      // unawaited(
-                      //   Navigator.of(context).pushReplacement(
-                      //     MaterialPageRoute<void>(
-                      //       builder: (BuildContext context) =>
-                      //           const ProfilePage(),
-                      //     ),
-                      //   ),
-                      // );
                     }
                   }
                 },
@@ -375,7 +260,6 @@ class AuthenticationPageState extends State<AuthenticationPage>
                       top: 10,
                       bottom: 10,
                     ),
-                    // make the width of the line take the remaining space
                     width: 99,
                     height: 1,
                     color: Colors.black,
@@ -386,66 +270,6 @@ class AuthenticationPageState extends State<AuthenticationPage>
                 height: 20,
               ),
               GoogleSignInButton(
-                // onPressed: () async {
-                //   bool worked = false;
-                //   String uid = '';
-                //   // (worked, uid) = await _handleGoogleLogin();
-                //   (worked, uid) = await FirestoreService().handleGoogleLogin();
-                //   debugPrint('worked: $worked, uid: "$uid"');
-                //   if (worked == false && context.mounted) {
-                //     await showDialog(
-                //       context: context,
-                //       builder: (BuildContext context) {
-                //         Future<void>.delayed(const Duration(seconds: 2), () {
-                //           if (context.mounted) {
-                //             Navigator.of(context).pop(true);
-                //           }
-                //         });
-                //         return const AlertDialog(
-                //           alignment: Alignment.bottomCenter,
-                //           content: Text(
-                //             'You are not registered !\nPlease register first !',
-                //             textAlign: TextAlign.center,
-                //           ),
-                //         );
-                //       },
-                //     );
-                //     return;
-                //   }
-                //   if (worked == true && context.mounted) {
-                //     viewModel.login(uid);
-                //     await showDialog(
-                //       context: context,
-                //       builder: (BuildContext context) {
-                //         Future<void>.delayed(const Duration(seconds: 2), () {
-                //           if (context.mounted) {
-                //             Navigator.of(context).pop(true);
-                //           }
-                //         });
-                //         return const AlertDialog(
-                //           alignment: Alignment.bottomCenter,
-                //           content: Text(
-                //             'Successfully logged in !',
-                //             textAlign: TextAlign.center,
-                //           ),
-                //         );
-                //       },
-                //     );
-                //     // redirect to profile page
-                //     if (context.mounted) {
-                //       Navigator.pop(context);
-                //       // unawaited(
-                //       //   Navigator.of(context).pushReplacement(
-                //       //     MaterialPageRoute<void>(
-                //       //       builder: (BuildContext context) =>
-                //       //           const ProfilePage(),
-                //       //     ),
-                //       //   ),
-                //       // );
-                //     }
-                //   }
-                //   // store the uuid in the state
-                // },
                 onPressed: () async {
                   final bool res = await viewModel.loginWithGoogle();
                   debugPrint('resOnpressed: $res');
@@ -462,7 +286,7 @@ class AuthenticationPageState extends State<AuthenticationPage>
     );
   }
 
-  Widget registerSide() {
+  Widget registerSide(AuthenticationViewModel viewModel) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
@@ -597,28 +421,7 @@ class AuthenticationPageState extends State<AuthenticationPage>
               GoogleSignInButton(
                 myTitle: 'Register with Google',
                 onPressed: () async {
-                  final bool res = await _handleGoogleRegister();
-                  if (context.mounted) {
-                    await showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        Future<void>.delayed(const Duration(seconds: 2), () {
-                          if (context.mounted) {
-                            Navigator.of(context).pop(true);
-                          }
-                        });
-                        return AlertDialog(
-                          alignment: Alignment.bottomCenter,
-                          content: Text(
-                            (res == false)
-                                ? 'You are already registered !\nPlease log in !'
-                                : 'Successfully registered !\nPlease log in !',
-                            textAlign: TextAlign.center,
-                          ),
-                        );
-                      },
-                    );
-                  }
+                  await viewModel.registerWithGoogle();
                 },
               ),
             ],
@@ -684,7 +487,6 @@ class AuthenticationPageState extends State<AuthenticationPage>
       ) {
         if (viewModel.error != null &&
             viewModel.error != previousViewModel?.error) {
-          debugPrint('TJFRJKHE ${viewModel.error.toString()}');
           unawaited(
             showDialog(
               context: context,
@@ -698,6 +500,29 @@ class AuthenticationPageState extends State<AuthenticationPage>
                   alignment: Alignment.bottomCenter,
                   content: Text(
                     viewModel.error?.message ?? 'An error occured.',
+                    textAlign: TextAlign.center,
+                  ),
+                );
+              },
+            ),
+          );
+        }
+        if (viewModel.dialogNotif != null &&
+            viewModel.dialogNotif != previousViewModel?.dialogNotif &&
+            viewModel.dialogNotif?.message.isNotEmpty == true) {
+          unawaited(
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                Future<void>.delayed(const Duration(seconds: 2), () {
+                  if (context.mounted) {
+                    Navigator.of(context).pop(true);
+                  }
+                });
+                return AlertDialog(
+                  alignment: Alignment.bottomCenter,
+                  content: Text(
+                    viewModel.dialogNotif!.message,
                     textAlign: TextAlign.center,
                   ),
                 );
@@ -781,7 +606,7 @@ class AuthenticationPageState extends State<AuthenticationPage>
                             slivers: <Widget>[
                               SliverFillRemaining(
                                 hasScrollBody: false,
-                                child: registerSide(),
+                                child: registerSide(viewModel),
                               ),
                             ],
                           );

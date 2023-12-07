@@ -184,4 +184,75 @@ class FirestoreService {
     debugPrint(userCredential.user?.uid);
     return (true, userCredential.user?.uid ?? '');
   }
+
+  Future<bool> _registerUserInFirebase(
+    String email,
+    String uuid,
+    String profilePicture,
+    bool isSeller,
+  ) {
+    return addUser(
+      uuid,
+      email,
+      profilePicture,
+      isSeller: isSeller,
+    );
+  }
+
+  Future<bool> handleGoogleRegisterWeb({bool wantToBeSeller = false}) async {
+    final GoogleAuthProvider googleProvider = GoogleAuthProvider();
+
+    debugPrint(googleProvider.toString());
+    final UserCredential userCredential =
+        await FirebaseAuth.instance.signInWithPopup(googleProvider);
+
+    if (await FirestoreService()
+                .checkUserAlreadyExistsV2(userCredential.user?.uid ?? '') ==
+            true ||
+        userCredential.user == null ||
+        userCredential.user?.email == null) {
+      return false;
+    }
+    debugPrint(userCredential.toString());
+    final bool res = await _registerUserInFirebase(
+      userCredential.user!.email ?? '',
+      userCredential.user!.uid,
+      userCredential.user!.photoURL ?? '',
+      wantToBeSeller,
+    );
+    return res;
+  }
+
+  Future<bool> handleGoogleRegister({bool wantToBeSeller = false}) async {
+    if (MyPlatform.isWeb()) {
+      return handleGoogleRegisterWeb();
+    }
+    final GoogleSignInAccount? user = await GoogleSignIn(
+      clientId:
+          '495774674643-o54oh2p0eqdf4q8l0sf6rsglppl87u88.apps.googleusercontent.com',
+    ).signIn();
+    final GoogleSignInAuthentication? auth = await user?.authentication;
+    debugPrint(auth?.accessToken);
+    final AuthCredential credential = GoogleAuthProvider.credential(
+      accessToken: auth?.accessToken,
+      idToken: auth?.idToken,
+    );
+    // check if user already exists in firebas edatabase if not create it
+    final bool userExists =
+        await FirestoreService().checkUserAlreadyExists(user?.email ?? '');
+    if (userExists == true) {
+      return false;
+    }
+    final UserCredential userCredential =
+        await FirebaseAuth.instance.signInWithCredential(credential);
+    debugPrint(userCredential.toString());
+    debugPrint(userCredential.user?.uid);
+    final bool res = await _registerUserInFirebase(
+      userCredential.user!.email ?? '',
+      userCredential.user!.uid,
+      userCredential.user!.photoURL ?? '',
+      wantToBeSeller,
+    );
+    return res;
+  }
 }
