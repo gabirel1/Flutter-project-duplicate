@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:my_app/Elements/app_bar.dart';
 import 'package:my_app/Models/item.dart';
+import 'package:my_app/Pages/article_page.dart';
 import 'package:my_app/Repository/firestore_service.dart';
 import 'package:my_app/Store/State/app_state.dart';
 import 'package:my_app/Store/ViewModels/market_view_model.dart';
@@ -59,8 +60,16 @@ class MarketPageState extends State<MarketPage> {
   Widget buildItem(Item item, int index) => Padding(
         padding: const EdgeInsetsDirectional.fromSTEB(20, 5, 20, 5),
         child: GestureDetector(
-          onTap: () {
-            // TODO : Navigator to the item Page
+          onTap: () async {
+            await Navigator.of(context).push(
+              // ignore: always_specify_types
+              MaterialPageRoute(
+                builder: (BuildContext context) => ArticlePage(
+                  item: item,
+                  index: index,
+                ),
+              ),
+            );
             debugPrint('index : $index');
           },
           child: Container(
