@@ -188,10 +188,39 @@ class ProfilePageState extends State<ProfilePage> {
                                     height: 120,
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(100),
-                                      child: Image.network(
-                                        viewModel.userInfos!.profilePicture,
-                                        fit: BoxFit.cover,
-                                      ),
+                                      child: (viewModel.userInfos!
+                                                      .profilePicture !=
+                                                  ' ' &&
+                                              viewModel.userInfos!
+                                                      .profilePicture !=
+                                                  '')
+                                          ? Image.network(
+                                              viewModel
+                                                  .userInfos!.profilePicture,
+                                              fit: BoxFit.cover,
+                                              errorBuilder: (
+                                                BuildContext context,
+                                                Object exception,
+                                                StackTrace? stackTrace,
+                                              ) {
+                                                return const CircleAvatar(
+                                                  backgroundColor: Colors.white,
+                                                  child: Icon(
+                                                    Icons.person,
+                                                    color: Colors.black,
+                                                    size: 50,
+                                                  ),
+                                                );
+                                              },
+                                            )
+                                          : const CircleAvatar(
+                                              backgroundColor: Colors.white,
+                                              child: Icon(
+                                                Icons.person,
+                                                color: Colors.black,
+                                                size: 50,
+                                              ),
+                                            ),
                                     ),
                                   ),
                                 ),

@@ -40,11 +40,6 @@ class AuthenticationPageState extends State<AuthenticationPage>
   }
 
   void _onTabChanging() {
-    // if (_tabController.indexIsChanging) {
-    //   setState(() {
-    //     _title = _tabTitles[_tabController.index];
-    //   });
-    // }
     setState(() {
       _title = _tabTitles[_tabController.index];
       _emailController.clear();
@@ -61,117 +56,6 @@ class AuthenticationPageState extends State<AuthenticationPage>
     _passwordConfirmController.dispose();
 
     super.dispose();
-  }
-
-  Future<bool> _registerUserInFirebase(
-    String email,
-    String uuid,
-    String profilePicture,
-    bool isSeller,
-  ) {
-    return FirestoreService().addUser(
-      uuid,
-      email,
-      profilePicture,
-      isSeller: isSeller,
-    );
-  }
-
-  Future<(bool, String, String)> _handleLogin() async {
-    final bool isValid = _checkFormValidityLogin();
-    if (isValid == false) return (false, 'invalid-form', ' ');
-
-    final String email = _emailController.text;
-    final String password = _passwordController.text;
-
-    if (await FirestoreService().checkUserAlreadyExists(email) == false) {
-      debugPrint('No user found for that email.');
-      return (false, 'Wrong email/password.', ' ');
-    }
-    try {
-      final UserCredential credential = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: email, password: password);
-      debugPrint('credentials $credential.toString()');
-      return (true, 'Logged in successfully.', credential.user?.uid ?? ' ');
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        debugPrint('No user found for that email.');
-        return (false, 'Wrong email/password.', ' ');
-      } else if (e.code == 'wrong-password') {
-        debugPrint('Wrong password provided for that user.');
-        return (false, 'Wrong email/password.', ' ');
-      } else if (e.code == 'INVALID_LOGIN_CREDENTIALS') {
-        return (false, 'Wrong email/password.', ' ');
-      }
-      debugPrint(e.code);
-      return (false, e.code, ' ');
-    } catch (e) {
-      debugPrint(e.toString());
-      return (false, 'An error occured, please try again later.', ' ');
-    }
-  }
-
-  Future<(bool, String)> _handleRegister() async {
-    final bool isValid = _checkFormValidity();
-    if (isValid == false) return (false, 'invalid-form');
-
-    final String email = _emailController.text;
-    final String password = _passwordController.text;
-
-    try {
-      final UserCredential credential =
-          await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      debugPrint(credential.toString());
-      final bool res = await _registerUserInFirebase(
-        email,
-        credential.user!.uid,
-        '',
-        _wantToBeSeller,
-      );
-      return (res, 'Registered successfully.');
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        debugPrint('The password provided is too weak.');
-        return (false, 'The password provided is too weak.');
-      } else if (e.code == 'email-already-in-use') {
-        debugPrint('The account already exists for that email.');
-        return (false, 'The account already exists for that email.');
-      }
-      return (false, e.code);
-    } catch (e) {
-      debugPrint(e.toString());
-      return (false, 'An error occured, please try again later.');
-    }
-  }
-
-  bool _checkFormValidityLogin() {
-    final String email = _emailController.text;
-    final String password = _passwordController.text;
-
-    if (email.isEmpty ||
-        password.isEmpty ||
-        EmailValidator.validate(email) == false) {
-      return false;
-    }
-    return true;
-  }
-
-  bool _checkFormValidity() {
-    final String email = _emailController.text;
-    final String password = _passwordController.text;
-    final String passwordConfirm = _passwordConfirmController.text;
-
-    if (email.isEmpty ||
-        password.isEmpty ||
-        passwordConfirm.isEmpty ||
-        EmailValidator.validate(email) == false ||
-        password != passwordConfirm) {
-      return false;
-    }
-    return true;
   }
 
   Widget loginSide(
@@ -200,33 +84,12 @@ class AuthenticationPageState extends State<AuthenticationPage>
               ),
               ElevatedButton(
                 onPressed: () async {
-                  final (bool, String, String) res = await _handleLogin();
-                  if (context.mounted) {
-                    await showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        Future<void>.delayed(const Duration(seconds: 2), () {
-                          if (context.mounted) {
-                            Navigator.of(context).pop(true);
-                          }
-                        });
-                        return AlertDialog(
-                          alignment: Alignment.bottomCenter,
-                          content: Text(
-                            res.$1 == true
-                                ? 'Successfully logged in !'
-                                : res.$2,
-                            textAlign: TextAlign.center,
-                          ),
-                        );
-                      },
-                    );
-                    // redirect to profile page
-                    if (res.$1 == true && context.mounted) {
-                      debugPrint('login123: ${res.$3}');
-                      viewModel.login(res.$3);
-                      Navigator.pop(context);
-                    }
+                  final bool res = await viewModel.handleLogIn(
+                    _emailController.text,
+                    _passwordController.text,
+                  );
+                  if (res == true && context.mounted) {
+                    Navigator.pop(context);
                   }
                 },
                 child: const Text(
@@ -352,30 +215,12 @@ class AuthenticationPageState extends State<AuthenticationPage>
               ),
               ElevatedButton(
                 onPressed: () async {
-                  final (bool, String) res = await _handleRegister();
-                  if (context.mounted) {
-                    await showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        Future<void>.delayed(const Duration(seconds: 2), () {
-                          if (context.mounted) {
-                            Navigator.of(context).pop(true);
-                          }
-                        });
-                        return AlertDialog(
-                          alignment: Alignment.bottomCenter,
-                          // Retrieve the text that the user has entered by using the
-                          // TextEditingController.
-                          content: Text(
-                            res.$1 == true
-                                ? 'Successfully registered !\nPlease log in !'
-                                : res.$2,
-                            textAlign: TextAlign.center,
-                          ),
-                        );
-                      },
-                    );
-                  }
+                  await viewModel.handleRegister(
+                    _emailController.text,
+                    _passwordController.text,
+                    _passwordConfirmController.text,
+                    _wantToBeSeller,
+                  );
                 },
                 child: const Text(
                   'Register',
