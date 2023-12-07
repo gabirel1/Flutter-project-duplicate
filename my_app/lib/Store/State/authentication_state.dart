@@ -1,3 +1,4 @@
+import 'package:my_app/Models/dialog_notif.dart';
 import 'package:my_app/Models/my_error.dart';
 
 class AuthenticationState {
@@ -12,4 +13,5 @@ class AuthenticationState {
 
   String? uuid;
   MyError? error;
+  DialogNotif? dialogNotif;
 }

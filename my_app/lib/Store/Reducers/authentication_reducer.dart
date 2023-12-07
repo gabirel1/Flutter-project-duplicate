@@ -13,6 +13,9 @@ AuthenticationState authenticationReducer(
     case AuthenticationSetErrorAction:
       newState.error = action.error;
       return newState;
+    case AuthenticationSetDialogNotifAction:
+      newState.dialogNotif = action.dialogNotif;
+      return newState;
     default:
       return newState;
   }

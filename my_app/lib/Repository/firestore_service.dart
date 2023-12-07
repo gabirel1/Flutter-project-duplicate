@@ -184,4 +184,148 @@ class FirestoreService {
     debugPrint(userCredential.user?.uid);
     return (true, userCredential.user?.uid ?? '');
   }
+
+  Future<bool> _registerUserInFirebase(
+    String email,
+    String uuid,
+    String profilePicture,
+    bool isSeller,
+  ) {
+    return addUser(
+      uuid,
+      email,
+      profilePicture,
+      isSeller: isSeller,
+    );
+  }
+
+  Future<bool> handleGoogleRegisterWeb({bool wantToBeSeller = false}) async {
+    final GoogleAuthProvider googleProvider = GoogleAuthProvider();
+
+    debugPrint(googleProvider.toString());
+    final UserCredential userCredential =
+        await FirebaseAuth.instance.signInWithPopup(googleProvider);
+
+    if (await FirestoreService()
+                .checkUserAlreadyExistsV2(userCredential.user?.uid ?? '') ==
+            true ||
+        userCredential.user == null ||
+        userCredential.user?.email == null) {
+      return false;
+    }
+    debugPrint(userCredential.toString());
+    final bool res = await _registerUserInFirebase(
+      userCredential.user!.email ?? '',
+      userCredential.user!.uid,
+      userCredential.user!.photoURL ?? '',
+      wantToBeSeller,
+    );
+    return res;
+  }
+
+  Future<bool> handleGoogleRegister({bool wantToBeSeller = false}) async {
+    if (MyPlatform.isWeb()) {
+      return handleGoogleRegisterWeb();
+    }
+    final GoogleSignInAccount? user = await GoogleSignIn(
+      clientId:
+          '495774674643-o54oh2p0eqdf4q8l0sf6rsglppl87u88.apps.googleusercontent.com',
+    ).signIn();
+    final GoogleSignInAuthentication? auth = await user?.authentication;
+    debugPrint(auth?.accessToken);
+    final AuthCredential credential = GoogleAuthProvider.credential(
+      accessToken: auth?.accessToken,
+      idToken: auth?.idToken,
+    );
+    // check if user already exists in firebas edatabase if not create it
+    final bool userExists =
+        await FirestoreService().checkUserAlreadyExists(user?.email ?? '');
+    if (userExists == true) {
+      return false;
+    }
+    final UserCredential userCredential =
+        await FirebaseAuth.instance.signInWithCredential(credential);
+    debugPrint(userCredential.toString());
+    debugPrint(userCredential.user?.uid);
+    final bool res = await _registerUserInFirebase(
+      userCredential.user!.email ?? '',
+      userCredential.user!.uid,
+      userCredential.user!.photoURL ?? '',
+      wantToBeSeller,
+    );
+    return res;
+  }
+
+  Future<(bool, String, String)> handleLogin(
+    String email,
+    String password,
+  ) async {
+    final bool isValid = MyUtils.checkFormValidityLogin(email, password);
+    if (isValid == false) return (false, 'Please fill all fields.', ' ');
+
+    if (await FirestoreService().checkUserAlreadyExists(email) == false) {
+      debugPrint('No user found for that email.');
+      return (false, 'Wrong credentials.', ' ');
+    }
+    try {
+      final UserCredential credential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: password);
+      debugPrint('credentials $credential.toString()');
+      return (true, 'Logged in successfully.', credential.user?.uid ?? ' ');
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        debugPrint('No user found for that email.');
+        return (false, 'Wrong credentials.', ' ');
+      } else if (e.code == 'wrong-password') {
+        debugPrint('Wrong password provided for that user.');
+        return (false, 'Wrong credentials.', ' ');
+      } else if (e.code == 'INVALID_LOGIN_CREDENTIALS') {
+        return (false, 'Wrong credentials.', ' ');
+      }
+      debugPrint(e.code);
+      return (false, e.code, ' ');
+    } catch (e) {
+      debugPrint(e.toString());
+      return (false, 'An error occured, please try again later.', ' ');
+    }
+  }
+
+  Future<(bool, String)> handleRegister(
+    String email,
+    String password,
+    String passwordConfirm, {
+    required bool wantToBeSeller,
+  }) async {
+    final (bool, String) res =
+        MyUtils.checkFormValidityV2(email, password, passwordConfirm);
+    if (res.$1 == false) return (false, res.$2);
+
+    try {
+      final UserCredential credential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      debugPrint(credential.toString());
+      final bool res = await _registerUserInFirebase(
+        email,
+        credential.user!.uid,
+        '',
+        wantToBeSeller,
+      );
+      return (res, 'Registered successfully.');
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        debugPrint('The password provided is too weak.');
+        return (false, 'The password provided is too weak.');
+      } else if (e.code == 'email-already-in-use') {
+        debugPrint('The account already exists for that email.');
+        return (false, 'The account already exists for that email.');
+      }
+      return (false, e.code);
+    } catch (e) {
+      debugPrint(e.toString());
+      return (false, 'An error occured, please try again later.');
+    }
+  }
 }
