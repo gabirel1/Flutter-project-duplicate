@@ -1,10 +1,10 @@
 import 'dart:async';
 
-import 'package:email_validator/email_validator.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:email_validator/email_validator.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:my_app/Repository/firestore_service.dart';
+// import 'package:my_app/Repository/firestore_service.dart';
 import 'package:my_app/Store/State/app_state.dart';
 import 'package:my_app/Store/ViewModels/authentication_view_model.dart';
 import 'package:my_app/Tools/color.dart';

@@ -45,7 +45,8 @@ class AuthenticationViewModel {
           final DialogNotif dialogNotif =
               DialogNotif(message: 'Successfully registered !');
           store.dispatch(
-              AuthenticationSetDialogNotifAction(dialogNotif: dialogNotif));
+            AuthenticationSetDialogNotifAction(dialogNotif: dialogNotif),
+          );
         } else {
           final MyError errorRes = MyError(
             message:
