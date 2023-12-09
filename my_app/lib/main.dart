@@ -12,6 +12,7 @@ import 'package:redux_logging/redux_logging.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
+    // name: 'my_app',
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
