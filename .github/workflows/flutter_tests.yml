@@ -22,6 +22,9 @@ jobs:
       - name: Get dependencies
         working-directory: my_app
         run: flutter pub get
+      - name: Build .g.dart files
+        working-directory: my_app
+        run: dart run build_runner build
       - name: Run analyzer
         working-directory: my_app
         run: flutter analyze
