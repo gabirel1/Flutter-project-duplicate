@@ -56,7 +56,7 @@ class HomePageState extends State<HomePage> {
 
   BottomNavigationBar bottomNavigationBar(HomeViewModel viewModel) {
     return BottomNavigationBar(
-      backgroundColor: MyColor().myWhite,
+      backgroundColor: MyColor.myWhite,
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: Icon(Icons.home_outlined),
@@ -72,7 +72,7 @@ class HomePageState extends State<HomePage> {
         ),
       ],
       currentIndex: viewModel.page.index,
-      selectedItemColor: MyColor().myBlue,
+      selectedItemColor: MyColor.myBlue,
       onTap: viewModel.bottomTap,
     );
   }

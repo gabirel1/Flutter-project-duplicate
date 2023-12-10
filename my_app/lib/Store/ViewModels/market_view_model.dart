@@ -1,4 +1,5 @@
 import 'package:my_app/Models/item.dart';
+import 'package:my_app/Models/order.dart';
 import 'package:my_app/Repository/firestore_service.dart';
 import 'package:my_app/Store/Actions/basket_actions.dart';
 import 'package:my_app/Store/Actions/market_actions.dart';
@@ -23,7 +24,7 @@ class MarketViewModel {
         store.dispatch(MarketItemsListAction(items: response));
       },
       addItem: (Item item) async {
-        store.dispatch(BasketAddItemAction(item: item));
+        store.dispatch(BasketAddOrderAction(order: Order(item: item, quantity: 0)));
       },
     );
   }

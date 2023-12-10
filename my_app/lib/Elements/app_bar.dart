@@ -19,14 +19,14 @@ class _MyAppBarState extends State<MyAppBar> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: MyColor().myBlue,
+      backgroundColor: MyColor.myBlue,
       automaticallyImplyLeading: false,
       flexibleSpace: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: <Color>[
-              MyColor().myGreen,
-              MyColor().myBlue,
+              MyColor.myGreen,
+              MyColor.myBlue,
             ],
             stops: const <double>[0, 1],
             begin: AlignmentDirectional.centerEnd,
@@ -39,7 +39,7 @@ class _MyAppBarState extends State<MyAppBar> {
         height: 55,
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(5)),
-          color: MyColor().myWhite,
+          color: MyColor.myWhite,
         ),
         child: Row(
           children: <Widget>[
@@ -47,7 +47,7 @@ class _MyAppBarState extends State<MyAppBar> {
               padding: const EdgeInsetsDirectional.fromSTEB(8, 4, 4, 4),
               child: Icon(
                 Icons.search_outlined,
-                color: MyColor().myBlack,
+                color: MyColor.myBlack,
                 size: 32,
               ),
             ),
@@ -58,7 +58,7 @@ class _MyAppBarState extends State<MyAppBar> {
                   decoration: InputDecoration(
                     hintText: 'Search Item...',
                     labelStyle: TextStyle(
-                      color: MyColor().myBlack,
+                      color: MyColor.myBlack,
                     ),
                     border: InputBorder.none,
                   ),
@@ -75,7 +75,7 @@ class _MyAppBarState extends State<MyAppBar> {
               padding: const EdgeInsetsDirectional.fromSTEB(4, 4, 8, 4),
               child: Icon(
                 Icons.qr_code_outlined,
-                color: MyColor().myBlack,
+                color: MyColor.myBlack,
                 size: 32,
               ),
             ),

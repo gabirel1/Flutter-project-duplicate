@@ -46,7 +46,7 @@ class MarketPageState extends State<MarketPage> {
                       },
                     ),
               appBar: const MyAppBar(),
-              backgroundColor: MyColor().myWhite,
+              backgroundColor: MyColor.myWhite,
             );
           },
         );
@@ -77,7 +77,7 @@ class MarketPageState extends State<MarketPage> {
             height: 400,
             decoration: BoxDecoration(
               border: Border.all(
-                color: MyColor().myGrey,
+                color: MyColor.myGrey,
               ),
               borderRadius: BorderRadius.circular(20),
             ),

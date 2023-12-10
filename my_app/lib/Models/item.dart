@@ -26,5 +26,4 @@ class Item {
   String seller = '';
   List<String> images = <String>[];
   double price = 0;
-
 }

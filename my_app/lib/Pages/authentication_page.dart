@@ -385,8 +385,8 @@ class AuthenticationPageState extends State<AuthenticationPage>
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: <Color>[
-                    MyColor().myGreen,
-                    MyColor().myBlue,
+                    MyColor.myGreen,
+                    MyColor.myBlue,
                   ],
                   stops: const <double>[0, 1],
                   begin: AlignmentDirectional.centerEnd,
@@ -408,14 +408,14 @@ class AuthenticationPageState extends State<AuthenticationPage>
               children: <Widget>[
                 Align(
                   child: TabBar(
-                    labelColor: MyColor().myGreen,
-                    unselectedLabelColor: MyColor().myBlack,
+                    labelColor: MyColor.myGreen,
+                    unselectedLabelColor: MyColor.myBlack,
                     labelStyle: const TextStyle(
                       fontFamily: 'Urbanist',
                       fontWeight: FontWeight.w500,
                     ),
                     unselectedLabelStyle: const TextStyle(),
-                    indicatorColor: MyColor().myGreen,
+                    indicatorColor: MyColor.myGreen,
                     indicatorWeight: 4,
                     indicatorSize: TabBarIndicatorSize.tab,
                     tabs: const <Widget>[

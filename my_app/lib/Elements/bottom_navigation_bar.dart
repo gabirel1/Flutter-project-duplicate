@@ -61,7 +61,7 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
-      backgroundColor: MyColor().myWhite,
+      backgroundColor: MyColor.myWhite,
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: Icon(Icons.home_outlined),
@@ -77,7 +77,7 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
         ),
       ],
       currentIndex: _selectedIndex,
-      selectedItemColor: MyColor().myBlue,
+      selectedItemColor: MyColor.myBlue,
       onTap: _onItemTapped,
     );
   }

@@ -37,7 +37,7 @@ class ArticlePageState extends State<ArticlePage> {
           buildIconCart(),
         ],
       ),
-      backgroundColor: MyColor().myWhite,
+      backgroundColor: MyColor.myWhite,
     );
   }
 
@@ -47,8 +47,8 @@ class ArticlePageState extends State<ArticlePage> {
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: <Color>[
-                MyColor().myGreen,
-                MyColor().myBlue,
+                MyColor.myGreen,
+                MyColor.myBlue,
               ],
               stops: const <double>[0, 1],
               begin: AlignmentDirectional.centerEnd,
@@ -59,7 +59,7 @@ class ArticlePageState extends State<ArticlePage> {
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back_outlined,
-            color: MyColor().myBlack,
+            color: MyColor.myBlack,
           ),
           onPressed: () {
             Navigator.of(context).pop();
@@ -141,7 +141,7 @@ class ArticlePageState extends State<ArticlePage> {
         padding: const EdgeInsetsDirectional.fromSTEB(0, 20, 0, 20),
         child: GestureDetector(
           onTap: () {
-            debugPrint('Icon Clicked!');
+
           },
           child: const Icon(
             Icons.add_shopping_cart_outlined,

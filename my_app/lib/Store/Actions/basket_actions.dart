@@ -1,13 +1,25 @@
-import 'package:my_app/Models/item.dart';
+import 'package:my_app/Models/order.dart';
 
-class BasketRemoveItemAction {
-  BasketRemoveItemAction({required this.item});
+class BasketAddOrderAction {
+  BasketAddOrderAction({required this.order});
 
-  Item item;
+  Order order;
 }
 
-class BasketAddItemAction {
-  BasketAddItemAction({required this.item});
+class BasketAddOrderUnitAction {
+  BasketAddOrderUnitAction({required this.order});
 
-  Item item;
+  final Order order;
+}
+
+class BasketRemoveOrderAction {
+  BasketRemoveOrderAction({required this.order});
+
+  final Order order;
+}
+
+class BasketRemoveOrderUnitAction {
+  BasketRemoveOrderUnitAction({required this.order});
+
+  final Order order;
 }

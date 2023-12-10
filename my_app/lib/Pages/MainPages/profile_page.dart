@@ -58,7 +58,7 @@ class ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                   backgroundColor: MaterialStateProperty.all<Color>(
-                    MyColor().myGreen,
+                    MyColor.myGreen,
                   ),
                 ),
                 onPressed: () {
@@ -114,8 +114,8 @@ class ProfilePageState extends State<ProfilePage> {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: <Color>[
-                    MyColor().myGreen,
-                    MyColor().myBlue,
+                    MyColor.myGreen,
+                    MyColor.myBlue,
                   ],
                   stops: const <double>[0, 1],
                   begin: AlignmentDirectional.centerEnd,
@@ -145,8 +145,8 @@ class ProfilePageState extends State<ProfilePage> {
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
                                 colors: <Color>[
-                                  MyColor().myGreen,
-                                  MyColor().myBlue,
+                                  MyColor.myGreen,
+                                  MyColor.myBlue,
                                 ],
                                 stops: const <double>[0, 1],
                                 begin: AlignmentDirectional.centerEnd,
@@ -178,7 +178,7 @@ class ProfilePageState extends State<ProfilePage> {
                                 DecoratedBox(
                                   decoration: BoxDecoration(
                                     border: Border.all(
-                                      color: MyColor().myGrey,
+                                      color: MyColor.myGrey,
                                       width: 4,
                                     ),
                                     borderRadius: BorderRadius.circular(100),
@@ -232,7 +232,7 @@ class ProfilePageState extends State<ProfilePage> {
                                     height: 35,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(100),
-                                      color: MyColor().myGreen,
+                                      color: MyColor.myGreen,
                                     ),
                                     child: const Icon(
                                       Icons.edit,
@@ -269,7 +269,7 @@ class ProfilePageState extends State<ProfilePage> {
                                 ),
                               ),
                               backgroundColor: MaterialStateProperty.all<Color>(
-                                MyColor().myGreen,
+                                MyColor.myGreen,
                               ),
                             ),
                             onPressed: () {
@@ -302,7 +302,7 @@ class ProfilePageState extends State<ProfilePage> {
                                 ),
                               ),
                               backgroundColor: MaterialStateProperty.all<Color>(
-                                MyColor().myGreen,
+                                MyColor.myGreen,
                               ),
                             ),
                             onPressed: () async {
