@@ -38,10 +38,12 @@ class ArticlePageState extends State<ArticlePage> {
                   ],
                 ),
               ),
+              const Divider(),
               if (widget.item.images.length > 1)
                 buildCarousel()
               else
                 buildImage(),
+              const Divider(),
               buildDescription(),
               buildSeller(),
               buildIconCart(viewModel),
@@ -168,13 +170,33 @@ class ArticlePageState extends State<ArticlePage> {
   Widget buildIconCart(ArticleViewModel viewModel) => Padding(
         padding: const EdgeInsetsDirectional.fromSTEB(0, 20, 0, 20),
         child: GestureDetector(
-          onTap: () {
+          onTap: () async {
             viewModel.addCart(widget.item);
+            await buildShowDialogAddedCart();
           },
           child: const Icon(
             Icons.add_shopping_cart_outlined,
             size: 48,
           ),
         ),
+      );
+
+  /// Widget Future show dialog Error
+  // ignore: always_specify_types
+  Future buildShowDialogAddedCart() => showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text(
+              'Article added to cart',
+              style: TextStyle(
+                fontSize: 14,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            backgroundColor: MyColor().myGrey,
+          );
+        },
       );
 }
