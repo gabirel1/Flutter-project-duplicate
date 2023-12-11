@@ -1,3 +1,4 @@
+import 'package:my_app/Store/Reducers/article_reducer.dart';
 import 'package:my_app/Store/Reducers/authentication_reducer.dart';
 import 'package:my_app/Store/Reducers/basket_reducer.dart';
 import 'package:my_app/Store/Reducers/home_reducer.dart';
@@ -12,5 +13,6 @@ AppState appReducer(AppState state, dynamic action) {
     basket: basketReducer(state.basket, action),
     profile: profileReducer(state.profile, action),
     authentication: authenticationReducer(state.authentication, action),
+    article: articleReducer(state.article, action),
   );
 }

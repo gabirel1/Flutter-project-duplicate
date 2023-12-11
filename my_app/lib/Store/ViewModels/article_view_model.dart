@@ -1,19 +1,19 @@
 import 'package:my_app/Models/item.dart';
-import 'package:my_app/Store/Actions/basket_actions.dart';
+import 'package:my_app/Store/Actions/article_actions.dart';
 import 'package:my_app/Store/State/app_state.dart';
 import 'package:redux/redux.dart';
 
-class BasketViewModel {
-  BasketViewModel({
+class ArticleViewModel {
+  ArticleViewModel({
     required this.items,
     required this.addCart,
   });
 
-  factory BasketViewModel.factory(Store<AppState> store) {
-    return BasketViewModel(
-      items: store.state.basket.items,
+  factory ArticleViewModel.factory(Store<AppState> store) {
+    return ArticleViewModel(
+      items: store.state.article.items,
       addCart: (Item item) {
-        store.dispatch(BasketAddItemAction(item: item));
+        store.dispatch(ArticleAddItemAction(item: item));
       },
     );
   }
