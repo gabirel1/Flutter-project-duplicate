@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:my_app/Store/State/article_state.dart';
 import 'package:my_app/Store/State/authentication_state.dart';
 import 'package:my_app/Store/State/basket_state.dart';
 import 'package:my_app/Store/State/home_state.dart';
@@ -13,6 +14,7 @@ class AppState {
     required this.basket,
     required this.profile,
     required this.authentication,
+    required this.article,
   });
 
   factory AppState.initial() => AppState(
@@ -21,6 +23,7 @@ class AppState {
         basket: BasketState.initial(),
         profile: ProfileState.initial(),
         authentication: AuthenticationState.initial(),
+        article: ArticleState.initial(),
       );
 
   final HomeState home;
@@ -28,6 +31,7 @@ class AppState {
   final BasketState basket;
   final ProfileState profile;
   final AuthenticationState authentication;
+  final ArticleState article;
 
   AppState copyWith({
     required HomeState home,
@@ -35,6 +39,7 @@ class AppState {
     required BasketState basket,
     required ProfileState profile,
     required AuthenticationState authentication,
+    required ArticleState article,
   }) {
     return AppState(
       home: home,
@@ -42,6 +47,7 @@ class AppState {
       basket: basket,
       profile: profile,
       authentication: authentication,
+      article: article,
     );
   }
 }

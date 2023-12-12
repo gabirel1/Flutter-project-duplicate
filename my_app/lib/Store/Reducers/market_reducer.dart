@@ -1,4 +1,3 @@
-
 import 'package:my_app/Store/Actions/market_actions.dart';
 import 'package:my_app/Store/State/market_state.dart';
 

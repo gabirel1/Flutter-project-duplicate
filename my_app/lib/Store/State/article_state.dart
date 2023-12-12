@@ -1,11 +1,11 @@
 import 'package:my_app/Models/item.dart';
 
-class BasketState {
-  BasketState({
+class ArticleState {
+  ArticleState({
     this.items,
   });
 
-  factory BasketState.initial() => BasketState(
+  factory ArticleState.initial() => ArticleState(
         items: <Item>[],
       );
 

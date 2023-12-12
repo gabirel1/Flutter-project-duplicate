@@ -22,33 +22,29 @@ class MarketPageState extends State<MarketPage> {
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, MarketViewModel>(
-      converter: (Store<AppState> store) =>
-          MarketViewModel.factory(store, FirestoreService()),
+      converter: (Store<AppState> store) => MarketViewModel.factory(
+        store,
+        FirestoreService(),
+      ),
       onInitialBuild: (MarketViewModel viewModel) {
         viewModel.loadItems();
       },
       builder: (BuildContext context, MarketViewModel viewModel) {
-        return StoreConnector<AppState, MarketViewModel>(
-          converter: (Store<AppState> store) =>
-              MarketViewModel.factory(store, FirestoreService()),
-          builder: (BuildContext context, MarketViewModel viewModel) {
-            return Scaffold(
-              key: drawerScaffoldKey,
-              body: viewModel.items.isEmpty
-                  ? const Text('ça charge....')
-                  : ListView.builder(
-                      itemCount: viewModel.items.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return buildItem(
-                          viewModel.items.elementAt(index),
-                          index,
-                        );
-                      },
-                    ),
-              appBar: const MyAppBar(),
-              backgroundColor: MyColor().myWhite,
-            );
-          },
+        return Scaffold(
+          key: drawerScaffoldKey,
+          body: viewModel.items.isEmpty
+              ? const Text('ça charge....')
+              : ListView.builder(
+                  itemCount: viewModel.items.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return buildItem(
+                      viewModel.items.elementAt(index),
+                      index,
+                    );
+                  },
+                ),
+          appBar: const MyAppBar(),
+          backgroundColor: MyColor().myWhite,
         );
       },
     );

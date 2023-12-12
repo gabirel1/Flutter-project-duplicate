@@ -5,9 +5,3 @@ class MarketItemsListAction {
 
   ItemList items;
 }
-
-// class MarketAddItemAction {
-//   MarketAddItemAction({required this.item});
-
-//   Item item;
-// }
