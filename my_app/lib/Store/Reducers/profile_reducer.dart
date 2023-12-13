@@ -16,6 +16,9 @@ ProfileState profileReducer(ProfileState state, dynamic action) {
     case ProfileSetUserUUIDAction:
       newState.uuid = action.uuid;
       return newState;
+    case ProfileChangeUserPictureAction:
+      newState.userInfos!.profilePicture = action.picture;
+      return newState;
     default:
       return newState;
   }
