@@ -83,3 +83,23 @@ https://developer.android.com/studio/install
     ├── color.dart
     └── utils.dart
 ```
+
+## Libraires
+
+```
+- carousel_slider: ^4.2.1            # for the image carousel in the article page
+- cloud_firestore: ^4.13.2           # for interacting with Google Cloud Firestore, offering real-time data synchronization in Flutter applications
+- cupertino_icons: ^1.0.2            # for providing the Cupertino icon set, enabling the use of iOS-style icons in Flutter applications
+
+- email_validator: ^2.1.17           # for facilitating email validation, allowing developers to validate email addresses in Flutter applications
+- firebase_auth: ^4.14.1             # for providing authentication services using Firebase Authentication, allowing developers to integrate user authentication, including email/password, Google Sign-In, and more, into their Flutter applications
+- firebase_core: ^2.22.0             # for serving as the core package for Firebase services, providing initialization and configuration functionalities required for using various Firebase plugins in Flutter applications
+- firebase_crashlytics: ^3.4.8       # for integrating Firebase Crashlytics, a powerful crash reporting tool, into Flutter applications, enabling developers to track and analyze app crashes for improved stability and debugging
+
+- flutter_redux: ^0.10.0             # for integrating Redux into Flutter, enhancing state management for more predictable and maintainable app logic
+- google_sign_in: ^6.1.6             # for integrating Google Sign-In functionality into Flutter applications
+- json_annotation: ^4.8.1            # for streamlines JSON serialization in Flutter by generating code for Dart classes, simplifying data integration
+- qr_code_scanner: ^1.0.1            # for the qr code scanner in the qr_code page
+- redux: ^5.0.0                      # for predictable state management in Flutter
+- redux_logging: ^0.5.1              # for providing logging middleware for easy debugging in Flutter applications using Redux
+```
