@@ -227,17 +227,24 @@ class ProfilePageState extends State<ProfilePage> {
                                 Positioned(
                                   bottom: 0,
                                   right: 0,
-                                  child: Container(
-                                    width: 35,
-                                    height: 35,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(100),
-                                      color: MyColor().myGreen,
-                                    ),
-                                    child: const Icon(
-                                      Icons.edit,
-                                      color: Colors.black,
-                                      size: 20,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      debugPrint('Edit profile picture');
+                                      viewModel.changeUserPicture();
+                                    },
+                                    child: Container(
+                                      width: 35,
+                                      height: 35,
+                                      decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(100),
+                                        color: MyColor().myGreen,
+                                      ),
+                                      child: const Icon(
+                                        Icons.edit,
+                                        color: Colors.black,
+                                        size: 20,
+                                      ),
                                     ),
                                   ),
                                 ),

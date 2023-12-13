@@ -24,3 +24,9 @@ class ProfileSetUserUUIDAction {
 
   String uuid;
 }
+
+class ProfileChangeUserPictureAction {
+  ProfileChangeUserPictureAction({required this.picture});
+
+  String picture;
+}

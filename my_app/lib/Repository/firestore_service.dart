@@ -1,16 +1,22 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:my_app/Models/item.dart';
 import 'package:my_app/Models/user_infos.dart';
 import 'package:my_app/Tools/utils.dart';
+// import 'package:path/path.dart';
 
 typedef FItem = Map<String, dynamic>;
 
 class FirestoreService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseStorage _storage = FirebaseStorage.instance;
 
   Future<ItemList> getItems() async {
     return _firestore
@@ -326,6 +332,41 @@ class FirestoreService {
     } catch (e) {
       debugPrint(e.toString());
       return (false, 'An error occured, please try again later.');
+    }
+  }
+
+  Future<(bool, String)> addPictureToStorage(XFile img) async {
+    final File imageFile = File(img.path);
+    // final String fileName = basename(imageFile.path);
+    final String productPath = 'profilePictures/${getCurrentUserUUID()}';
+
+    final Reference ref = _storage.ref().child(productPath);
+    final UploadTask uploadTask = ref.putFile(imageFile);
+    try {
+      String imgUrl = '';
+      await uploadTask.whenComplete(() async {
+        final String url = await ref.getDownloadURL();
+        imgUrl = url;
+      });
+      return (true, imgUrl);
+    } catch (e) {
+      debugPrint(e.toString());
+      return (false, '');
+    }
+  }
+
+  Future<bool> changeUserProfilePicture(
+    String uuid,
+    String newPictureURL,
+  ) async {
+    try {
+      await _firestore.collection('users').doc(uuid).update(<String, Object>{
+        'profilePicture': newPictureURL,
+      });
+      return true;
+    } catch (e) {
+      debugPrint(e.toString());
+      return false;
     }
   }
 }
