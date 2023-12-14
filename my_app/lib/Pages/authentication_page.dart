@@ -9,13 +9,16 @@ import 'package:my_app/Store/State/app_state.dart';
 import 'package:my_app/Store/ViewModels/authentication_view_model.dart';
 import 'package:my_app/Tools/color.dart';
 
+/// The authentication page
 class AuthenticationPage extends StatefulWidget {
+  /// The authentication page
   const AuthenticationPage({super.key});
 
   @override
   State<AuthenticationPage> createState() => AuthenticationPageState();
 }
 
+/// The authentication page state
 class AuthenticationPageState extends State<AuthenticationPage>
     with TickerProviderStateMixin {
   late TabController _tabController;
@@ -58,6 +61,7 @@ class AuthenticationPageState extends State<AuthenticationPage>
     super.dispose();
   }
 
+  /// Login screen
   Widget loginSide(
     AuthenticationViewModel viewModel,
   ) {
@@ -149,6 +153,7 @@ class AuthenticationPageState extends State<AuthenticationPage>
     );
   }
 
+  /// Register screen
   Widget registerSide(AuthenticationViewModel viewModel) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -276,6 +281,7 @@ class AuthenticationPageState extends State<AuthenticationPage>
     );
   }
 
+  /// Widget input
   Widget makeInput({
     dynamic label,
     dynamic myController,
@@ -469,13 +475,19 @@ class AuthenticationPageState extends State<AuthenticationPage>
   }
 }
 
+/// Widget GoogleSignInButton
 class GoogleSignInButton extends StatelessWidget {
+  /// Widget GoogleSignInButton
   const GoogleSignInButton({
     required this.onPressed,
     required this.myTitle,
     super.key,
   });
+
+  /// The onPressed function
   final VoidCallback onPressed;
+
+  /// The title of the button
   final String myTitle;
 
   @override

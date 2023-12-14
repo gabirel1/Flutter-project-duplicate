@@ -43,7 +43,9 @@ void main() async {
   );
 }
 
+/// The main app
 class MyApp extends StatelessWidget {
+  /// The main app
   const MyApp({super.key});
 
   @override

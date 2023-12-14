@@ -1,16 +1,25 @@
-
-
+/// This file contains the state of the home page
 enum Pages {
-  market, basket, profile
+  /// The market page
+  market,
+
+  /// The basket page
+  basket,
+
+  /// The profile page
+  profile
 }
 
+/// The home state
 class HomeState {
-
+  /// The home state
   HomeState({required this.page});
 
+  /// The home state initial
   factory HomeState.initial() => HomeState(
-    page: Pages.market,
-  );
+        page: Pages.market,
+      );
 
-  Pages page ;
+  /// The page
+  Pages page;
 }

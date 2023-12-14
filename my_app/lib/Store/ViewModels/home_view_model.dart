@@ -6,7 +6,9 @@ import 'package:my_app/Store/State/app_state.dart';
 import 'package:my_app/Store/State/home_state.dart';
 import 'package:redux/redux.dart';
 
+/// The home view model
 class HomeViewModel {
+  /// The home view model
   HomeViewModel({
     required this.page,
     required this.changePage,
@@ -14,6 +16,7 @@ class HomeViewModel {
     required this.pageController,
   });
 
+  /// The home view model factory
   factory HomeViewModel.factory(
     Store<AppState> store,
     PageController pageController,
@@ -35,9 +38,15 @@ class HomeViewModel {
     );
   }
 
+  /// The page
   final Pages page;
+
+  /// The change page
   final Function(int) changePage;
+
+  /// The bottom tap
   final Function(int) bottomTap;
 
+  /// The page controller
   PageController pageController;
 }
