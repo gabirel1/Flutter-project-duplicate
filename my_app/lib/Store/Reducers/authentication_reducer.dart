@@ -8,13 +8,13 @@ AuthenticationState authenticationReducer(
 ) {
   final AuthenticationState newState = state;
   switch (action.runtimeType) {
-    case AuthenticationSetUserUUIDAction _:
+    case const (AuthenticationSetUserUUIDAction):
       newState.uuid = action.uuid;
       return newState;
-    case AuthenticationSetErrorAction _:
+    case const (AuthenticationSetErrorAction):
       newState.error = action.error;
       return newState;
-    case AuthenticationSetDialogNotifAction _:
+    case const (AuthenticationSetDialogNotifAction):
       newState.dialogNotif = action.dialogNotif;
       return newState;
     default:

@@ -8,11 +8,11 @@ ArticleState articleReducer(ArticleState state, dynamic action) {
 
   switch (action) {
     /// The article remove actions
-    case ArticleRemoveItemAction _:
+    case const (ArticleRemoveItemAction):
       state.items?.remove(action as Item);
       newState.items = state.items;
       return newState;
-    case ArticleAddItemAction _:
+    case const (ArticleAddItemAction):
       state.items?.add(action as Item);
       newState.items = state.items;
       return newState;

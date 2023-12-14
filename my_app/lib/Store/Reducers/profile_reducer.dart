@@ -5,19 +5,19 @@ import 'package:my_app/Store/State/profile_state.dart';
 ProfileState profileReducer(ProfileState state, dynamic action) {
   final ProfileState newState = state;
   switch (action.runtimeType) {
-    case ProfileLastItemsBoughtListAction _:
+    case const (ProfileLastItemsBoughtListAction):
       newState.lastItemsBought = action.items;
       return newState;
-    case ProfileUserInfosAction _:
+    case const (ProfileUserInfosAction):
       newState.userInfos = action.userInfos;
       return newState;
-    case ProfileUUIDAction _:
+    case const (ProfileUUIDAction):
       newState.uuid = action.uuid;
       return newState;
-    case ProfileSetUserUUIDAction _:
+    case const (ProfileSetUserUUIDAction):
       newState.uuid = action.uuid;
       return newState;
-    case ProfileChangeUserPictureAction _:
+    case const (ProfileChangeUserPictureAction):
       newState.userInfos!.profilePicture = action.picture;
       return newState;
     default:
