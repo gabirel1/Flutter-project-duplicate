@@ -5,13 +5,16 @@ import 'package:my_app/Store/Actions/market_actions.dart';
 import 'package:my_app/Store/State/app_state.dart';
 import 'package:redux/redux.dart';
 
+/// The market view model
 class MarketViewModel {
+  /// The market view model
   MarketViewModel({
     required this.items,
     required this.loadItems,
     required this.addItem,
   });
 
+  /// The market view model factory
   factory MarketViewModel.factory(
     Store<AppState> store,
     FirestoreService firestore,
@@ -28,7 +31,12 @@ class MarketViewModel {
     );
   }
 
+  /// The items
   final List<Item> items;
+
+  /// The load items
   final Function loadItems;
+
+  /// The add item
   final Function addItem;
 }

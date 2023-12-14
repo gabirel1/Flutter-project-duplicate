@@ -6,17 +6,27 @@ import 'package:my_app/Store/State/app_state.dart';
 import 'package:my_app/Store/ViewModels/article_view_model.dart';
 import 'package:my_app/Tools/color.dart';
 
+/// The article page
 class ArticlePage extends StatefulWidget {
+  /// The article page
   const ArticlePage({required this.item, required this.index, super.key});
+
+  /// The item with the title, the description, the seller's name, the list of images and the price
   final Item item;
+
+  /// The index of the item
   final int index;
 
   @override
   State<ArticlePage> createState() => ArticlePageState();
 }
 
+/// The article page state
 class ArticlePageState extends State<ArticlePage> {
+  /// The article page state
   final GlobalKey<ScaffoldState> drawerScaffoldKey = GlobalKey<ScaffoldState>();
+
+  /// The boolean to know if the item is in the basket
   bool isInBasket = false;
 
   @override
@@ -182,8 +192,7 @@ class ArticlePageState extends State<ArticlePage> {
       );
 
   /// Widget Future show dialog Error
-  // ignore: always_specify_types
-  Future buildShowDialogAddedCart() => showDialog(
+  Future<dynamic> buildShowDialogAddedCart() => showDialog(
         context: context,
         barrierDismissible: true,
         builder: (BuildContext context) {

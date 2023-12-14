@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:my_app/Tools/color.dart';
 
+/// app bar
 class MyAppBar extends StatefulWidget implements PreferredSizeWidget {
+  /// app bar
   const MyAppBar({
     super.key,
   });

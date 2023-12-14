@@ -7,7 +7,9 @@ import 'package:my_app/Store/Actions/profile_actions.dart';
 import 'package:my_app/Store/State/app_state.dart';
 import 'package:redux/redux.dart';
 
+/// The profile view model
 class ProfileViewModel {
+  /// The profile view model
   ProfileViewModel({
     required this.userInfos,
     required this.loadUserInfo,
@@ -16,6 +18,7 @@ class ProfileViewModel {
     required this.signOut,
   });
 
+  /// The profile view model factory
   factory ProfileViewModel.factory(
     Store<AppState> store,
     FirestoreService firestore,
@@ -65,10 +68,18 @@ class ProfileViewModel {
     );
   }
 
+  /// The user infos
   final UserInfos? userInfos;
   // final List<String> foo;
+  /// The load user info
   final Function loadUserInfo;
+
+  /// The change user picture
   final Function changeUserPicture;
+
+  /// The sign out function
   final Function signOut;
+
+  /// The uuid
   final String uuid;
 }

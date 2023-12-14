@@ -7,7 +7,9 @@ import 'package:my_app/Store/Actions/profile_actions.dart';
 import 'package:my_app/Store/State/app_state.dart';
 import 'package:redux/redux.dart';
 
+/// The authentication view model
 class AuthenticationViewModel {
+  /// The authentication view model
   AuthenticationViewModel({
     required this.uuid,
     required this.login,
@@ -19,6 +21,7 @@ class AuthenticationViewModel {
     this.dialogNotif,
   });
 
+  /// The authentication view model factory
   factory AuthenticationViewModel.factory(Store<AppState> store) {
     // use store
     return AuthenticationViewModel(
@@ -109,12 +112,27 @@ class AuthenticationViewModel {
     );
   }
 
+  /// The user uuid
   final String uuid;
+
+  /// The login function
   final Function login;
+
+  /// The login with google function
   final Function loginWithGoogle;
+
+  /// The register with google function
   final Function registerWithGoogle;
+
+  /// The handle login function
   final Function handleLogIn;
+
+  /// The handle register function
   final Function handleRegister;
+
+  /// The error
   final MyError? error;
+
+  /// The dialog notif
   final DialogNotif? dialogNotif;
 }

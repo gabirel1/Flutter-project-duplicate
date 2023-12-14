@@ -12,18 +12,27 @@ import 'package:my_app/Tools/color.dart';
 import 'package:my_app/Tools/utils.dart';
 import 'package:redux/redux.dart';
 
+/// The profile page
 class ProfilePage extends StatefulWidget {
+  /// The profile page
   const ProfilePage({super.key});
 
   @override
   State<ProfilePage> createState() => ProfilePageState();
 }
 
+/// The profile page state
 class ProfilePageState extends State<ProfilePage> {
+  /// The profile page state
   final GlobalKey<ScaffoldState> drawerScaffoldKey = GlobalKey<ScaffoldState>();
+
+  /// The platform
   final bool isWeb = MyPlatform.isWeb();
+
+  /// (true if the user is a seller, false otherwise)
   bool isSeller = false;
 
+  /// Not connected screen
   Widget notConnectedScreen() {
     // make a screen with 2 buttons in the middle (Log in, Register)
     // it should put Login first and then a text: "No account yet ?" and then display the second button

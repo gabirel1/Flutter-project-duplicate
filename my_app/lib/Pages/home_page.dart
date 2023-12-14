@@ -8,14 +8,18 @@ import 'package:my_app/Store/ViewModels/home_view_model.dart';
 import 'package:my_app/Tools/color.dart';
 import 'package:redux/redux.dart';
 
+/// The home page
 class HomePage extends StatefulWidget {
+  /// The home page
   const HomePage({super.key});
 
   @override
   State<HomePage> createState() => HomePageState();
 }
 
+/// The home page state
 class HomePageState extends State<HomePage> {
+  /// The home page state
   final GlobalKey<ScaffoldState> drawerScaffoldKey = GlobalKey<ScaffoldState>();
 
   late PageController _pageController;
@@ -54,6 +58,7 @@ class HomePageState extends State<HomePage> {
     );
   }
 
+  /// The bottom navigation bar
   BottomNavigationBar bottomNavigationBar(HomeViewModel viewModel) {
     return BottomNavigationBar(
       backgroundColor: MyColor().myWhite,
