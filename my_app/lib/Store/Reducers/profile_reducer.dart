@@ -20,6 +20,9 @@ ProfileState profileReducer(ProfileState state, dynamic action) {
     case const (ProfileChangeUserPictureAction):
       newState.userInfos!.profilePicture = action.picture;
       return newState;
+    case const (ProfileLastOrdersAction):
+      newState.orders = action.orders;
+      return newState;
     default:
       return newState;
   }

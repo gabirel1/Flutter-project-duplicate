@@ -25,7 +25,7 @@ class Item {
   Map<String, dynamic> toJson() => _$ItemToJson(this);
 
   /// Item id
-  int id = 0;
+  String id = '';
 
   /// Item description
   String description = '';

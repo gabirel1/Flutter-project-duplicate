@@ -1,4 +1,5 @@
 import 'package:my_app/Models/item.dart';
+import 'package:my_app/Models/my_orders.dart';
 import 'package:my_app/Models/user_infos.dart';
 
 /// The profile last items bought list action
@@ -44,4 +45,13 @@ class ProfileChangeUserPictureAction {
 
   /// The picture
   String picture;
+}
+
+/// The profile last orders
+class ProfileLastOrdersAction {
+  /// The profile last orders
+  ProfileLastOrdersAction({required this.orders});
+
+  /// The orders
+  OrderList orders;
 }

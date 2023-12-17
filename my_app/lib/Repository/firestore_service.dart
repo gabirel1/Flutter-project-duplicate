@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -8,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:my_app/Models/item.dart';
+import 'package:my_app/Models/my_orders.dart';
+import 'package:my_app/Models/order_item.dart';
 import 'package:my_app/Models/user_infos.dart';
 import 'package:my_app/Tools/utils.dart';
 // import 'package:path/path.dart';
@@ -384,5 +387,49 @@ class FirestoreService {
       debugPrint(e.toString());
       return false;
     }
+  }
+
+  /// Function to get the orders of an user
+  Future<OrderList> getOrders(String userID) async {
+    return _firestore
+        .collection('Orders')
+        .where('userID', isEqualTo: userID)
+        .get()
+        .then((QuerySnapshot<FItem> querySnapshot) async {
+      final List<MyOrder> ordersList = <MyOrder>[];
+
+      for (final QueryDocumentSnapshot<FItem> order in querySnapshot.docs) {
+        final MyOrder tmp = MyOrder(
+          userID: '',
+          items: <OrderItem>[],
+          totalPrice: 0,
+          orderedAt: DateTime.now().toString(),
+        )
+          ..userID = order.data()['userID'] as String
+          ..totalPrice = order.data()['totalPrice'] as double
+          ..orderedAt = DateTime.fromMillisecondsSinceEpoch(
+            (order.data()['orderedAt'] as Timestamp).seconds * 1000,
+          ).toString().substring(0, 10);
+
+        for (final dynamic item in order.data()['items']) {
+          final dynamic itemDOC = item['item'];
+          final String docPath = itemDOC.path;
+          final Item finalItem = await _firestore.doc(docPath).get().then(
+            (DocumentSnapshot<FItem> documentSnapshot) {
+              final dynamic tmp = documentSnapshot.data()!;
+              return Item.fromJson(tmp);
+            },
+          );
+          tmp.items.add(
+            OrderItem(
+              item: finalItem,
+              quantity: item['howMany'] as int,
+            ),
+          );
+        }
+        ordersList.add(tmp);
+      }
+      return ordersList;
+    });
   }
 }
