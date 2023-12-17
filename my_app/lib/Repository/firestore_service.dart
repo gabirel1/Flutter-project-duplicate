@@ -432,4 +432,46 @@ class FirestoreService {
       return ordersList;
     });
   }
+
+  /// Function to retrieve the selling items of a seller
+  Future<ItemList> getSellingItems(String sellerUUID) async {
+    return _firestore
+        .collection('Item')
+        .where('sellerUUID', isEqualTo: sellerUUID)
+        .get()
+        .then((QuerySnapshot<FItem> querySnapshot) {
+      final List<Item> itemsList = <Item>[];
+
+      for (final QueryDocumentSnapshot<FItem> item in querySnapshot.docs) {
+        itemsList.add(Item.fromJson(item.data()));
+      }
+      return itemsList;
+    });
+  }
+
+  /// Function to delete an item from the store (needs to be done by the item's seller)
+  /// @param [itemID] is the id of the item to delete
+  Future<bool> deleteItem(String itemID) async {
+    try {
+      // check if the item's seller is the current user
+      final Item item = await _firestore
+          .collection('Item')
+          .doc(itemID)
+          .get()
+          .then((DocumentSnapshot<FItem> documentSnapshot) {
+        final dynamic tmp = documentSnapshot.data()!;
+        return Item.fromJson(tmp);
+      });
+
+      if (item.sellerUUID != getCurrentUserUUID()) {
+        debugPrint('You are not the seller of this item');
+        return false;
+      }
+      await _firestore.collection('Item').doc(itemID).delete();
+      return true;
+    } catch (e) {
+      debugPrint(e.toString());
+      return false;
+    }
+  }
 }

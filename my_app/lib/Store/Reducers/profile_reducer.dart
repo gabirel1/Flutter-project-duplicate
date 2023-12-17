@@ -23,6 +23,12 @@ ProfileState profileReducer(ProfileState state, dynamic action) {
     case const (ProfileLastOrdersAction):
       newState.orders = action.orders;
       return newState;
+    case const (ProfileIsSellerAction):
+      newState.isSeller = action.isSeller;
+      return newState;
+    case const (ProfileSellingItemsAction):
+      newState.sellingItems = action.sellingItems;
+      return newState;
     default:
       return newState;
   }

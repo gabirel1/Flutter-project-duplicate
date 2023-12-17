@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:my_app/Models/item.dart';
 import 'package:my_app/Models/my_orders.dart';
 import 'package:my_app/Models/user_infos.dart';
 import 'package:my_app/Repository/firestore_service.dart';
@@ -18,6 +19,9 @@ class ProfileViewModel {
     required this.uuid,
     required this.orders,
     required this.signOut,
+    required this.deleteItem,
+    required this.sellingItems,
+    required this.isSeller,
   });
 
   /// The profile view model factory
@@ -37,12 +41,20 @@ class ProfileViewModel {
               ? userUUID
               : store.state.profile.uuid,
         );
+        if (response.isSeller) {
+          store.dispatch(ProfileIsSellerAction(isSeller: true));
+        } else {
+          store.dispatch(ProfileIsSellerAction(isSeller: false));
+        }
         store.dispatch(ProfileUserInfosAction(userInfos: response));
-        // if (response.isSeller)
         final OrderList orders = await firestore.getOrders(
           store.state.profile.uuid == ' ' ? userUUID : store.state.profile.uuid,
         );
         store.dispatch(ProfileLastOrdersAction(orders: orders));
+        final List<Item> onSaleItems = await firestore.getSellingItems(
+          store.state.profile.uuid == ' ' ? userUUID : store.state.profile.uuid,
+        );
+        store.dispatch(ProfileSellingItemsAction(sellingItems: onSaleItems));
       },
       signOut: () async {
         await FirebaseAuth.instance.signOut();
@@ -68,8 +80,21 @@ class ProfileViewModel {
           }
         }
       },
+      deleteItem: (String itemUUID) async {
+        final bool res = await firestore.deleteItem(itemUUID);
+        if (res) {
+          final List<Item> newSellingItems = store.state.profile.sellingItems!
+              .where((Item item) => item.id != itemUUID)
+              .toList();
+          store.dispatch(
+            ProfileSellingItemsAction(sellingItems: newSellingItems),
+          );
+        }
+      },
       orders: store.state.profile.orders,
       userInfos: store.state.profile.userInfos!,
+      sellingItems: store.state.profile.sellingItems!,
+      isSeller: store.state.profile.isSeller,
     );
   }
 
@@ -85,9 +110,18 @@ class ProfileViewModel {
   /// The sign out function
   final Function signOut;
 
+  /// The delete item function
+  final Function deleteItem;
+
+  /// The is seller
+  final bool isSeller;
+
   /// The uuid
   final String uuid;
 
   /// The orders
   final OrderList? orders;
+
+  /// The items that the user is selling
+  final List<Item>? sellingItems;
 }

@@ -14,6 +14,7 @@ class Item {
     required this.description,
     required this.title,
     required this.seller,
+    required this.sellerUUID,
     required this.images,
     required this.price,
   });
@@ -35,6 +36,9 @@ class Item {
 
   /// Item seller
   String seller = '';
+
+  /// Item seller uuid
+  String sellerUUID = '';
 
   /// Item images
   List<String> images = <String>[];

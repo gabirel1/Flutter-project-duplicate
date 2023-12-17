@@ -55,3 +55,21 @@ class ProfileLastOrdersAction {
   /// The orders
   OrderList orders;
 }
+
+/// The profile selling items
+class ProfileSellingItemsAction {
+  /// The profile selling items
+  ProfileSellingItemsAction({required this.sellingItems});
+
+  /// The sellingItems
+  ItemList sellingItems;
+}
+
+/// The profile is seller
+class ProfileIsSellerAction {
+  /// The profile is seller
+  ProfileIsSellerAction({required this.isSeller});
+
+  /// The is seller
+  bool isSeller;
+}
