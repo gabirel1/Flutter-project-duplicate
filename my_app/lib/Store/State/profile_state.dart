@@ -10,6 +10,8 @@ class ProfileState {
     this.userInfos,
     this.uuid = ' ',
     this.orders,
+    this.sellingItems,
+    this.isSeller = false,
     // this.uuid = 'CI6MG2mmRnfz2uNCCFmNrW8Z1J83',
   });
 
@@ -24,6 +26,7 @@ class ProfileState {
           formatedEmail: '',
         ),
         orders: <MyOrder>[],
+        sellingItems: <Item>[],
       );
 
   /// The last items bought
@@ -37,4 +40,10 @@ class ProfileState {
 
   /// The orders
   OrderList? orders;
+
+  /// The seller items
+  List<Item>? sellingItems;
+
+  /// If the user is a seller => true
+  bool isSeller;
 }

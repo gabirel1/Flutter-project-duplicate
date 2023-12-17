@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:my_app/Models/item.dart';
 import 'package:my_app/Models/my_orders.dart';
 import 'package:my_app/Models/order_item.dart';
 import 'package:my_app/Pages/authentication_page.dart';
@@ -30,9 +31,6 @@ class ProfilePageState extends State<ProfilePage> {
 
   /// The platform
   final bool isWeb = MyPlatform.isWeb();
-
-  /// (true if the user is a seller, false otherwise)
-  bool isSeller = false;
 
   /// Not connected screen
   Widget notConnectedScreen() {
@@ -119,6 +117,90 @@ class ProfilePageState extends State<ProfilePage> {
     );
   }
 
+  /// Selling item card
+  Widget sellingItemCard(Item item, ProfileViewModel viewModel) {
+    return Column(
+      children: <Widget>[
+        Stack(
+          alignment: AlignmentDirectional.topEnd,
+          children: <Widget>[
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: (item.images.isNotEmpty)
+                  ? Image.network(
+                      item.images[0],
+                      width: 250,
+                      height: 250,
+                      fit: BoxFit.cover,
+                    )
+                  : const Icon(
+                      Icons.image,
+                      size: 250,
+                    ),
+            ),
+            IconButton(
+              icon: Icon(
+                Icons.delete_forever_rounded,
+                color: MyColor().myRed,
+                size: 30,
+              ),
+              onPressed: () => <void>{
+                viewModel.deleteItem(item.id),
+              },
+            ),
+          ],
+        ),
+        Text(
+          item.title,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// My selling items
+  Widget mySellingItems(
+    ItemList? sellingItems,
+    BuildContext context,
+    ProfileViewModel viewModel,
+  ) {
+    debugPrint('sellingItems: $sellingItems');
+    if (sellingItems == null) {
+      return const Center(
+        child: CircularProgressIndicator(
+          color: Colors.black,
+        ),
+      );
+    }
+    return SizedBox(
+      width: MediaQuery.sizeOf(context).width,
+      height: MediaQuery.sizeOf(context).height * 0.35,
+      child: Stack(
+        children: <Widget>[
+          Card(
+            clipBehavior: Clip.antiAliasWithSaveLayer,
+            color: MyColor().myBlue,
+            elevation: 4,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: ListView(
+              padding: EdgeInsets.zero,
+              shrinkWrap: true,
+              scrollDirection: Axis.horizontal,
+              children: <Widget>[
+                for (final Item item in sellingItems)
+                  sellingItemCard(item, viewModel),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   /// Item list view
   Widget itemListView(MyOrder? orderList, BuildContext context) {
     if (orderList == null) {
@@ -187,16 +269,17 @@ class ProfilePageState extends State<ProfilePage> {
           ProfileViewModel.factory(store, FirestoreService()),
       onInitialBuild: (ProfileViewModel viewModel) {
         viewModel.loadUserInfo();
-        isSeller = viewModel.userInfos!.isSeller;
         if (kDebugMode) {
-          debugPrint('isSeller: $isSeller');
+          debugPrint('isSeller: ${viewModel.isSeller}');
         }
       },
       onDidChange:
           (ProfileViewModel? previousViewModel, ProfileViewModel viewModel) {
         if (previousViewModel!.uuid != viewModel.uuid) {
           viewModel.loadUserInfo();
-          isSeller = viewModel.userInfos!.isSeller;
+          if (kDebugMode) {
+            debugPrint('isSeller: ${viewModel.isSeller}');
+          }
         }
       },
       builder: (BuildContext context, ProfileViewModel viewModel) {
@@ -409,6 +492,25 @@ class ProfilePageState extends State<ProfilePage> {
                         ),
                         for (int idx = 0; idx < viewModel.orders!.length; idx++)
                           itemListView(viewModel.orders![idx], context),
+                        Padding(
+                          padding: EdgeInsets.only(
+                            top: MediaQuery.sizeOf(context).height * 0.04,
+                          ),
+                        ),
+                        if (viewModel.isSeller)
+                          const Text(
+                            'Your items on sale',
+                            style: TextStyle(
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        if (viewModel.isSeller)
+                          mySellingItems(
+                            viewModel.sellingItems,
+                            context,
+                            viewModel,
+                          ),
                       ],
               ),
             ),
