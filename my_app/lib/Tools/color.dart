@@ -16,4 +16,7 @@ class MyColor {
 
   /// the green color
   Color myGreen = const Color(0xff42BEA5);
+
+  /// the red color
+  Color myRed = const Color(0xffe40000);
 }

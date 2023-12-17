@@ -219,6 +219,49 @@ class ProfilePageState extends State<ProfilePage> {
                 ),
               ),
             ),
+            // add a button on the right to disconnect
+            actions: <Widget>[
+              if (viewModel.uuid != ' ' && viewModel.uuid != '')
+                Padding(
+                  padding: const EdgeInsetsDirectional.fromSTEB(0, 0, 10, 0),
+                  child: ButtonBar(
+                    alignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      ElevatedButton(
+                        style: ButtonStyle(
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(90),
+                            ),
+                          ),
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                            MyColor().myRed,
+                          ),
+                        ),
+                        onPressed: () async {
+                          viewModel.signOut();
+                          if (context.mounted) {
+                            await Navigator.push(
+                              context,
+                              MaterialPageRoute<void>(
+                                builder: (BuildContext context) {
+                                  return const AuthenticationPage();
+                                },
+                              ),
+                            );
+                          }
+                        },
+                        child: const Icon(
+                          Icons.logout,
+                          color: Colors.black,
+                          size: 20,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+            ],
           ),
           body: SafeArea(
             child: SingleChildScrollView(
