@@ -1,4 +1,5 @@
 import 'package:my_app/Models/item.dart';
+import 'package:my_app/Models/my_orders.dart';
 import 'package:my_app/Models/user_infos.dart';
 
 /// The profile state
@@ -8,6 +9,7 @@ class ProfileState {
     this.lastItemsBought,
     this.userInfos,
     this.uuid = ' ',
+    this.orders,
     // this.uuid = 'CI6MG2mmRnfz2uNCCFmNrW8Z1J83',
   });
 
@@ -21,6 +23,7 @@ class ProfileState {
           isSeller: false,
           formatedEmail: '',
         ),
+        orders: <MyOrder>[],
       );
 
   /// The last items bought
@@ -31,4 +34,7 @@ class ProfileState {
 
   /// The uuid
   String uuid;
+
+  /// The orders
+  OrderList? orders;
 }

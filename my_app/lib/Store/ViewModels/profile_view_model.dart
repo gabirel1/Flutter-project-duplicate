@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:my_app/Models/my_orders.dart';
 import 'package:my_app/Models/user_infos.dart';
 import 'package:my_app/Repository/firestore_service.dart';
 import 'package:my_app/Store/Actions/profile_actions.dart';
@@ -15,6 +17,7 @@ class ProfileViewModel {
     required this.loadUserInfo,
     required this.changeUserPicture,
     required this.uuid,
+    required this.orders,
     required this.signOut,
   });
 
@@ -35,10 +38,12 @@ class ProfileViewModel {
               ? userUUID
               : store.state.profile.uuid,
         );
-        // if (response.isSeller) {
-        //   final List<String> foo = await firestore.getFoo();
-        // }
         store.dispatch(ProfileUserInfosAction(userInfos: response));
+        // if (response.isSeller)
+        final OrderList orders = await firestore.getOrders(
+          store.state.profile.uuid == ' ' ? userUUID : store.state.profile.uuid,
+        );
+        store.dispatch(ProfileLastOrdersAction(orders: orders));
       },
       signOut: () async {
         await FirebaseAuth.instance.signOut();
@@ -64,6 +69,7 @@ class ProfileViewModel {
           }
         }
       },
+      orders: store.state.profile.orders,
       userInfos: store.state.profile.userInfos!,
     );
   }
@@ -82,4 +88,7 @@ class ProfileViewModel {
 
   /// The uuid
   final String uuid;
+
+  /// The orders
+  final OrderList? orders;
 }

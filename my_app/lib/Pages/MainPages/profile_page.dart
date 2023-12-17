@@ -4,6 +4,8 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:my_app/Models/my_orders.dart';
+import 'package:my_app/Models/order_item.dart';
 import 'package:my_app/Pages/authentication_page.dart';
 import 'package:my_app/Repository/firestore_service.dart';
 import 'package:my_app/Store/State/app_state.dart';
@@ -93,6 +95,91 @@ class ProfilePageState extends State<ProfilePage> {
     );
   }
 
+  /// Item list view
+  Widget itemCard(OrderItem item) {
+    return Column(
+      children: <Widget>[
+        ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: Image.network(
+            item.item.images[0],
+            width: 200,
+            height: 200,
+            fit: BoxFit.cover,
+          ),
+        ),
+        Text(
+          item.item.title,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// Item list view
+  Widget itemListView(MyOrder? orderList, BuildContext context) {
+    if (orderList == null) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+    return SizedBox(
+      width: MediaQuery.sizeOf(context).width,
+      height: MediaQuery.sizeOf(context).height * 0.35,
+      child: Stack(
+        children: <Widget>[
+          Align(
+            alignment: Alignment.topCenter,
+            child: Card(
+              clipBehavior: Clip.antiAliasWithSaveLayer,
+              color: MyColor().myWhite,
+              elevation: 4,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Expanded(
+                    child: ListView(
+                      padding: EdgeInsets.zero,
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      children: <Widget>[
+                        for (final OrderItem item in orderList.items)
+                          itemCard(item),
+                      ],
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      Text(
+                        'Total price ${orderList.totalPrice}\$',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        orderList.orderedAt,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, ProfileViewModel>(
@@ -134,213 +221,228 @@ class ProfilePageState extends State<ProfilePage> {
             ),
           ),
           body: SafeArea(
-            child: Column(
-              children: (viewModel.userInfos!.uuid == ' ' ||
-                      viewModel.userInfos!.uuid == '')
-                  ? <Widget>[
-                      Padding(
-                        padding: EdgeInsets.only(
-                          top: MediaQuery.sizeOf(context).height * 0.20,
-                        ),
-                        child: notConnectedScreen(),
-                      ),
-                    ]
-                  : <Widget>[
-                      Stack(
-                        children: <Widget>[
-                          Container(
-                            width: MediaQuery.sizeOf(context).width,
-                            height: MediaQuery.sizeOf(context).height * 0.08,
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: <Color>[
-                                  MyColor().myGreen,
-                                  MyColor().myBlue,
-                                ],
-                                stops: const <double>[0, 1],
-                                begin: AlignmentDirectional.centerEnd,
-                                end: AlignmentDirectional.bottomStart,
-                              ),
-                            ),
-                            child: Padding(
-                              padding: EdgeInsets.only(
-                                top: MediaQuery.sizeOf(context).height * 0.02,
-                                left: MediaQuery.sizeOf(context).width * 0.45,
-                              ),
-                              child: Text(
-                                viewModel.userInfos!.formatedEmail,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 25,
-                                  overflow: TextOverflow.ellipsis,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
+            child: SingleChildScrollView(
+              child: Column(
+                children: (viewModel.userInfos!.uuid == ' ' ||
+                        viewModel.userInfos!.uuid == '')
+                    ? <Widget>[
+                        Padding(
+                          padding: EdgeInsets.only(
+                            top: MediaQuery.sizeOf(context).height * 0.20,
                           ),
-                          Padding(
-                            padding: EdgeInsets.only(
-                              left: MediaQuery.sizeOf(context).width * 0.04,
-                            ),
-                            child: Stack(
-                              children: <Widget>[
-                                DecoratedBox(
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                      color: MyColor().myGrey,
-                                      width: 4,
-                                    ),
-                                    borderRadius: BorderRadius.circular(100),
-                                  ),
-                                  child: SizedBox(
-                                    width: 120,
-                                    height: 120,
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(100),
-                                      child: (viewModel.userInfos!
-                                                      .profilePicture !=
-                                                  ' ' &&
-                                              viewModel.userInfos!
-                                                      .profilePicture !=
-                                                  '')
-                                          ? Image.network(
-                                              viewModel
-                                                  .userInfos!.profilePicture,
-                                              fit: BoxFit.cover,
-                                              errorBuilder: (
-                                                BuildContext context,
-                                                Object exception,
-                                                StackTrace? stackTrace,
-                                              ) {
-                                                return const CircleAvatar(
-                                                  backgroundColor: Colors.white,
-                                                  child: Icon(
-                                                    Icons.person,
-                                                    color: Colors.black,
-                                                    size: 50,
-                                                  ),
-                                                );
-                                              },
-                                            )
-                                          : const CircleAvatar(
-                                              backgroundColor: Colors.white,
-                                              child: Icon(
-                                                Icons.person,
-                                                color: Colors.black,
-                                                size: 50,
-                                              ),
-                                            ),
-                                    ),
+                          child: notConnectedScreen(),
+                        ),
+                      ]
+                    : <Widget>[
+                        Stack(
+                          children: <Widget>[
+                            Container(
+                              width: MediaQuery.sizeOf(context).width,
+                              height: MediaQuery.sizeOf(context).height * 0.08,
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: <Color>[
+                                    MyColor().myGreen,
+                                    MyColor().myBlue,
+                                  ],
+                                  stops: const <double>[0, 1],
+                                  begin: AlignmentDirectional.centerEnd,
+                                  end: AlignmentDirectional.bottomStart,
+                                ),
+                              ),
+                              child: Padding(
+                                padding: EdgeInsets.only(
+                                  top: MediaQuery.sizeOf(context).height * 0.02,
+                                  left: MediaQuery.sizeOf(context).width * 0.45,
+                                ),
+                                child: Text(
+                                  viewModel.userInfos!.formatedEmail,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 25,
+                                    overflow: TextOverflow.ellipsis,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                Positioned(
-                                  bottom: 0,
-                                  right: 0,
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      debugPrint('Edit profile picture');
-                                      viewModel.changeUserPicture();
-                                    },
-                                    child: Container(
-                                      width: 35,
-                                      height: 35,
-                                      decoration: BoxDecoration(
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                left: MediaQuery.sizeOf(context).width * 0.04,
+                              ),
+                              child: Stack(
+                                children: <Widget>[
+                                  DecoratedBox(
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: MyColor().myGrey,
+                                        width: 4,
+                                      ),
+                                      borderRadius: BorderRadius.circular(100),
+                                    ),
+                                    child: SizedBox(
+                                      width: 120,
+                                      height: 120,
+                                      child: ClipRRect(
                                         borderRadius:
                                             BorderRadius.circular(100),
-                                        color: MyColor().myGreen,
-                                      ),
-                                      child: const Icon(
-                                        Icons.edit,
-                                        color: Colors.black,
-                                        size: 20,
+                                        child: (viewModel.userInfos!
+                                                        .profilePicture !=
+                                                    ' ' &&
+                                                viewModel.userInfos!
+                                                        .profilePicture !=
+                                                    '')
+                                            ? Image.network(
+                                                viewModel
+                                                    .userInfos!.profilePicture,
+                                                fit: BoxFit.cover,
+                                                errorBuilder: (
+                                                  BuildContext context,
+                                                  Object exception,
+                                                  StackTrace? stackTrace,
+                                                ) {
+                                                  return const CircleAvatar(
+                                                    backgroundColor:
+                                                        Colors.white,
+                                                    child: Icon(
+                                                      Icons.person,
+                                                      color: Colors.black,
+                                                      size: 50,
+                                                    ),
+                                                  );
+                                                },
+                                              )
+                                            : const CircleAvatar(
+                                                backgroundColor: Colors.white,
+                                                child: Icon(
+                                                  Icons.person,
+                                                  color: Colors.black,
+                                                  size: 50,
+                                                ),
+                                              ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                  Positioned(
+                                    bottom: 0,
+                                    right: 0,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        debugPrint('Edit profile picture');
+                                        viewModel.changeUserPicture();
+                                      },
+                                      child: Container(
+                                        width: 35,
+                                        height: 35,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(100),
+                                          color: MyColor().myGreen,
+                                        ),
+                                        child: const Icon(
+                                          Icons.edit,
+                                          color: Colors.black,
+                                          size: 20,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                          top: MediaQuery.sizeOf(context).height * 0.04,
+                          ],
                         ),
-                      ),
-                      Text(
-                        (viewModel.userInfos!.uuid != ' ' &&
-                                viewModel.userInfos!.uuid != '')
-                            ? 'HERE'
-                            : 'NOT HERE',
-                      ),
-                      ButtonBar(
-                        alignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          ElevatedButton(
-                            style: ButtonStyle(
-                              shape: MaterialStateProperty.all<
-                                  RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(90),
-                                ),
-                              ),
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                MyColor().myGreen,
-                              ),
-                            ),
-                            onPressed: () {
-                              unawaited(
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute<void>(
-                                    builder: (BuildContext context) {
-                                      return const AuthenticationPage();
-                                    },
+                        Padding(
+                          padding: EdgeInsets.only(
+                            top: MediaQuery.sizeOf(context).height * 0.04,
+                          ),
+                        ),
+                        Text(
+                          (viewModel.userInfos!.uuid != ' ' &&
+                                  viewModel.userInfos!.uuid != '')
+                              ? 'HERE'
+                              : 'NOT HERE',
+                        ),
+                        ButtonBar(
+                          alignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            ElevatedButton(
+                              style: ButtonStyle(
+                                shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(90),
                                   ),
                                 ),
-                              );
-                            },
-                            child: const Text(
-                              'Log in',
-                            ),
-                          ),
-                        ],
-                      ),
-                      ButtonBar(
-                        alignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          ElevatedButton(
-                            style: ButtonStyle(
-                              shape: MaterialStateProperty.all<
-                                  RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(90),
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                  MyColor().myGreen,
                                 ),
                               ),
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                MyColor().myGreen,
-                              ),
-                            ),
-                            onPressed: () async {
-                              viewModel.signOut();
-                              if (context.mounted) {
-                                await Navigator.push(
-                                  context,
-                                  MaterialPageRoute<void>(
-                                    builder: (BuildContext context) {
-                                      return const AuthenticationPage();
-                                    },
+                              onPressed: () {
+                                unawaited(
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute<void>(
+                                      builder: (BuildContext context) {
+                                        return const AuthenticationPage();
+                                      },
+                                    ),
                                   ),
                                 );
-                              }
-                            },
-                            child: const Text(
-                              'Disconnect',
+                              },
+                              child: const Text(
+                                'Log in',
+                              ),
                             ),
+                          ],
+                        ),
+                        ButtonBar(
+                          alignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            ElevatedButton(
+                              style: ButtonStyle(
+                                shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(90),
+                                  ),
+                                ),
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                  MyColor().myGreen,
+                                ),
+                              ),
+                              onPressed: () async {
+                                viewModel.signOut();
+                                if (context.mounted) {
+                                  await Navigator.push(
+                                    context,
+                                    MaterialPageRoute<void>(
+                                      builder: (BuildContext context) {
+                                        return const AuthenticationPage();
+                                      },
+                                    ),
+                                  );
+                                }
+                              },
+                              child: const Text(
+                                'Disconnect',
+                              ),
+                            ),
+                          ],
+                        ),
+                        const Text(
+                          'My orders',
+                          style: TextStyle(
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold,
                           ),
-                        ],
-                      ),
-                    ],
+                        ),
+                        for (int idx = 0; idx < viewModel.orders!.length; idx++)
+                          itemListView(viewModel.orders![idx], context),
+                      ],
+              ),
             ),
           ),
         );
