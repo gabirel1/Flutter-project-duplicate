@@ -8,14 +8,11 @@ import 'package:my_app/Tools/color.dart';
 
 /// The article page
 class ArticlePage extends StatefulWidget {
-  /// The article page
-  const ArticlePage({required this.item, required this.index, super.key});
+  /// ArticlePage
+  const ArticlePage({required this.item, super.key});
 
-  /// The item with the title, the description, the seller's name, the list of images and the price
+  /// variable item
   final Item item;
-
-  /// The index of the item
-  final int index;
 
   @override
   State<ArticlePage> createState() => ArticlePageState();
@@ -37,27 +34,29 @@ class ArticlePageState extends State<ArticlePage> {
         return Scaffold(
           key: drawerScaffoldKey,
           appBar: buildCustomAppBar(),
-          body: Column(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(0, 20, 0, 20),
-                child: Row(
-                  children: <Widget>[
-                    buildTitle(),
-                    buildPrice(),
-                  ],
+          body: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsetsDirectional.fromSTEB(0, 20, 0, 20),
+                  child: Row(
+                    children: <Widget>[
+                      buildTitle(),
+                      buildPrice(),
+                    ],
+                  ),
                 ),
-              ),
-              const Divider(),
-              if (widget.item.images.length > 1)
-                buildCarousel()
-              else
-                buildImage(),
-              const Divider(),
-              buildDescription(),
-              buildSeller(),
-              buildIconCart(viewModel),
-            ],
+                const Divider(),
+                if (widget.item.images.length > 1)
+                  buildCarousel()
+                else
+                  buildImage(),
+                const Divider(),
+                buildDescription(),
+                buildSeller(),
+                buildIconCart(viewModel),
+              ],
+            ),
           ),
           backgroundColor: MyColor().myWhite,
         );
@@ -146,7 +145,7 @@ class ArticlePageState extends State<ArticlePage> {
 
   /// Widget image Padding
   Widget buildImage() => Padding(
-        padding: const EdgeInsetsDirectional.fromSTEB(0, 20, 0, 20),
+        padding: const EdgeInsetsDirectional.fromSTEB(20, 20, 20, 20),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(8),
           child: Image.network(
@@ -162,7 +161,7 @@ class ArticlePageState extends State<ArticlePage> {
 
   /// Widget descritpion Padding
   Widget buildDescription() => Padding(
-        padding: const EdgeInsetsDirectional.fromSTEB(0, 20, 0, 20),
+        padding: const EdgeInsetsDirectional.fromSTEB(20, 20, 20, 20),
         child: Text(
           widget.item.description,
         ),
@@ -170,7 +169,7 @@ class ArticlePageState extends State<ArticlePage> {
 
   /// Widget seller Padding
   Widget buildSeller() => Padding(
-        padding: const EdgeInsetsDirectional.fromSTEB(0, 20, 0, 20),
+        padding: const EdgeInsetsDirectional.fromSTEB(20, 20, 20, 20),
         child: Text(
           widget.item.seller,
         ),
@@ -178,7 +177,7 @@ class ArticlePageState extends State<ArticlePage> {
 
   /// Widget icon cart Padding
   Widget buildIconCart(ArticleViewModel viewModel) => Padding(
-        padding: const EdgeInsetsDirectional.fromSTEB(0, 20, 0, 20),
+        padding: const EdgeInsetsDirectional.fromSTEB(20, 20, 20, 20),
         child: GestureDetector(
           onTap: () async {
             viewModel.addCart(widget.item);

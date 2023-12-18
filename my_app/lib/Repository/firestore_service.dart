@@ -38,6 +38,29 @@ class FirestoreService {
     });
   }
 
+  /// return an item
+  Future<Item> getItem(String itemId) async {
+    return _firestore
+        .collection('Item')
+        .doc(itemId)
+        .get()
+        .then((DocumentSnapshot<FItem> documentSnapshot) {
+      if (!documentSnapshot.exists) {
+        return Item(
+          id: '',
+          description: '',
+          title: '',
+          seller: '',
+          sellerUUID: '',
+          images: <String>[],
+          price: 0,
+        );
+      }
+      final dynamic tmp = documentSnapshot.data()!;
+      return Item.fromJson(tmp);
+    });
+  }
+
   /// return true if the user already exists
   /// return false if the user does not exists
   Future<bool> checkUserAlreadyExists(String email) async {

@@ -5,6 +5,7 @@ import 'package:my_app/Store/State/basket_state.dart';
 import 'package:my_app/Store/State/home_state.dart';
 import 'package:my_app/Store/State/market_state.dart';
 import 'package:my_app/Store/State/profile_state.dart';
+import 'package:my_app/Store/State/qr_code_state.dart';
 
 /// The app state
 @immutable
@@ -17,6 +18,7 @@ class AppState {
     required this.profile,
     required this.authentication,
     required this.article,
+    required this.qrCode,
   });
 
   /// The initial state. The blank one.
@@ -27,6 +29,7 @@ class AppState {
         profile: ProfileState.initial(),
         authentication: AuthenticationState.initial(),
         article: ArticleState.initial(),
+        qrCode: QrCodeState.initial(),
       );
 
   /// The home state
@@ -47,6 +50,9 @@ class AppState {
   /// The article state
   final ArticleState article;
 
+  /// The qrCode state
+  final QrCodeState qrCode;
+
   /// Copy the app state
   AppState copyWith({
     required HomeState home,
@@ -55,6 +61,7 @@ class AppState {
     required ProfileState profile,
     required AuthenticationState authentication,
     required ArticleState article,
+    required QrCodeState qrCode,
   }) {
     return AppState(
       home: home,
@@ -63,6 +70,7 @@ class AppState {
       profile: profile,
       authentication: authentication,
       article: article,
+      qrCode: qrCode,
     );
   }
 }

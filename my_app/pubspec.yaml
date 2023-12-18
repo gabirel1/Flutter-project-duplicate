@@ -45,6 +45,7 @@ dependencies:
   google_sign_in: ^6.1.6
   image_picker: ^1.0.5
   json_annotation: ^4.8.1
+  qr_code_scanner: ^1.0.1
   redux: ^5.0.0
   redux_logging: ^0.5.1
 
