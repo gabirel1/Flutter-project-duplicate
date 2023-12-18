@@ -62,8 +62,7 @@ class MarketPageState extends State<MarketPage> {
         child: GestureDetector(
           onTap: () async {
             await Navigator.of(context).push(
-              // ignore: always_specify_types
-              MaterialPageRoute(
+              MaterialPageRoute<void>(
                 builder: (BuildContext context) => ArticlePage(
                   item: item,
                 ),

@@ -111,12 +111,12 @@ class AuthenticationPageState extends State<AuthenticationPage>
                       top: 10,
                       bottom: 10,
                     ),
-                    width: 100,
+                    width: 40,
                     height: 1,
                     color: Colors.black,
                   ),
                   const Text(
-                    'Or Sign In with',
+                    '  Or Sign In with  ',
                     style: TextStyle(
                       fontSize: 15,
                       color: Colors.black,
@@ -127,7 +127,7 @@ class AuthenticationPageState extends State<AuthenticationPage>
                       top: 10,
                       bottom: 10,
                     ),
-                    width: 99,
+                    width: 40,
                     height: 1,
                     color: Colors.black,
                   ),
