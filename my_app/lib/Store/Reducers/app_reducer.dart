@@ -7,6 +7,7 @@ import 'package:my_app/Store/Reducers/profile_reducer.dart';
 import 'package:my_app/Store/Reducers/qr_code_reducer.dart';
 import 'package:my_app/Store/State/app_state.dart';
 
+/// The app reducer
 AppState appReducer(AppState state, dynamic action) {
   return AppState(
     home: homeReducer(state.home, action),

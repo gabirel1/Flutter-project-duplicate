@@ -9,14 +9,18 @@ import 'package:my_app/Store/ViewModels/market_view_model.dart';
 import 'package:my_app/Tools/color.dart';
 import 'package:redux/redux.dart';
 
+/// The market page
 class MarketPage extends StatefulWidget {
+  /// The market page
   const MarketPage({super.key});
 
   @override
   State<MarketPage> createState() => MarketPageState();
 }
 
+/// The market page state
 class MarketPageState extends State<MarketPage> {
+  /// The market page state
   final GlobalKey<ScaffoldState> drawerScaffoldKey = GlobalKey<ScaffoldState>();
 
   @override

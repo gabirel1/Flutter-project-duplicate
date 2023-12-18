@@ -2,7 +2,9 @@ import 'dart:io' show Platform;
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
+/// The platform class
 class MyPlatform {
+  /// returns true if the platform is Android
   static bool isAndroid() {
     if (Platform.isAndroid) {
       return true;
@@ -11,6 +13,7 @@ class MyPlatform {
     }
   }
 
+  /// returns true if the platform is iOS
   static bool isIOS() {
     if (Platform.isIOS) {
       return true;
@@ -19,6 +22,7 @@ class MyPlatform {
     }
   }
 
+  /// returns true if the platform is Web
   static bool isWeb() {
     if (kIsWeb) {
       return true;
@@ -27,6 +31,7 @@ class MyPlatform {
     }
   }
 
+  /// returns the platform name as a string
   static String getPlatform() {
     if (kIsWeb) {
       return 'Web';
@@ -40,7 +45,9 @@ class MyPlatform {
   }
 }
 
+/// The utils class
 class MyUtils {
+  /// returns true if the form is valid
   static bool checkFormValidity(
     String email,
     String password,
@@ -56,6 +63,7 @@ class MyUtils {
     return true;
   }
 
+  /// returns true if the form is valid
   static (bool, String) checkFormValidityV2(
     String email,
     String password,
@@ -71,6 +79,7 @@ class MyUtils {
     return (true, '');
   }
 
+  /// returns true if the form is valid
   static bool checkFormValidityLogin(
     String email,
     String password,
