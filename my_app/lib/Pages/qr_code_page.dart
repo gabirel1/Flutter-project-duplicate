@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:my_app/Models/item.dart';
 import 'package:my_app/Pages/article_page.dart';
-import 'package:my_app/Pages/home_page.dart';
 import 'package:my_app/Repository/firestore_service.dart';
 import 'package:my_app/Store/State/app_state.dart';
 import 'package:my_app/Store/ViewModels/qr_code_view_model.dart';
@@ -10,13 +9,16 @@ import 'package:my_app/Tools/color.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:redux/redux.dart';
 
+/// class QRCodeData
 class QRCodeData {
+  /// QRCodeData
   QRCodeData({
     required this.key,
     required this.iv,
     required this.encrypted,
   });
 
+  /// factory QRCodeData
   factory QRCodeData.fromJson(Map<String, dynamic> json) {
     return QRCodeData(
       key: json['key'],
@@ -24,24 +26,47 @@ class QRCodeData {
       encrypted: json['encrypted'],
     );
   }
+
+  /// variable key
   String key;
+
+  /// variable iv
   String iv;
+
+  /// variable encrypted
   String encrypted;
 }
 
+/// class QrCode
 class QrCode extends StatefulWidget {
+  /// QrCode
   const QrCode({super.key});
 
   @override
   State<QrCode> createState() => QrCodeState();
 }
 
+/// class QrCodeState
 class QrCodeState extends State<QrCode> {
+  /// variable qrKey
   final GlobalKey<State<StatefulWidget>> qrKey = GlobalKey(debugLabel: 'QR');
 
+  /// variable barcode
   Barcode? barcode;
+
+  /// variable controller
   QRViewController? controller;
+
+  /// variable qrViewModel
   late QrCodeViewModel qrViewModel;
+
+  /// variable qrItem
+  late Item qrItem;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +76,7 @@ class QrCodeState extends State<QrCode> {
         FirestoreService(),
       ),
       builder: (BuildContext context, QrCodeViewModel viewModel) {
-        setState(() => qrViewModel = viewModel);
+        qrViewModel = viewModel;
         return SafeArea(
           child: Scaffold(
             appBar: buildCustomAppBar(),
@@ -94,6 +119,7 @@ class QrCodeState extends State<QrCode> {
         ),
       );
 
+  /// Widget buildResult Container
   Widget buildResult() => Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
@@ -110,6 +136,7 @@ class QrCodeState extends State<QrCode> {
         ),
       );
 
+  /// Widget buildQrView QRView
   Widget buildQrView(BuildContext context, QrCodeViewModel viewModel) => QRView(
         key: qrKey,
         onQRViewCreated: onQRViewCreated,
@@ -122,26 +149,42 @@ class QrCodeState extends State<QrCode> {
         ),
       );
 
+  /// Function onQRViewCreated which create the view for the QrCode
+  ///
+  /// @param [controller] the controller of the QRView
   void onQRViewCreated(QRViewController controller) {
-    setState(() => this.controller = controller);
+    setState(() {
+      this.controller = controller;
+    });
 
     controller.scannedDataStream.listen(
-      (Barcode barcode) => setState(
-        () async {
-          this.barcode = barcode;
-
-          debugPrint(this.barcode.toString());
-          qrViewModel.setItemId(this.barcode);
-          // await Navigator.of(context).pushReplacement(
-          //   // MaterialPageRoute<void>(
-          //   //   builder: (BuildContext context) => const ArticlePage(
-          //   //     item: item,
-          //   //   ),
-          //   // ),
-          // );
+      (Barcode barcode) async {
+        debugPrint('barcode : ${barcode.code}');
+        if (barcode.code!.isEmpty) {
           controller.dispose();
-        },
-      ),
+          return;
+        }
+        await qrViewModel.setItemId(barcode.code);
+        final Item tmp = await qrViewModel.loadItem();
+        if (mounted) {
+          await Navigator.pushReplacement(
+            context,
+            MaterialPageRoute<void>(
+              builder: (BuildContext context) {
+                return ArticlePage(
+                  item: tmp,
+                );
+              },
+            ),
+          );
+        }
+        setState(
+          () {
+            this.barcode = barcode;
+            controller.dispose();
+          },
+        );
+      },
     );
   }
 }

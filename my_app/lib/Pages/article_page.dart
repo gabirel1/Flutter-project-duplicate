@@ -8,7 +8,10 @@ import 'package:my_app/Tools/color.dart';
 
 /// The article page
 class ArticlePage extends StatefulWidget {
+  /// ArticlePage
   const ArticlePage({required this.item, super.key});
+
+  /// variable item
   final Item item;
 
   @override

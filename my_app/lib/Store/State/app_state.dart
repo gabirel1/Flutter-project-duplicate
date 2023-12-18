@@ -49,6 +49,8 @@ class AppState {
 
   /// The article state
   final ArticleState article;
+
+  /// The qrCode state
   final QrCodeState qrCode;
 
   /// Copy the app state
