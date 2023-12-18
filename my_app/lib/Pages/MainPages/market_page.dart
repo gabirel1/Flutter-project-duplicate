@@ -62,11 +62,9 @@ class MarketPageState extends State<MarketPage> {
               MaterialPageRoute(
                 builder: (BuildContext context) => ArticlePage(
                   item: item,
-                  index: index,
                 ),
               ),
             );
-            debugPrint('index : $index');
           },
           child: Container(
             width: double.infinity,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_app/Pages/qr_code_page.dart';
 import 'package:my_app/Tools/color.dart';
 
 class MyAppBar extends StatefulWidget implements PreferredSizeWidget {
@@ -73,10 +74,19 @@ class _MyAppBarState extends State<MyAppBar> {
             ),
             Padding(
               padding: const EdgeInsetsDirectional.fromSTEB(4, 4, 8, 4),
-              child: Icon(
-                Icons.qr_code_outlined,
-                color: MyColor().myBlack,
-                size: 32,
+              child: GestureDetector(
+                onTap: () async {
+                  await Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (BuildContext context) => const QrCode(),
+                    ),
+                  );
+                },
+                child: Icon(
+                  Icons.qr_code_outlined,
+                  color: MyColor().myBlack,
+                  size: 32,
+                ),
               ),
             ),
           ],

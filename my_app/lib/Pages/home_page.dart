@@ -38,17 +38,22 @@ class HomePageState extends State<HomePage> {
       converter: (Store<AppState> store) =>
           HomeViewModel.factory(store, PageController()),
       builder: (BuildContext context, HomeViewModel viewModel) {
-        return Scaffold(
-          body: PageView(
-            controller: viewModel.pageController,
-            onPageChanged: viewModel.changePage,
-            children: const <Widget>[
-              MarketPage(),
-              BasketPage(),
-              ProfilePage(),
-            ],
+        return WillPopScope(
+          onWillPop: () async {
+            return false;
+          },
+          child: Scaffold(
+            body: PageView(
+              controller: viewModel.pageController,
+              onPageChanged: viewModel.changePage,
+              children: const <Widget>[
+                MarketPage(),
+                BasketPage(),
+                ProfilePage(),
+              ],
+            ),
+            bottomNavigationBar: bottomNavigationBar(viewModel),
           ),
-          bottomNavigationBar: bottomNavigationBar(viewModel),
         );
       },
     );
