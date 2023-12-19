@@ -99,6 +99,9 @@ class AuthenticationPageState extends State<AuthenticationPage>
                 },
                 child: const Text(
                   'Sign in',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
               const SizedBox(
@@ -233,6 +236,9 @@ class AuthenticationPageState extends State<AuthenticationPage>
                 },
                 child: const Text(
                   'Register',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
               const SizedBox(
