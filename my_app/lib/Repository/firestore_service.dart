@@ -180,6 +180,16 @@ class FirestoreService {
     return ' ';
   }
 
+  /// a function to retrieve the email of the current user
+  String getCurrentUserEmail() {
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    final User? user = auth.currentUser;
+    if (user != null) {
+      return user.email ?? '';
+    }
+    return ' ';
+  }
+
   /// a function to handle the login with google on web
   Future<(bool, String)> handleGoogleLoginWeb() async {
     final GoogleAuthProvider googleProvider = GoogleAuthProvider();
@@ -491,6 +501,75 @@ class FirestoreService {
         return false;
       }
       await _firestore.collection('Item').doc(itemID).delete();
+      return true;
+    } catch (e) {
+      debugPrint(e.toString());
+      return false;
+    }
+  }
+
+  /// Function to add an item to the store
+  /// `images` is a list of images url
+  /// (You should use the function addPictureToStorage prior to this one to get the url of the images)
+  Future<bool> sellerAddItem(
+    String title,
+    String description,
+    double price,
+    List<String> images,
+  ) async {
+    try {
+      final String email = getCurrentUserEmail();
+      final String uuid = getCurrentUserUUID();
+
+      if (email.isEmpty || uuid.isEmpty) {
+        debugPrint('You are not logged in');
+        return false;
+      }
+      await _firestore.collection('Item').add(<String, Object>{
+        'title': title,
+        'description': description,
+        'price': price,
+        'images': images,
+        'seller': email,
+        'sellerUUID': uuid,
+      });
+      return true;
+    } catch (e) {
+      debugPrint(e.toString());
+      return false;
+    }
+  }
+
+  /// Function to create an order
+  /// `items` is a list of items
+  /// `totalPrice` is the total price of the order
+  /// `userID` is the id of the user who ordered
+  /// `howMany` is a list of int that contains the quantity of each item
+  Future<bool> createOrder(
+    List<Item> items,
+    double totalPrice,
+    String userID,
+    List<int> howMany,
+  ) async {
+    try {
+      final List<Map<String, Object>> itemsList = <Map<String, Object>>[];
+      for (int i = 0; i < items.length; i++) {
+        final Item item = items[i];
+        final String itemID = item.id;
+        final DocumentReference<Map<String, dynamic>> itemRef =
+            _firestore.collection('Item').doc(itemID);
+        itemsList.add(<String, Object>{
+          'item': itemRef,
+          'howMany': howMany[i],
+        });
+      }
+      await _firestore.collection('Orders').add(<String, Object>{
+        'userID': userID,
+        'items': itemsList,
+        'totalPrice': totalPrice,
+        'orderedAt': DateTime.now(),
+      });
+
       return true;
     } catch (e) {
       debugPrint(e.toString());
