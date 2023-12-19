@@ -8,6 +8,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:my_app/Store/State/app_state.dart';
 import 'package:my_app/Store/ViewModels/authentication_view_model.dart';
 import 'package:my_app/Tools/color.dart';
+import 'package:my_app/Tools/utils.dart';
 
 /// The authentication page
 class AuthenticationPage extends StatefulWidget {
@@ -103,49 +104,52 @@ class AuthenticationPageState extends State<AuthenticationPage>
               const SizedBox(
                 height: 20,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    margin: const EdgeInsets.only(
-                      top: 10,
-                      bottom: 10,
-                    ),
-                    width: 40,
-                    height: 1,
-                    color: Colors.black,
-                  ),
-                  const Text(
-                    '  Or Sign In with  ',
-                    style: TextStyle(
-                      fontSize: 15,
+              if (MyPlatform.isAndroid() == false)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      margin: const EdgeInsets.only(
+                        top: 10,
+                        bottom: 10,
+                      ),
+                      width: 40,
+                      height: 1,
                       color: Colors.black,
                     ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(
-                      top: 10,
-                      bottom: 10,
+                    const Text(
+                      '  Or Sign In with  ',
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: Colors.black,
+                      ),
                     ),
-                    width: 40,
-                    height: 1,
-                    color: Colors.black,
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              GoogleSignInButton(
-                onPressed: () async {
-                  final bool res = await viewModel.loginWithGoogle();
-                  debugPrint('resOnpressed: $res');
-                  if (res == true && context.mounted) {
-                    Navigator.pop(context);
-                  }
-                },
-                myTitle: 'Sign in with google',
-              ),
+                    Container(
+                      margin: const EdgeInsets.only(
+                        top: 10,
+                        bottom: 10,
+                      ),
+                      width: 40,
+                      height: 1,
+                      color: Colors.black,
+                    ),
+                  ],
+                ),
+              if (MyPlatform.isAndroid() == false)
+                const SizedBox(
+                  height: 20,
+                ),
+              if (MyPlatform.isAndroid() == false)
+                GoogleSignInButton(
+                  onPressed: () async {
+                    final bool res = await viewModel.loginWithGoogle();
+                    debugPrint('resOnpressed: $res');
+                    if (res == true && context.mounted) {
+                      Navigator.pop(context);
+                    }
+                  },
+                  myTitle: 'Sign in with google',
+                ),
             ],
           ),
         ),
@@ -234,46 +238,49 @@ class AuthenticationPageState extends State<AuthenticationPage>
               const SizedBox(
                 height: 10,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    margin: const EdgeInsets.only(
-                      top: 10,
-                      bottom: 10,
-                    ),
-                    width: 100,
-                    height: 1,
-                    color: Colors.black,
-                  ),
-                  const Text(
-                    'Or register with',
-                    style: TextStyle(
-                      fontSize: 15,
+              if (MyPlatform.isAndroid() == false)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      margin: const EdgeInsets.only(
+                        top: 10,
+                        bottom: 10,
+                      ),
+                      width: 40,
+                      height: 1,
                       color: Colors.black,
                     ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(
-                      top: 10,
-                      bottom: 10,
+                    const Text(
+                      '  Or register with  ',
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: Colors.black,
+                      ),
                     ),
-                    // make the width of the line take the remaining space
-                    width: 99,
-                    height: 1,
-                    color: Colors.black,
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              GoogleSignInButton(
-                myTitle: 'Register with Google',
-                onPressed: () async {
-                  await viewModel.registerWithGoogle();
-                },
-              ),
+                    Container(
+                      margin: const EdgeInsets.only(
+                        top: 10,
+                        bottom: 10,
+                      ),
+                      // make the width of the line take the remaining space
+                      width: 40,
+                      height: 1,
+                      color: Colors.black,
+                    ),
+                  ],
+                ),
+              if (MyPlatform.isAndroid() == false)
+                const SizedBox(
+                  height: 20,
+                ),
+              if (MyPlatform.isAndroid() == false)
+                GoogleSignInButton(
+                  myTitle: 'Register with Google',
+                  onPressed: () async {
+                    await viewModel.registerWithGoogle();
+                  },
+                ),
             ],
           ),
         ),
