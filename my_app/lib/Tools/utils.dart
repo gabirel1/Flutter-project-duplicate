@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 class MyPlatform {
   /// returns true if the platform is Android
   static bool isAndroid() {
+    if (kIsWeb) return false;
     if (Platform.isAndroid) {
       return true;
     } else {
@@ -15,6 +16,7 @@ class MyPlatform {
 
   /// returns true if the platform is iOS
   static bool isIOS() {
+    if (kIsWeb) return false;
     if (Platform.isIOS) {
       return true;
     } else {
