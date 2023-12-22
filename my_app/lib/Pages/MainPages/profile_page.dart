@@ -181,7 +181,8 @@ class ProfilePageState extends State<ProfilePage> {
         children: <Widget>[
           Card(
             clipBehavior: Clip.antiAliasWithSaveLayer,
-            color: MyColor().myBlue,
+            color: MyColor().myWhite,
+            surfaceTintColor: MyColor().myGrey,
             elevation: 4,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
@@ -218,6 +219,7 @@ class ProfilePageState extends State<ProfilePage> {
             child: Card(
               clipBehavior: Clip.antiAliasWithSaveLayer,
               color: MyColor().myWhite,
+              surfaceTintColor: MyColor().myGrey,
               elevation: 4,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
