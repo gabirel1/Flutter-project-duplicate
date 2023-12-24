@@ -49,6 +49,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '495774674643',
     projectId: 'flutter-epitech-93ace',
     authDomain: 'flutter-epitech-93ace.firebaseapp.com',
+    databaseURL: 'https://flutter-epitech-93ace-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'flutter-epitech-93ace.appspot.com',
     measurementId: 'G-XSTNVVR0HZ',
   );
@@ -58,6 +59,7 @@ class DefaultFirebaseOptions {
     appId: '1:495774674643:android:0a9062b735d9fea9caee26',
     messagingSenderId: '495774674643',
     projectId: 'flutter-epitech-93ace',
+    databaseURL: 'https://flutter-epitech-93ace-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'flutter-epitech-93ace.appspot.com',
   );
 
@@ -66,6 +68,7 @@ class DefaultFirebaseOptions {
     appId: '1:495774674643:ios:7a03462ea0323024caee26',
     messagingSenderId: '495774674643',
     projectId: 'flutter-epitech-93ace',
+    databaseURL: 'https://flutter-epitech-93ace-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'flutter-epitech-93ace.appspot.com',
     iosClientId: '495774674643-o54oh2p0eqdf4q8l0sf6rsglppl87u88.apps.googleusercontent.com',
     iosBundleId: 'com.example.myApp',
@@ -76,6 +79,7 @@ class DefaultFirebaseOptions {
     appId: '1:495774674643:ios:fae58a4f8dd0d4b9caee26',
     messagingSenderId: '495774674643',
     projectId: 'flutter-epitech-93ace',
+    databaseURL: 'https://flutter-epitech-93ace-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'flutter-epitech-93ace.appspot.com',
     iosClientId: '495774674643-eg20o6brm7k500gbhhqrr7660kqgeiii.apps.googleusercontent.com',
     iosBundleId: 'com.example.myApp.RunnerTests',

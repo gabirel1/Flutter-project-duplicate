@@ -1,43 +1,66 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:my_app/Models/item.dart';
+import 'package:my_app/Store/State/app_state.dart';
+import 'package:my_app/Store/ViewModels/article_view_model.dart';
 import 'package:my_app/Tools/color.dart';
 
+/// The article page
 class ArticlePage extends StatefulWidget {
-  const ArticlePage({required this.item, required this.index, super.key});
+  /// ArticlePage
+  const ArticlePage({required this.item, super.key});
+
+  /// variable item
   final Item item;
-  final int index;
 
   @override
   State<ArticlePage> createState() => ArticlePageState();
 }
 
+/// The article page state
 class ArticlePageState extends State<ArticlePage> {
+  /// The article page state
   final GlobalKey<ScaffoldState> drawerScaffoldKey = GlobalKey<ScaffoldState>();
+
+  /// The boolean to know if the item is in the basket
+  bool isInBasket = false;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: drawerScaffoldKey,
-      appBar: buildCustomAppBar(),
-      body: Column(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsetsDirectional.fromSTEB(0, 20, 0, 20),
-            child: Row(
+    return StoreConnector<AppState, ArticleViewModel>(
+      converter: ArticleViewModel.factory,
+      builder: (BuildContext context, ArticleViewModel viewModel) {
+        return Scaffold(
+          key: drawerScaffoldKey,
+          appBar: buildCustomAppBar(),
+          body: SingleChildScrollView(
+            child: Column(
               children: <Widget>[
-                buildTitle(),
-                buildPrice(),
+                Padding(
+                  padding: const EdgeInsetsDirectional.fromSTEB(0, 20, 0, 20),
+                  child: Row(
+                    children: <Widget>[
+                      buildTitle(),
+                      buildPrice(),
+                    ],
+                  ),
+                ),
+                const Divider(),
+                if (widget.item.images.length > 1)
+                  buildCarousel()
+                else
+                  buildImage(),
+                const Divider(),
+                buildDescription(),
+                buildSeller(),
+                buildIconCart(viewModel),
               ],
             ),
           ),
-          buildCarousel(),
-          buildDescription(),
-          buildSeller(),
-          buildIconCart(),
-        ],
-      ),
-      backgroundColor: MyColor.myWhite,
+          backgroundColor: MyColor().myWhite,
+        );
+      },
     );
   }
 
@@ -47,8 +70,8 @@ class ArticlePageState extends State<ArticlePage> {
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: <Color>[
-                MyColor.myGreen,
-                MyColor.myBlue,
+                MyColor().myGreen,
+                MyColor().myBlue,
               ],
               stops: const <double>[0, 1],
               begin: AlignmentDirectional.centerEnd,
@@ -59,7 +82,7 @@ class ArticlePageState extends State<ArticlePage> {
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back_outlined,
-            color: MyColor.myBlack,
+            color: MyColor().myBlack,
           ),
           onPressed: () {
             Navigator.of(context).pop();
@@ -94,7 +117,7 @@ class ArticlePageState extends State<ArticlePage> {
         padding: const EdgeInsetsDirectional.fromSTEB(0, 20, 0, 20),
         child: SizedBox(
           width: double.infinity,
-          height: 180,
+          height: 300,
           child: CarouselSlider(
             items: widget.item.images.map((String image) {
               return ClipRRect(
@@ -103,8 +126,8 @@ class ArticlePageState extends State<ArticlePage> {
                   image.isNotEmpty
                       ? image
                       : 'https://www.fluttercampus.com/img/4by3.webp',
-                  width: 300,
-                  height: 200,
+                  width: 200,
+                  height: 300,
                   fit: BoxFit.cover,
                 ),
               );
@@ -120,9 +143,25 @@ class ArticlePageState extends State<ArticlePage> {
         ),
       );
 
+  /// Widget image Padding
+  Widget buildImage() => Padding(
+        padding: const EdgeInsetsDirectional.fromSTEB(20, 20, 20, 20),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: Image.network(
+            widget.item.images[0].isNotEmpty
+                ? widget.item.images[0]
+                : 'https://www.fluttercampus.com/img/4by3.webp',
+            width: 200,
+            height: 300,
+            fit: BoxFit.cover,
+          ),
+        ),
+      );
+
   /// Widget descritpion Padding
   Widget buildDescription() => Padding(
-        padding: const EdgeInsetsDirectional.fromSTEB(0, 20, 0, 20),
+        padding: const EdgeInsetsDirectional.fromSTEB(20, 20, 20, 20),
         child: Text(
           widget.item.description,
         ),
@@ -130,23 +169,42 @@ class ArticlePageState extends State<ArticlePage> {
 
   /// Widget seller Padding
   Widget buildSeller() => Padding(
-        padding: const EdgeInsetsDirectional.fromSTEB(0, 20, 0, 20),
+        padding: const EdgeInsetsDirectional.fromSTEB(20, 20, 20, 20),
         child: Text(
           widget.item.seller,
         ),
       );
 
   /// Widget icon cart Padding
-  Widget buildIconCart() => Padding(
-        padding: const EdgeInsetsDirectional.fromSTEB(0, 20, 0, 20),
+  Widget buildIconCart(ArticleViewModel viewModel) => Padding(
+        padding: const EdgeInsetsDirectional.fromSTEB(20, 20, 20, 20),
         child: GestureDetector(
-          onTap: () {
-
+          onTap: () async {
+            viewModel.addCart(widget.item);
+            await buildShowDialogAddedCart();
           },
           child: const Icon(
             Icons.add_shopping_cart_outlined,
             size: 48,
           ),
         ),
+      );
+
+  /// Widget Future show dialog Error
+  Future<dynamic> buildShowDialogAddedCart() => showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text(
+              'Article added to cart',
+              style: TextStyle(
+                fontSize: 14,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            backgroundColor: MyColor().myGrey,
+          );
+        },
       );
 }

@@ -9,46 +9,46 @@ import 'package:my_app/Store/ViewModels/market_view_model.dart';
 import 'package:my_app/Tools/color.dart';
 import 'package:redux/redux.dart';
 
+/// The market page
 class MarketPage extends StatefulWidget {
+  /// The market page
   const MarketPage({super.key});
 
   @override
   State<MarketPage> createState() => MarketPageState();
 }
 
+/// The market page state
 class MarketPageState extends State<MarketPage> {
+  /// The market page state
   final GlobalKey<ScaffoldState> drawerScaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, MarketViewModel>(
-      converter: (Store<AppState> store) =>
-          MarketViewModel.factory(store, FirestoreService()),
+      converter: (Store<AppState> store) => MarketViewModel.factory(
+        store,
+        FirestoreService(),
+      ),
       onInitialBuild: (MarketViewModel viewModel) {
         viewModel.loadItems();
       },
       builder: (BuildContext context, MarketViewModel viewModel) {
-        return StoreConnector<AppState, MarketViewModel>(
-          converter: (Store<AppState> store) =>
-              MarketViewModel.factory(store, FirestoreService()),
-          builder: (BuildContext context, MarketViewModel viewModel) {
-            return Scaffold(
-              key: drawerScaffoldKey,
-              body: viewModel.items.isEmpty
-                  ? const Text('ça charge....')
-                  : ListView.builder(
-                      itemCount: viewModel.items.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return buildItem(
-                          viewModel.items.elementAt(index),
-                          index,
-                        );
-                      },
-                    ),
-              appBar: const MyAppBar(),
-              backgroundColor: MyColor.myWhite,
-            );
-          },
+        return Scaffold(
+          key: drawerScaffoldKey,
+          body: viewModel.items.isEmpty
+              ? const Text('ça charge....')
+              : ListView.builder(
+                  itemCount: viewModel.items.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return buildItem(
+                      viewModel.items.elementAt(index),
+                      index,
+                    );
+                  },
+                ),
+          appBar: const MyAppBar(),
+          backgroundColor: MyColor().myWhite,
         );
       },
     );
@@ -62,15 +62,12 @@ class MarketPageState extends State<MarketPage> {
         child: GestureDetector(
           onTap: () async {
             await Navigator.of(context).push(
-              // ignore: always_specify_types
-              MaterialPageRoute(
+              MaterialPageRoute<void>(
                 builder: (BuildContext context) => ArticlePage(
                   item: item,
-                  index: index,
                 ),
               ),
             );
-            debugPrint('index : $index');
           },
           child: Container(
             width: double.infinity,

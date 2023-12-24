@@ -1,27 +1,17 @@
 import 'package:my_app/Models/item.dart';
-import 'package:my_app/Models/order.dart';
 
+/// The basket state
 class BasketState {
+  /// The basket state
   BasketState({
-    required this.orders,
+    this.items,
   });
 
+  /// The basket state initial
   factory BasketState.initial() => BasketState(
-        orders: <Order>{
-          Order(
-            item: Item(
-              id: 0,
-              description:
-                  "Ceci est un très bon objet que je vous conseil d'acheter le plus rapidement possible",
-              title: 'La zaza ULTRA RARE A VENDRE',
-              seller: 'PinkyDoll',
-              images: <String>['Image'],
-              price: 5.99,
-            ),
-            quantity: 2,
-          ),
-        },
+        items: <Item>[],
       );
 
-  OrderSet orders;
+  /// The items
+  List<Item>? items;
 }

@@ -1,9 +1,22 @@
 import 'package:flutter/material.dart';
 
+/// The color class
 class MyColor {
-  static Color myBlack = const Color(0xff000000);
-  static Color myWhite = const Color(0xffFFFFFF);
-  static Color myGrey = const Color(0xffE5E4E2);
-  static Color myBlue = const Color(0xff6CB4EE);
-  static Color myGreen = const Color(0xff42BEA5);
+  /// the black color
+  Color myBlack = const Color(0xff000000);
+
+  /// the white color
+  Color myWhite = const Color(0xffFFFFFF);
+
+  /// the grey color
+  Color myGrey = const Color(0xffE5E4E2);
+
+  /// the blue color
+  Color myBlue = const Color(0xff6CB4EE);
+
+  /// the green color
+  Color myGreen = const Color(0xff42BEA5);
+
+  /// the red color
+  Color myRed = const Color(0xffe40000);
 }

@@ -30,5 +30,7 @@
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
 	<string>1:495774674643:ios:7a03462ea0323024caee26</string>
+	<key>DATABASE_URL</key>
+	<string>https://flutter-epitech-93ace-default-rtdb.europe-west1.firebasedatabase.app</string>
 </dict>
 </plist>
