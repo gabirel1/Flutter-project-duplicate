@@ -167,7 +167,7 @@ class ProfilePageState extends State<ProfilePage> {
     ProfileViewModel viewModel,
   ) {
     debugPrint('sellingItems: $sellingItems');
-    if (sellingItems == null) {
+    if (sellingItems == null || sellingItems.isEmpty) {
       return const Center(
         child: CircularProgressIndicator(
           color: Colors.black,
@@ -181,7 +181,8 @@ class ProfilePageState extends State<ProfilePage> {
         children: <Widget>[
           Card(
             clipBehavior: Clip.antiAliasWithSaveLayer,
-            color: MyColor().myBlue,
+            color: MyColor().myWhite,
+            surfaceTintColor: MyColor().myGrey,
             elevation: 4,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
@@ -203,7 +204,8 @@ class ProfilePageState extends State<ProfilePage> {
 
   /// Item list view
   Widget itemListView(MyOrder? orderList, BuildContext context) {
-    if (orderList == null) {
+    debugPrint('orderList: $orderList');
+    if (orderList == null || orderList.items.isEmpty) {
       return const Center(
         child: CircularProgressIndicator(),
       );
@@ -218,6 +220,7 @@ class ProfilePageState extends State<ProfilePage> {
             child: Card(
               clipBehavior: Clip.antiAliasWithSaveLayer,
               color: MyColor().myWhite,
+              surfaceTintColor: MyColor().myGrey,
               elevation: 4,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
