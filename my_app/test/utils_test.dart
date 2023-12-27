@@ -11,8 +11,9 @@ void main() {
   });
   test('MyUtils test', () {
     expect(
-        MyUtils.checkFormValidity('email@domain.com', 'password', 'password'),
-        true);
+      MyUtils.checkFormValidity('email@domain.com', 'password', 'password'),
+      true,
+    );
     expect(MyUtils.checkFormValidity('', 'password', 'password'), false);
     expect(MyUtils.checkFormValidity('email', '', 'password'), false);
     expect(MyUtils.checkFormValidity('email', 'password', ''), false);
