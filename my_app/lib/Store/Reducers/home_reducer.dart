@@ -5,8 +5,8 @@ import 'package:my_app/Store/State/home_state.dart';
 /// The home reducer
 HomeState homeReducer(HomeState state, dynamic action) {
   final HomeState newState = state;
-  switch (action.runtimeType) {
-    case const (HomeChangePageAction):
+  switch (action) {
+    case final HomeChangePageAction action:
       debugPrint('${action.page}');
       newState.page = action.page;
       return newState;

@@ -4,29 +4,29 @@ import 'package:my_app/Store/State/profile_state.dart';
 /// The profile reducer
 ProfileState profileReducer(ProfileState state, dynamic action) {
   final ProfileState newState = state;
-  switch (action.runtimeType) {
-    case const (ProfileLastItemsBoughtListAction):
+  switch (action) {
+    case final ProfileLastItemsBoughtListAction action:
       newState.lastItemsBought = action.items;
       return newState;
-    case const (ProfileUserInfosAction):
+    case final ProfileUserInfosAction action:
       newState.userInfos = action.userInfos;
       return newState;
-    case const (ProfileUUIDAction):
+    case final ProfileUUIDAction action:
       newState.uuid = action.uuid;
       return newState;
-    case const (ProfileSetUserUUIDAction):
+    case final ProfileSetUserUUIDAction action:
       newState.uuid = action.uuid;
       return newState;
-    case const (ProfileChangeUserPictureAction):
+    case final ProfileChangeUserPictureAction action:
       newState.userInfos!.profilePicture = action.picture;
       return newState;
-    case const (ProfileLastOrdersAction):
+    case final ProfileLastOrdersAction action:
       newState.orders = action.orders;
       return newState;
-    case const (ProfileIsSellerAction):
+    case final ProfileIsSellerAction action:
       newState.isSeller = action.isSeller;
       return newState;
-    case const (ProfileSellingItemsAction):
+    case final ProfileSellingItemsAction action:
       newState.sellingItems = action.sellingItems;
       return newState;
     default:

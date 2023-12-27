@@ -74,7 +74,7 @@ class MarketPageState extends State<MarketPage> {
             height: 400,
             decoration: BoxDecoration(
               border: Border.all(
-                color: MyColor.myGrey,
+                color: MyColor().myGrey,
               ),
               borderRadius: BorderRadius.circular(20),
             ),

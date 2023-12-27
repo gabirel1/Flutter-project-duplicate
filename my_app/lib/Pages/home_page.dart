@@ -42,11 +42,7 @@ class HomePageState extends State<HomePage> {
       converter: (Store<AppState> store) =>
           HomeViewModel.factory(store, PageController()),
       builder: (BuildContext context, HomeViewModel viewModel) {
-        return WillPopScope(
-          onWillPop: () async {
-            return false;
-          },
-          child: Scaffold(
+        return Scaffold(
             body: PageView(
               controller: viewModel.pageController,
               onPageChanged: viewModel.changePage,
@@ -57,8 +53,7 @@ class HomePageState extends State<HomePage> {
               ],
             ),
             bottomNavigationBar: bottomNavigationBar(viewModel),
-          ),
-        );
+          );
       },
     );
   }
@@ -66,7 +61,7 @@ class HomePageState extends State<HomePage> {
   /// The bottom navigation bar
   BottomNavigationBar bottomNavigationBar(HomeViewModel viewModel) {
     return BottomNavigationBar(
-      backgroundColor: MyColor.myWhite,
+      backgroundColor: MyColor().myWhite,
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: Icon(Icons.home_outlined),
@@ -82,7 +77,7 @@ class HomePageState extends State<HomePage> {
         ),
       ],
       currentIndex: viewModel.page.index,
-      selectedItemColor: MyColor.myBlue,
+      selectedItemColor: MyColor().myBlue,
       onTap: viewModel.bottomTap,
     );
   }

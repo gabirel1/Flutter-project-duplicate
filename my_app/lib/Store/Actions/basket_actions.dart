@@ -1,37 +1,52 @@
-import 'package:my_app/Models/order.dart';
+import 'package:my_app/Models/my_orders.dart';
+import 'package:my_app/Models/order_item.dart';
 
 /// The basket remove item action
 class BasketRemoveItemAction {
   /// Remove an item from the basket
-  BasketRemoveItemAction({required this.item});
-class BasketAddOrderAction {
-  BasketAddOrderAction({required this.order});
+  BasketRemoveItemAction({required this.orderItem});
 
   /// The item to remove
-  Item item;
-  Order order;
+  OrderItem orderItem;
 }
 
 /// The basket add item action
 class BasketAddItemAction {
   /// Add an item to the basket
-  BasketAddItemAction({required this.item});
-class BasketAddOrderUnitAction {
-  BasketAddOrderUnitAction({required this.order});
+  BasketAddItemAction({required this.orderItem});
 
   /// The item to add
-  Item item;
-  final Order order;
+  OrderItem orderItem;
 }
 
-class BasketRemoveOrderAction {
-  BasketRemoveOrderAction({required this.order});
+/// BasketAddItemUnitAction
+class BasketAddItemUnitAction {
 
-  final Order order;
+  /// Constructor
+  BasketAddItemUnitAction({required this.orderItem});
+
+  /// item
+  OrderItem orderItem;
+
 }
 
-class BasketRemoveOrderUnitAction {
-  BasketRemoveOrderUnitAction({required this.order});
+/// BasketRemoveItemUnitAction
+class BasketRemoveItemUnitAction {
 
-  final Order order;
+  /// Constructor
+  BasketRemoveItemUnitAction({required this.orderItem});
+
+  /// item
+  OrderItem orderItem;
+
+}
+
+/// BasketCheckoutAction
+class BasketCheckoutAction {
+
+  /// Constructor
+  BasketCheckoutAction({required this.order});
+
+  /// order
+  MyOrder order;
 }

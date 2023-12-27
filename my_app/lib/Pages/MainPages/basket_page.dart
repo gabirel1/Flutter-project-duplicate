@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:my_app/Models/item.dart';
-import 'package:my_app/Models/order.dart';
+import 'package:my_app/Models/order_item.dart';
 import 'package:my_app/Pages/article_page.dart';
 import 'package:my_app/Store/State/app_state.dart';
 import 'package:my_app/Store/ViewModels/basket_view_model.dart';
@@ -27,15 +27,57 @@ class BasketPageState extends State<BasketPage> {
       converter: BasketViewModel.factory,
       builder: (BuildContext context, BasketViewModel viewModel) {
         return Scaffold(
+          appBar: AppBar(
+            title: Row(
+              children: <Widget>[
+                const Text('Total:'),
+                const SizedBox(width: 8,),
+                Text('${viewModel.order.totalPrice.toString()} €')
+              ],
+            ),
+            actions: <Widget>[
+              ElevatedButton(
+                  onPressed: () async {
+                    if (await viewModel.checkout(viewModel.order) == false) {
+                      await buildShowDialogLogin();
+                    }
+                  },
+                  child: const Row(
+                    children: <Widget>[
+                      Text('Checkout'),
+                      SizedBox(width: 8,),
+                      Icon(Icons.payments_sharp),
+                    ],
+                  ),
+              ),
+            ],
+            automaticallyImplyLeading: false,
+            flexibleSpace: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: <Color>[
+                    MyColor().myGreen,
+                    MyColor().myBlue,
+                  ],
+                  stops: const <double>[0, 1],
+                  begin: AlignmentDirectional.centerEnd,
+                  end: AlignmentDirectional.bottomStart,
+                ),
+              ),
+            ),
+          ),
           key: drawerScaffoldKey,
           body: SafeArea(
-            child: viewModel.orders.isEmpty
+            child: viewModel.order.items.isEmpty
                 ? buildEmptyBasket()
                 : ListView.builder(
-                    itemCount: viewModel.orders.length,
+                    itemCount: viewModel.order.items.length,
                     itemBuilder: (BuildContext context, int index) {
                       return buildBasket(
-                          viewModel, viewModel.orders.elementAt(index), index);
+                        viewModel,
+                        viewModel.order.items.elementAt(index),
+                        index,
+                      );
                     },
                   ),
           ),
@@ -44,6 +86,7 @@ class BasketPageState extends State<BasketPage> {
     );
   }
 
+  /// buildEmptyBasket
   Widget buildEmptyBasket() => Center(
         widthFactor: MediaQuery.of(context).size.width * 0.80,
         heightFactor: MediaQuery.of(context).size.height * 0.65,
@@ -56,64 +99,65 @@ class BasketPageState extends State<BasketPage> {
             ),
             Icon(
               Icons.sentiment_dissatisfied_outlined,
-              color: MyColor.myBlack.withOpacity(0.25),
+              color: MyColor().myBlack.withOpacity(0.25),
               size: MediaQuery.of(context).size.width * 0.3,
             ),
           ],
         ),
       );
 
-  Widget buildBasket(BasketViewModel viewModel, Order order, int index) => SizedBox(
-      height: 120,
-      child: Padding(
-        padding: const EdgeInsetsDirectional.fromSTEB(10, 5, 10, 5),
-        child: GestureDetector(
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: MyColor.myGrey,
-              ),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: buildItem(viewModel, order, index),
-          ),
-          onTap: () async {
-            await Navigator.of(context).push(
-              MaterialPageRoute<ArticlePage>(
-                builder: (BuildContext context) => ArticlePage(
-                  item: order.item,
-                  index: index,
+  /// buildBasket
+  Widget buildBasket(BasketViewModel viewModel, OrderItem item, int index) =>
+      SizedBox(
+        height: 120,
+        child: Padding(
+          padding: const EdgeInsetsDirectional.fromSTEB(10, 5, 10, 5),
+          child: GestureDetector(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: MyColor().myGrey,
                 ),
+                borderRadius: BorderRadius.circular(20),
               ),
-            );
-          },
+              child: buildItem(viewModel, item, index),
+            ),
+            onTap: () async {
+              await Navigator.of(context).push(
+                MaterialPageRoute<ArticlePage>(
+                  builder: (BuildContext context) => ArticlePage(
+                    item: item.item,
+                  ),
+                ),
+              );
+            },
+          ),
         ),
-      ),);
+      );
 
-  Widget buildItem(BasketViewModel viewModel, Order order, int index) =>
-      Padding(
+  /// buildItem
+  Widget buildItem(BasketViewModel viewModel, OrderItem item, int index) => Padding(
         padding: const EdgeInsetsDirectional.fromSTEB(15, 10, 15, 10),
         child: Row(
-
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Expanded(
               flex: 2,
-              child: buildItemImage(order.item.images[0]),
+              child: buildItemImage(item.item.images[0]),
             ),
             Expanded(
               flex: 5,
-              child: buildItemData(order.item),
+              child: buildItemData(item.item),
             ),
             Expanded(
               flex: 3,
               child: Wrap(
                 alignment: WrapAlignment.center,
                 children: <Widget>[
-                  buildItemQuantity(viewModel, order),
+                  buildItemQuantity(viewModel, item),
                   IconButton(
                     onPressed: () {
-                      viewModel.removeItem(order);
+                      viewModel.removeItem(item);
                     },
                     icon: const Icon(
                       Icons.delete_forever,
@@ -127,6 +171,7 @@ class BasketPageState extends State<BasketPage> {
         ),
       );
 
+  /// buildItemData
   Widget buildItemData(Item item) => Padding(
         padding: const EdgeInsetsDirectional.fromSTEB(10, 0, 0, 10),
         child: Column(
@@ -139,6 +184,7 @@ class BasketPageState extends State<BasketPage> {
         ),
       );
 
+  /// buildItemImage
   Widget buildItemImage(String image) => LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
           return ClipRRect(
@@ -156,6 +202,7 @@ class BasketPageState extends State<BasketPage> {
         },
       );
 
+  /// buildItemTitle
   Widget buildItemTitle(String title) => Flexible(
         child: Text(
           title,
@@ -169,6 +216,7 @@ class BasketPageState extends State<BasketPage> {
         ),
       );
 
+  /// buildItemDescription
   Widget buildItemDescription(String description) => Flexible(
         flex: 3,
         child: Text(
@@ -177,18 +225,19 @@ class BasketPageState extends State<BasketPage> {
           maxLines: 3,
           style: TextStyle(
             fontSize: 14,
-            color: MyColor.myBlack.withOpacity(0.25),
+            color: MyColor().myBlack.withOpacity(0.25),
           ),
         ),
       );
 
-  Widget buildItemQuantity(BasketViewModel viewModel, Order order) => Row(
+  /// buildItemQuantity
+  Widget buildItemQuantity(BasketViewModel viewModel, OrderItem order) => Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Flexible(
             child: IconButton(
               onPressed: () {
-                viewModel.addItemUnit(order);
+                viewModel.addUnit(order);
               },
               padding: EdgeInsets.zero,
               icon: const Icon(Icons.add),
@@ -198,7 +247,7 @@ class BasketPageState extends State<BasketPage> {
           Flexible(
             child: IconButton(
               onPressed: () {
-                viewModel.removeItemUnit(order);
+                viewModel.removeUnit(order);
               },
               padding: EdgeInsets.zero,
               icon: const Icon(Icons.remove),
@@ -206,4 +255,22 @@ class BasketPageState extends State<BasketPage> {
           ),
         ],
       );
+
+  /// Widget Future show dialog Error
+  Future<dynamic> buildShowDialogLogin() => showDialog(
+    context: context,
+    barrierDismissible: true,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text(
+          'Log in first',
+          style: TextStyle(
+            fontSize: 14,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        backgroundColor: MyColor().myGrey,
+      );
+    },
+  );
 }

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:json_annotation/json_annotation.dart';
 import 'package:my_app/Models/item.dart';
 
@@ -24,4 +26,16 @@ class OrderItem {
 
   /// OrderItem quantity
   int quantity;
+
+  @override
+  bool operator ==(Object other) {
+    if (other.runtimeType != runtimeType) {
+      return false;
+    }
+    return other is OrderItem
+      && other.item == item;
+  }
+
+  @override
+  int get hashCode => Object.hash(item, quantity);
 }

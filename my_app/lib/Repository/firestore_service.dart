@@ -546,21 +546,21 @@ class FirestoreService {
   /// `userID` is the id of the user who ordered
   /// `howMany` is a list of int that contains the quantity of each item
   Future<bool> createOrder(
-    List<Item> items,
+    List<OrderItem> items,
     double totalPrice,
     String userID,
-    List<int> howMany,
+    //List<int> howMany,
   ) async {
     try {
       final List<Map<String, Object>> itemsList = <Map<String, Object>>[];
       for (int i = 0; i < items.length; i++) {
-        final Item item = items[i];
+        final Item item = items[i].item;
         final String itemID = item.id;
         final DocumentReference<Map<String, dynamic>> itemRef =
             _firestore.collection('Item').doc(itemID);
         itemsList.add(<String, Object>{
           'item': itemRef,
-          'howMany': howMany[i],
+          'howMany': items[i].quantity,
         });
       }
       await _firestore.collection('Orders').add(<String, Object>{
