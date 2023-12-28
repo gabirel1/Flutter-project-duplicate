@@ -1,4 +1,4 @@
-import 'dart:developer';
+// import 'dart:developer';
 
 import 'package:json_annotation/json_annotation.dart';
 import 'package:my_app/Models/item.dart';
@@ -32,8 +32,7 @@ class OrderItem {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is OrderItem
-      && other.item == item;
+    return other is OrderItem && other.item == item;
   }
 
   @override

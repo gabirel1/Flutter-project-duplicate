@@ -6,6 +6,7 @@ import 'package:my_app/Pages/article_page.dart';
 import 'package:my_app/Store/State/app_state.dart';
 import 'package:my_app/Store/ViewModels/basket_view_model.dart';
 import 'package:my_app/Tools/color.dart';
+import 'package:rive/rive.dart' hide LinearGradient;
 
 /// The basket page
 class BasketPage extends StatefulWidget {
@@ -31,24 +32,30 @@ class BasketPageState extends State<BasketPage> {
             title: Row(
               children: <Widget>[
                 const Text('Total:'),
-                const SizedBox(width: 8,),
-                Text('${viewModel.order.totalPrice.toString()} €')
+                const SizedBox(
+                  width: 8,
+                ),
+                Text('${viewModel.order.totalPrice.toString()} €'),
               ],
             ),
             actions: <Widget>[
               ElevatedButton(
-                  onPressed: () async {
-                    if (await viewModel.checkout(viewModel.order) == false) {
-                      await buildShowDialogLogin();
-                    }
-                  },
-                  child: const Row(
-                    children: <Widget>[
-                      Text('Checkout'),
-                      SizedBox(width: 8,),
-                      Icon(Icons.payments_sharp),
-                    ],
-                  ),
+                onPressed: () async {
+                  if (await viewModel.checkout(viewModel.order) == false) {
+                    await buildShowDialogLogin();
+                  } else {
+                    await buildShowDialogSuccessfulCheckout();
+                  }
+                },
+                child: const Row(
+                  children: <Widget>[
+                    Text('Checkout'),
+                    SizedBox(
+                      width: 8,
+                    ),
+                    Icon(Icons.payments_sharp),
+                  ],
+                ),
               ),
             ],
             automaticallyImplyLeading: false,
@@ -91,16 +98,21 @@ class BasketPageState extends State<BasketPage> {
         widthFactor: MediaQuery.of(context).size.width * 0.80,
         heightFactor: MediaQuery.of(context).size.height * 0.65,
         child: Wrap(
-          direction: Axis.vertical,
+          alignment: WrapAlignment.center,
           children: <Widget>[
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.3,
+              width: MediaQuery.of(context).size.width * 1,
+              child: const RiveAnimation.asset(
+                'assets/animations/empty_basket.riv',
+              ),
+            ),
             const Text(
               'Basket is empty',
-              style: TextStyle(fontSize: 18),
-            ),
-            Icon(
-              Icons.sentiment_dissatisfied_outlined,
-              color: MyColor().myBlack.withOpacity(0.25),
-              size: MediaQuery.of(context).size.width * 0.3,
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ],
         ),
@@ -136,7 +148,8 @@ class BasketPageState extends State<BasketPage> {
       );
 
   /// buildItem
-  Widget buildItem(BasketViewModel viewModel, OrderItem item, int index) => Padding(
+  Widget buildItem(BasketViewModel viewModel, OrderItem item, int index) =>
+      Padding(
         padding: const EdgeInsetsDirectional.fromSTEB(15, 10, 15, 10),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -193,7 +206,10 @@ class BasketPageState extends State<BasketPage> {
               //image.isNotEmpty
               //? image
               /*:*/
-              'https://www.fluttercampus.com/img/4by3.webp',
+              // 'https://www.fluttercampus.com/img/4by3.webp',
+              (image.isNotEmpty && image != '')
+                  ? image
+                  : 'https://www.fluttercampus.com/img/4by3.webp',
               width: 80,
               height: 80,
               fit: BoxFit.cover,
@@ -258,19 +274,42 @@ class BasketPageState extends State<BasketPage> {
 
   /// Widget Future show dialog Error
   Future<dynamic> buildShowDialogLogin() => showDialog(
-    context: context,
-    barrierDismissible: true,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: const Text(
-          'Log in first',
-          style: TextStyle(
-            fontSize: 14,
-          ),
-          textAlign: TextAlign.center,
-        ),
-        backgroundColor: MyColor().myGrey,
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text(
+              'Log in first',
+              style: TextStyle(
+                fontSize: 14,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            backgroundColor: MyColor().myGrey,
+          );
+        },
       );
-    },
-  );
+
+  /// Widget Future show dialog order placed
+  Future<dynamic> buildShowDialogSuccessfulCheckout() => showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          Future<void>.delayed(const Duration(seconds: 2), () {
+            if (context.mounted) {
+              Navigator.of(context).pop(true);
+            }
+          });
+          return AlertDialog(
+            title: const Text(
+              'Your order has been placed',
+              style: TextStyle(
+                fontSize: 14,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            backgroundColor: MyColor().myGrey,
+          );
+        },
+      );
 }

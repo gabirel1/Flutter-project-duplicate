@@ -1,4 +1,4 @@
-import 'dart:developer';
+// import 'dart:developer';
 
 import 'package:my_app/Models/my_orders.dart';
 import 'package:my_app/Models/order_item.dart';
@@ -18,8 +18,8 @@ class BasketViewModel {
     required this.removeUnit,
     required this.checkout,
   });
-  /// userUUID
 
+  /// userUUID
 
   /// The basket view model factory
   factory BasketViewModel.factory(Store<AppState> store) {
@@ -42,9 +42,12 @@ class BasketViewModel {
       checkout: (MyOrder order) async {
         if (store.state.profile.uuid != ' ' || userUUID != ' ') {
           await FirestoreService().createOrder(
-              order.items, order.totalPrice, (store.state.profile.uuid == ' ')
-              ? userUUID
-              : store.state.profile.uuid,);
+            order.items,
+            order.totalPrice,
+            (store.state.profile.uuid == ' ')
+                ? userUUID
+                : store.state.profile.uuid,
+          );
           store.dispatch(BasketCheckoutAction(order: order));
           return true;
         }
@@ -52,7 +55,6 @@ class BasketViewModel {
       },
     );
   }
-
 
   /// Order
   final MyOrder order;
@@ -71,5 +73,4 @@ class BasketViewModel {
 
   /// checkout
   final Future<bool> Function(MyOrder order) checkout;
-
 }
