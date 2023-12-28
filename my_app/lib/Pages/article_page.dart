@@ -19,12 +19,45 @@ class ArticlePage extends StatefulWidget {
 }
 
 /// The article page state
-class ArticlePageState extends State<ArticlePage> {
+class ArticlePageState extends State<ArticlePage>
+    with TickerProviderStateMixin {
   /// The article page state
   final GlobalKey<ScaffoldState> drawerScaffoldKey = GlobalKey<ScaffoldState>();
 
+  late AnimationController _controller;
+  late Animation<double> _animation;
+  // the animation will make the button bigger when clicked
+
   /// The boolean to know if the item is in the basket
   bool isInBasket = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    /// The code snippet is creating an animation controller and animation for a button in the
+    /// ArticlePageState class.
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 500),
+      vsync: this,
+    );
+    _animation = Tween<double>(begin: 100, end: 200).animate(_controller)
+      ..addStatusListener((AnimationStatus status) {
+        if (status == AnimationStatus.completed) {
+          _controller.reverse();
+        }
+      });
+
+    _controller.addListener(() {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -176,16 +209,24 @@ class ArticlePageState extends State<ArticlePage> {
       );
 
   /// Widget icon cart Padding
-  Widget buildIconCart(ArticleViewModel viewModel) => Padding(
+  Widget buildIconCart(
+    ArticleViewModel viewModel,
+  ) =>
+      Padding(
         padding: const EdgeInsetsDirectional.fromSTEB(20, 20, 20, 20),
-        child: GestureDetector(
-          onTap: () async {
+        child: IconButton(
+          color: MyColor().myGreen,
+          onPressed: () async {
+            await _controller.forward();
             viewModel.addCart(widget.item);
             await buildShowDialogAddedCart();
           },
-          child: const Icon(
-            Icons.add_shopping_cart_outlined,
-            size: 48,
+          icon: Transform.scale(
+            scale: _animation.value / 100,
+            child: const Icon(
+              Icons.add_shopping_cart_outlined,
+              size: 72,
+            ),
           ),
         ),
       );
@@ -195,7 +236,13 @@ class ArticlePageState extends State<ArticlePage> {
         context: context,
         barrierDismissible: true,
         builder: (BuildContext context) {
+          Future<void>.delayed(const Duration(seconds: 2), () {
+            if (context.mounted) {
+              Navigator.of(context).pop(true);
+            }
+          });
           return AlertDialog(
+            alignment: AlignmentDirectional.topCenter,
             title: const Text(
               'Article added to cart',
               style: TextStyle(

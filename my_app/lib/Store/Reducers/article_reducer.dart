@@ -1,4 +1,6 @@
-import 'package:my_app/Models/item.dart';
+// import 'dart:developer';
+
+// import 'package:my_app/Models/item.dart';
 import 'package:my_app/Store/Actions/article_actions.dart';
 import 'package:my_app/Store/State/article_state.dart';
 
@@ -8,12 +10,12 @@ ArticleState articleReducer(ArticleState state, dynamic action) {
 
   switch (action) {
     /// The article remove actions
-    case const (ArticleRemoveItemAction):
-      state.items?.remove(action as Item);
+    case final ArticleRemoveItemAction item:
+      state.items?.remove(item.item);
       newState.items = state.items;
       return newState;
-    case const (ArticleAddItemAction):
-      state.items?.add(action as Item);
+    case final ArticleAddItemAction item:
+      state.items?.add(item.item);
       newState.items = state.items;
       return newState;
     default:

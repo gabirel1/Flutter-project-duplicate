@@ -48,6 +48,7 @@ dependencies:
   qr_code_scanner: ^1.0.1
   redux: ^5.0.0
   redux_logging: ^0.5.1
+  rive: ^0.12.4
 
 
 dev_dependencies:
@@ -84,7 +85,7 @@ flutter:
   #   - images/a_dot_ham.jpeg
   assets:
     - assets/images/google_logo.png
-
+    - assets/animations/empty_basket.riv
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 

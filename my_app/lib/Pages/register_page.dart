@@ -16,16 +16,11 @@ class RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        return false;
-      },
-      child: Scaffold(
+    return Scaffold(
         backgroundColor: Colors.blue,
         body: Scaffold(
           key: drawerScaffoldKey,
         ),
-      ),
     );
   }
 }

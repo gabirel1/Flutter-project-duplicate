@@ -42,11 +42,7 @@ class HomePageState extends State<HomePage> {
       converter: (Store<AppState> store) =>
           HomeViewModel.factory(store, PageController()),
       builder: (BuildContext context, HomeViewModel viewModel) {
-        return WillPopScope(
-          onWillPop: () async {
-            return false;
-          },
-          child: Scaffold(
+        return Scaffold(
             body: PageView(
               controller: viewModel.pageController,
               onPageChanged: viewModel.changePage,
@@ -57,8 +53,7 @@ class HomePageState extends State<HomePage> {
               ],
             ),
             bottomNavigationBar: bottomNavigationBar(viewModel),
-          ),
-        );
+          );
       },
     );
   }
