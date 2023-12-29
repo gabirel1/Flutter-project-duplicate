@@ -41,10 +41,14 @@ class BasketPageState extends State<BasketPage> {
             actions: <Widget>[
               ElevatedButton(
                 onPressed: () async {
-                  if (await viewModel.checkout(viewModel.order) == false) {
-                    await buildShowDialogLogin();
+                  if (viewModel.order.totalPrice != 0) {
+                    if (await viewModel.checkout(viewModel.order) == false) {
+                      await buildShowDialogLogin();
+                    } else {
+                      await buildShowDialogSuccessfulCheckout();
+                    }
                   } else {
-                    await buildShowDialogSuccessfulCheckout();
+                    await buildShowDialogEmpty();
                   }
                 },
                 child: const Row(
@@ -280,6 +284,24 @@ class BasketPageState extends State<BasketPage> {
           return AlertDialog(
             title: const Text(
               'Log in first',
+              style: TextStyle(
+                fontSize: 14,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            backgroundColor: MyColor().myGrey,
+          );
+        },
+      );
+
+  /// Widget Future show dialog Error
+  Future<dynamic> buildShowDialogEmpty() => showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text(
+              'The basket is empty',
               style: TextStyle(
                 fontSize: 14,
               ),
