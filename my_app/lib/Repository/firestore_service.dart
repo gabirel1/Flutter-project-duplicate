@@ -13,6 +13,7 @@ import 'package:my_app/Models/my_orders.dart';
 import 'package:my_app/Models/order_item.dart';
 import 'package:my_app/Models/user_infos.dart';
 import 'package:my_app/Tools/utils.dart';
+import 'package:uuid/uuid.dart';
 // import 'package:path/path.dart';
 
 /// FItem is a Map<String, dynamic>
@@ -406,6 +407,28 @@ class FirestoreService {
     }
   }
 
+  /// a function to add an image to the storage
+  Future<(bool, String)> addItemImageToStorage(XFile img) async {
+    final File imageFile = File(img.path);
+    // final String fileName = basename(imageFile.path);
+    final String productPath = 'itemsPictures/${const Uuid().v4()}';
+
+    final Reference ref = _storage.ref().child(productPath);
+    final UploadTask uploadTask = ref.putFile(imageFile);
+    try {
+      String imgUrl = '';
+      await uploadTask.whenComplete(() async {
+        final String url = await ref.getDownloadURL();
+        imgUrl = url;
+      });
+      return (true, imgUrl);
+    } catch (e) {
+      debugPrint(e.toString());
+      return (false, '');
+    }
+  }
+
+
   /// a function to change the user profile picture
   Future<bool> changeUserProfilePicture(
     String uuid,
@@ -532,7 +555,9 @@ class FirestoreService {
         'images': images,
         'seller': email,
         'sellerUUID': uuid,
-      });
+      }).then((DocumentReference<Map<String, dynamic>> docRef) => <Future<void>>{
+        _firestore.collection('Item').doc(docRef.id).update(<Object, Object?>{'id': docRef.id}),
+      },);
       return true;
     } catch (e) {
       debugPrint(e.toString());

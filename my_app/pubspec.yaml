@@ -41,14 +41,18 @@ dependencies:
   firebase_storage: ^11.5.6
   flutter:
     sdk: flutter
+  flutter_form_builder: ^9.1.1
   flutter_redux: ^0.10.0
+  form_builder_image_picker: ^4.0.0
+  form_builder_validators: ^9.1.0
   google_sign_in: ^6.1.6
-  image_picker: ^1.0.5
+  image_picker: ^0.8.7+4
   json_annotation: ^4.8.1
   qr_code_scanner: ^1.0.1
   redux: ^5.0.0
   redux_logging: ^0.5.1
   rive: ^0.12.4
+  uuid: ^4.2.2
 
 
 dev_dependencies:

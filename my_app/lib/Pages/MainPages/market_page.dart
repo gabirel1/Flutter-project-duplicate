@@ -80,7 +80,7 @@ class MarketPageState extends State<MarketPage> {
             ),
             child: Column(
               children: <Widget>[
-                buildImageItem(item.images[0]),
+                if (item.images.isNotEmpty) buildImageItem(item.images[0]),
                 buildTitleItem(item.title),
                 buildPriceItem(item.price),
               ],

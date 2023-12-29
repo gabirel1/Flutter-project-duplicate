@@ -1,8 +1,11 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:my_app/Pages/MainPages/basket_page.dart';
 import 'package:my_app/Pages/MainPages/market_page.dart';
 import 'package:my_app/Pages/MainPages/profile_page.dart';
+import 'package:my_app/Pages/seller_page.dart';
 import 'package:my_app/Store/State/app_state.dart';
 import 'package:my_app/Store/ViewModels/home_view_model.dart';
 import 'package:my_app/Tools/color.dart';
@@ -41,15 +44,20 @@ class HomePageState extends State<HomePage> {
     return StoreConnector<AppState, HomeViewModel>(
       converter: (Store<AppState> store) =>
           HomeViewModel.factory(store, PageController()),
+      onInitialBuild: (HomeViewModel viewModel) {
+        viewModel.loadUser();
+      },
       builder: (BuildContext context, HomeViewModel viewModel) {
+        log(viewModel.user.toString());
+        log(viewModel.user!.isSeller.toString());
         return Scaffold(
             body: PageView(
               controller: viewModel.pageController,
               onPageChanged: viewModel.changePage,
-              children: const <Widget>[
-                MarketPage(),
-                BasketPage(),
-                ProfilePage(),
+              children: <Widget>[
+                const MarketPage(),
+                if (viewModel.user != null && viewModel.user!.isSeller) const SellerPage() else const BasketPage(),
+                const ProfilePage(),
               ],
             ),
             bottomNavigationBar: bottomNavigationBar(viewModel),
@@ -62,16 +70,16 @@ class HomePageState extends State<HomePage> {
   BottomNavigationBar bottomNavigationBar(HomeViewModel viewModel) {
     return BottomNavigationBar(
       backgroundColor: MyColor().myWhite,
-      items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
+      items: <BottomNavigationBarItem>[
+        const BottomNavigationBarItem(
           icon: Icon(Icons.home_outlined),
           label: 'Home',
         ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.shopping_basket_outlined),
-          label: 'Basket',
-        ),
-        BottomNavigationBarItem(
+        if (viewModel.user != null && viewModel.user!.isSeller)
+          const BottomNavigationBarItem(icon: Icon(Icons.shopping_basket_outlined), label: 'Sell',)
+        else
+          const  BottomNavigationBarItem(icon: Icon(Icons.shopping_basket_outlined), label: 'Basket',),
+        const BottomNavigationBarItem(
           icon: Icon(Icons.account_box_outlined),
           label: 'Profile',
         ),
