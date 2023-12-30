@@ -16,20 +16,25 @@ class SellerPage extends StatefulWidget {
   State<SellerPage> createState() => SellerPageState();
 }
 
+/// class ApiImage
 class ApiImage {
-  final String imageUrl;
-  final String id;
-
+  /// ApiImage
   ApiImage({
     required this.imageUrl,
     required this.id,
   });
+
+  /// String imageUrl
+  final String imageUrl;
+
+  /// String id
+  final String id;
 }
 
 /// The basket page state
 class SellerPageState extends State<SellerPage> {
   /// form key
-  GlobalKey<FormBuilderState> _formKey = GlobalKey<FormBuilderState>();
+  final GlobalKey<FormBuilderState> _formKey = GlobalKey<FormBuilderState>();
 
   @override
   Widget build(BuildContext context) {
@@ -39,13 +44,15 @@ class SellerPageState extends State<SellerPage> {
         return Scaffold(
           appBar: AppBar(
             title: const Text(
-                'Sell item',
+              'Sell item',
             ),
             centerTitle: false,
             actions: <Widget>[
               ElevatedButton(
                 onPressed: () async {
-                  if (_formKey.currentState!.saveAndValidate() && await viewModel.validateForm(_formKey.currentState?.instantValue)) {
+                  if (_formKey.currentState!.saveAndValidate() &&
+                      await viewModel
+                          .validateForm(_formKey.currentState?.instantValue)) {
                     _formKey.currentState?.reset();
                     await buildShowDialogSuccessful();
                   } else {
@@ -90,17 +97,20 @@ class SellerPageState extends State<SellerPage> {
                       decoration: const InputDecoration(
                         labelText: 'Article name',
                       ),
-                      validator: FormBuilderValidators.compose(<FormFieldValidator<String>>[
-                      FormBuilderValidators.required(),
-                    ]),
+                      validator: FormBuilderValidators
+                          .compose(<FormFieldValidator<String>>[
+                        FormBuilderValidators.required(),
+                      ]),
                     ),
                     FormBuilderTextField(
                       name: 'Price',
-                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      keyboardType:
+                          const TextInputType.numberWithOptions(decimal: true),
                       decoration: const InputDecoration(
                         labelText: 'Price',
                       ),
-                      validator: FormBuilderValidators.compose(<FormFieldValidator<String>>[
+                      validator: FormBuilderValidators
+                          .compose(<FormFieldValidator<String>>[
                         FormBuilderValidators.required(),
                         FormBuilderValidators.numeric(),
                         (String? val) {
@@ -118,16 +128,19 @@ class SellerPageState extends State<SellerPage> {
                       decoration: const InputDecoration(
                         labelText: 'Description',
                       ),
-                      validator: FormBuilderValidators.compose(<FormFieldValidator<String>>[
+                      validator: FormBuilderValidators
+                          .compose(<FormFieldValidator<String>>[
                         FormBuilderValidators.required(),
                       ]),
                     ),
                     FormBuilderImagePicker(
                       name: 'photos',
-                      decoration: const InputDecoration(labelText: 'Pick Photos'),
+                      decoration:
+                          const InputDecoration(labelText: 'Pick Photos'),
                       maxImages: 5,
                       previewMargin: const EdgeInsetsDirectional.only(end: 8),
-                      validator: FormBuilderValidators.compose(<FormFieldValidator<List<dynamic>>>[
+                      validator: FormBuilderValidators
+                          .compose(<FormFieldValidator<List<dynamic>>>[
                         FormBuilderValidators.required(),
                       ]),
                     ),
@@ -143,47 +156,47 @@ class SellerPageState extends State<SellerPage> {
 
   /// Widget Future show dialog order placed
   Future<dynamic> buildShowDialogSuccessful() => showDialog(
-    context: context,
-    barrierDismissible: true,
-    builder: (BuildContext context) {
-      Future<void>.delayed(const Duration(seconds: 2), () {
-        if (context.mounted) {
-          Navigator.of(context).pop(true);
-        }
-      });
-      return AlertDialog(
-        title: const Text(
-          'Item successfully added to market',
-          style: TextStyle(
-            fontSize: 14,
-          ),
-          textAlign: TextAlign.center,
-        ),
-        backgroundColor: MyColor().myGrey,
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          Future<void>.delayed(const Duration(seconds: 2), () {
+            if (context.mounted) {
+              Navigator.of(context).pop(true);
+            }
+          });
+          return AlertDialog(
+            title: const Text(
+              'Item successfully added to market',
+              style: TextStyle(
+                fontSize: 14,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            backgroundColor: MyColor().myGrey,
+          );
+        },
       );
-    },
-  );
 
   /// Widget Future show dialog order placed
   Future<dynamic> buildShowDialogError() => showDialog(
-    context: context,
-    barrierDismissible: true,
-    builder: (BuildContext context) {
-      Future<void>.delayed(const Duration(seconds: 2), () {
-        if (context.mounted) {
-          Navigator.of(context).pop(true);
-        }
-      });
-      return AlertDialog(
-        title: const Text(
-          'Invalid form',
-          style: TextStyle(
-            fontSize: 14,
-          ),
-          textAlign: TextAlign.center,
-        ),
-        backgroundColor: MyColor().myGrey,
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          Future<void>.delayed(const Duration(seconds: 2), () {
+            if (context.mounted) {
+              Navigator.of(context).pop(true);
+            }
+          });
+          return AlertDialog(
+            title: const Text(
+              'Invalid form',
+              style: TextStyle(
+                fontSize: 14,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            backgroundColor: MyColor().myGrey,
+          );
+        },
       );
-    },
-  );
 }

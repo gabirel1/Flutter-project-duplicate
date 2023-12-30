@@ -14,30 +14,38 @@ class SellerViewModel {
 
   /// The basket view model factory
   factory SellerViewModel.factory(Store<AppState> store) {
-
     return SellerViewModel(
       validateForm: (Map<String, dynamic> form) async {
         final List<String> images = <String>[];
         final List<dynamic> photos = form['photos'];
         for (int i = 0; i < photos.length; i++) {
-          await FirestoreService().addItemImageToStorage(photos[i] as XFile).then(((bool, String) value) => <void>{
-            if (value.$1) <void>{
-              images.add(value.$2),
-            },
-          },);
+          await FirestoreService()
+              .addItemImageToStorage(photos[i] as XFile)
+              .then(
+                ((bool, String) value) => <void>{
+                  if (value.$1)
+                    <void>{
+                      images.add(value.$2),
+                    },
+                },
+              );
         }
-        final bool success = await FirestoreService().sellerAddItem(form['Name'], form['Description'], double.parse(form['Price']),  images);
+        final bool success = await FirestoreService().sellerAddItem(
+          form['Name'],
+          form['Description'],
+          double.parse(form['Price']),
+          images,
+        );
 
         if (success) {
           final ItemList response = await FirestoreService().getItems();
           store.dispatch(MarketItemsListAction(items: response));
         }
         return success;
-      }
+      },
     );
   }
 
   /// Validate form
   final Function validateForm;
-
 }
