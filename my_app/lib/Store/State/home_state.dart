@@ -7,7 +7,10 @@ enum Pages {
   basket,
 
   /// The profile page
-  profile
+  profile,
+
+  /// The seller page
+  seller
 }
 
 /// The home state

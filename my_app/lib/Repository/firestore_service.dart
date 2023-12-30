@@ -13,6 +13,7 @@ import 'package:my_app/Models/my_orders.dart';
 import 'package:my_app/Models/order_item.dart';
 import 'package:my_app/Models/user_infos.dart';
 import 'package:my_app/Tools/utils.dart';
+import 'package:uuid/uuid.dart';
 // import 'package:path/path.dart';
 
 /// FItem is a Map<String, dynamic>
@@ -406,6 +407,27 @@ class FirestoreService {
     }
   }
 
+  /// a function to add an image to the storage
+  Future<(bool, String)> addItemImageToStorage(XFile img) async {
+    final File imageFile = File(img.path);
+    // final String fileName = basename(imageFile.path);
+    final String productPath = 'itemsPictures/${const Uuid().v4()}';
+
+    final Reference ref = _storage.ref().child(productPath);
+    final UploadTask uploadTask = ref.putFile(imageFile);
+    try {
+      String imgUrl = '';
+      await uploadTask.whenComplete(() async {
+        final String url = await ref.getDownloadURL();
+        imgUrl = url;
+      });
+      return (true, imgUrl);
+    } catch (e) {
+      debugPrint(e.toString());
+      return (false, '');
+    }
+  }
+
   /// a function to change the user profile picture
   Future<bool> changeUserProfilePicture(
     String uuid,
@@ -449,8 +471,22 @@ class FirestoreService {
           final String docPath = itemDOC.path;
           final Item finalItem = await _firestore.doc(docPath).get().then(
             (DocumentSnapshot<FItem> documentSnapshot) {
-              final dynamic tmp = documentSnapshot.data()!;
-              return Item.fromJson(tmp);
+              final dynamic tmp = documentSnapshot.data();
+              if (tmp != null) {
+                return Item.fromJson(tmp);
+              } else {
+                return Item(
+                  id: 'id',
+                  description: 'description',
+                  title: 'title',
+                  seller: 'seller',
+                  sellerUUID: 'sellerUUID',
+                  images: <String>[
+                    'https://www.fluttercampus.com/img/4by3.webp',
+                  ],
+                  price: 0,
+                );
+              }
             },
           );
           tmp.items.add(
@@ -532,7 +568,14 @@ class FirestoreService {
         'images': images,
         'seller': email,
         'sellerUUID': uuid,
-      });
+      }).then(
+        (DocumentReference<Map<String, dynamic>> docRef) => <Future<void>>{
+          _firestore
+              .collection('Item')
+              .doc(docRef.id)
+              .update(<Object, Object?>{'id': docRef.id}),
+        },
+      );
       return true;
     } catch (e) {
       debugPrint(e.toString());
