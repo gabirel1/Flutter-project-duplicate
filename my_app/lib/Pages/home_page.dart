@@ -56,8 +56,9 @@ class HomePageState extends State<HomePage> {
               onPageChanged: viewModel.changePage,
               children: <Widget>[
                 const MarketPage(),
-                if (viewModel.user != null && viewModel.user!.isSeller) const SellerPage() else const BasketPage(),
+                const BasketPage(),
                 const ProfilePage(),
+                if (viewModel.user != null && viewModel.user!.isSeller) const SellerPage(),
               ],
             ),
             bottomNavigationBar: bottomNavigationBar(viewModel),
@@ -69,20 +70,19 @@ class HomePageState extends State<HomePage> {
   /// The bottom navigation bar
   BottomNavigationBar bottomNavigationBar(HomeViewModel viewModel) {
     return BottomNavigationBar(
+      type: BottomNavigationBarType.fixed,
       backgroundColor: MyColor().myWhite,
       items: <BottomNavigationBarItem>[
         const BottomNavigationBarItem(
           icon: Icon(Icons.home_outlined),
-          label: 'Home',
+          label: 'Home'
         ),
-        if (viewModel.user != null && viewModel.user!.isSeller)
-          const BottomNavigationBarItem(icon: Icon(Icons.shopping_basket_outlined), label: 'Sell',)
-        else
-          const  BottomNavigationBarItem(icon: Icon(Icons.shopping_basket_outlined), label: 'Basket',),
+        const  BottomNavigationBarItem(icon: Icon(Icons.shopping_basket_outlined), label: 'Basket',),
         const BottomNavigationBarItem(
           icon: Icon(Icons.account_box_outlined),
-          label: 'Profile',
+          label: 'Profile'
         ),
+        if (viewModel.user != null && viewModel.user!.isSeller) const BottomNavigationBarItem(icon: Icon(Icons.payments_sharp), label: 'Sell',),
       ],
       currentIndex: viewModel.page.index,
       selectedItemColor: MyColor().myBlue,
