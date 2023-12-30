@@ -428,7 +428,6 @@ class FirestoreService {
     }
   }
 
-
   /// a function to change the user profile picture
   Future<bool> changeUserProfilePicture(
     String uuid,
@@ -472,8 +471,22 @@ class FirestoreService {
           final String docPath = itemDOC.path;
           final Item finalItem = await _firestore.doc(docPath).get().then(
             (DocumentSnapshot<FItem> documentSnapshot) {
-              final dynamic tmp = documentSnapshot.data()!;
-              return Item.fromJson(tmp);
+              final dynamic tmp = documentSnapshot.data();
+              if (tmp != null) {
+                return Item.fromJson(tmp);
+              } else {
+                return Item(
+                  id: 'id',
+                  description: 'description',
+                  title: 'title',
+                  seller: 'seller',
+                  sellerUUID: 'sellerUUID',
+                  images: <String>[
+                    'https://www.fluttercampus.com/img/4by3.webp',
+                  ],
+                  price: 0,
+                );
+              }
             },
           );
           tmp.items.add(
@@ -555,9 +568,14 @@ class FirestoreService {
         'images': images,
         'seller': email,
         'sellerUUID': uuid,
-      }).then((DocumentReference<Map<String, dynamic>> docRef) => <Future<void>>{
-        _firestore.collection('Item').doc(docRef.id).update(<Object, Object?>{'id': docRef.id}),
-      },);
+      }).then(
+        (DocumentReference<Map<String, dynamic>> docRef) => <Future<void>>{
+          _firestore
+              .collection('Item')
+              .doc(docRef.id)
+              .update(<Object, Object?>{'id': docRef.id}),
+        },
+      );
       return true;
     } catch (e) {
       debugPrint(e.toString());

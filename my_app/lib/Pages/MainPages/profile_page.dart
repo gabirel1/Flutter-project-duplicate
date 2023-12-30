@@ -129,8 +129,8 @@ class ProfilePageState extends State<ProfilePage> {
               child: (item.images.isNotEmpty)
                   ? Image.network(
                       item.images[0],
-                      width: 250,
-                      height: 250,
+                      width: 200,
+                      height: 200,
                       fit: BoxFit.cover,
                     )
                   : const Icon(
@@ -181,7 +181,7 @@ class ProfilePageState extends State<ProfilePage> {
         children: <Widget>[
           Card(
             clipBehavior: Clip.antiAliasWithSaveLayer,
-            color: MyColor().myBlue,
+            color: MyColor().myWhite,
             elevation: 4,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
